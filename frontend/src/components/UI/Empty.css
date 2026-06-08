@@ -1,0 +1,92 @@
+/* ============================================
+   Empty Component
+   ============================================ */
+
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 40px 20px;
+}
+
+/* Sizes */
+.empty--sm {
+  padding: 24px 16px;
+}
+
+.empty--md {
+  padding: 40px 20px;
+}
+
+.empty--lg {
+  padding: 60px 24px;
+}
+
+/* Icon */
+.empty__icon {
+  color: var(--text-muted);
+  opacity: 0.4;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.empty--sm .empty__icon {
+  margin-bottom: 10px;
+}
+
+.empty--lg .empty__icon {
+  margin-bottom: 20px;
+}
+
+/* Content */
+.empty__content {
+  margin-bottom: 16px;
+}
+
+.empty--sm .empty__content {
+  margin-bottom: 10px;
+}
+
+.empty__desc {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.empty--sm .empty__desc {
+  font-size: 13px;
+}
+
+.empty--lg .empty__desc {
+  font-size: 16px;
+}
+
+.empty__sub {
+  font-size: 13px;
+  color: var(--text-muted);
+  line-height: 1.5;
+  margin-top: 6px;
+}
+
+.empty--sm .empty__sub {
+  font-size: 12px;
+}
+
+/* Action */
+.empty__action {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Dark mode */
+@media (prefers-color-scheme: dark) {
+  .empty__icon {
+    opacity: 0.3;
+  }
+}

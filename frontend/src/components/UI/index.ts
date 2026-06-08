@@ -49,3 +49,4 @@ export { default as Upload } from './Upload';
 export type { UploadFile } from './Upload';
 export { default as Slider, RangeSlider } from './Slider';
 export { default as Notification, NotificationContainer, useNotification } from './Notification';
+export { default as Empty } from './Empty';
