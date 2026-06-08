@@ -1,0 +1,698 @@
+// ============================================================
+// Algo OJ - Prisma Schema (Complete)
+// Database: PostgreSQL 15+
+// ORM: Prisma 5.x
+// Last updated: 2026-06-07
+//
+// All models:
+//   User system:       users, achievements, user_achievements
+//   Problem system:    problems, tags, problem_tags
+//   Judge system:      submissions, test_cases
+//   Contest system:    contests, contest_problems, contest_participants
+//   Community:         posts, comments
+//   Learning path:     learning_paths, learning_modules, module_problems, learning_progress
+//   Gamification:      point_history, daily_challenges, daily_challenge_completions
+//   Virtual items:     virtual_items, user_virtual_items
+//   Social:            friendships, login_streaks
+//   Notifications:     notifications
+// ============================================================
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+// ============================================================
+// 1. User System
+// ============================================================
+
+model User {
+  id               String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  username         String    @unique @db.VarChar(50)
+  email            String    @unique @db.VarChar(100)
+  passwordHash     String    @map("password_hash") @db.VarChar(255)
+  avatarUrl        String?   @map("avatar_url") @db.VarChar(500)
+  bio              String?
+  rating           Int       @default(1500)
+  experiencePoints Int       @default(0) @map("experience_points")
+  level            Int       @default(1)
+  role             String    @default("user") @db.VarChar(20) // user, admin, moderator
+  isActive         Boolean   @default(true) @map("is_active")
+  lastLoginAt      DateTime? @map("last_login_at")
+  createdAt        DateTime  @default(now()) @map("created_at")
+  updatedAt        DateTime  @updatedAt @map("updated_at")
+
+  authoredProblems          Problem[]
+  submissions               Submission[]
+  createdContests           Contest[]               @relation("ContestCreator")
+  contestParticipations     ContestParticipant[]
+  posts                     Post[]
+  comments                  Comment[]
+  userAchievements          UserAchievement[]
+  learningProgress          LearningProgress[]
+  pointHistory              PointHistory[]
+  dailyChallengeCompletions DailyChallengeCompletion[]
+  virtualItems              UserVirtualItem[]
+  loginStreaks              LoginStreak[]
+  friends                   Friendship[]            @relation("User")
+  friendOf                  Friendship[]            @relation("Friend")
+  notifications             Notification[]
+  votes                     Vote[]
+  commentVotes              CommentVote[]
+  reports                   Report[]
+  followers                 Follow[]                @relation("following")
+  following                 Follow[]                @relation("follower")
+  sentMessages              Message[]               @relation("sender")
+  receivedMessages          Message[]               @relation("receiver")
+  activities                Activity[]
+  notificationSettings      NotificationSetting?
+
+  @@map("users")
+  @@index([rating])
+  @@index([experiencePoints])
+  @@index([createdAt])
+  @@index([role])
+}
+
+// ============================================================
+// 2. Achievement System
+// ============================================================
+
+model Achievement {
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name        String   @unique @db.VarChar(100)
+  description String
+  iconUrl     String?  @map("icon_url") @db.VarChar(500)
+  category    String   @db.VarChar(50) // submission, contest, community, learning, special
+  condition   String   // JSON unlock condition, e.g. {"type":"solve_count","threshold":10}
+  points      Int      @default(0)
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  userAchievements UserAchievement[]
+
+  @@map("achievements")
+  @@index([category])
+}
+
+model UserAchievement {
+  id            String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId        String   @map("user_id") @db.Uuid
+  achievementId String   @map("achievement_id") @db.Uuid
+  unlockedAt    DateTime @default(now()) @map("unlocked_at")
+
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  achievement Achievement @relation(fields: [achievementId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, achievementId])
+  @@map("user_achievements")
+}
+
+// ============================================================
+// 3. Problem System
+// ============================================================
+
+model Problem {
+  id           String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  title        String   @db.VarChar(200)
+  description  String
+  inputFormat  String?  @map("input_format")
+  outputFormat String?  @map("output_format")
+  sampleInput  String?  @map("sample_input")
+  sampleOutput String?  @map("sample_output")
+  hint         String?
+  difficulty   Int      @db.SmallInt // 1-5
+  timeLimit    Int      @default(1000) @map("time_limit")   // ms
+  memoryLimit  Int      @default(256) @map("memory_limit")  // MB
+  authorId     String?  @map("author_id") @db.Uuid
+  isPublic     Boolean  @default(true) @map("is_public")
+  solveCount   Int      @default(0) @map("solve_count")
+  submitCount  Int      @default(0) @map("submit_count")
+  source       String?  @db.VarChar(200)
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  author          User?              @relation(fields: [authorId], references: [id], onDelete: SetNull)
+  problemTags     ProblemTag[]
+  testCases       TestCase[]
+  submissions     Submission[]
+  contestProblems ContestProblem[]
+  posts           Post[]
+  moduleProblems  ModuleProblem[]
+  dailyChallenges DailyChallenge[]
+
+  @@map("problems")
+  @@index([difficulty])
+  @@index([isPublic])
+  @@index([authorId])
+  @@index([createdAt])
+  @@index([difficulty, isPublic])
+}
+
+model Tag {
+  id       String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name     String  @unique @db.VarChar(50)
+  category String? @db.VarChar(50) // algorithm, data_structure, math, topic
+
+  problemTags ProblemTag[]
+  posts       PostTag[]
+
+  @@map("tags")
+  @@index([category])
+}
+
+model ProblemTag {
+  id        String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  problemId String @map("problem_id") @db.Uuid
+  tagId     String @map("tag_id") @db.Uuid
+
+  problem Problem @relation(fields: [problemId], references: [id], onDelete: Cascade)
+  tag     Tag     @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@unique([problemId, tagId])
+  @@map("problem_tags")
+}
+
+// ============================================================
+// 4. Submission & Judging System
+// ============================================================
+
+model Submission {
+  id            String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId        String   @map("user_id") @db.Uuid
+  problemId     String   @map("problem_id") @db.Uuid
+  language      String   @db.VarChar(20) // cpp, java, python, javascript
+  sourceCode    String   @map("source_code")
+  status        String   @default("pending") @db.VarChar(20)
+  // pending, judging, accepted, wrong_answer, time_limit, memory_limit, runtime_error, compile_error
+  executionTime Int?     @map("execution_time") // ms
+  memoryUsed    Int?     @map("memory_used")     // KB
+  score         Int      @default(0)
+  judgeOutput   String?  @map("judge_output")
+  submittedAt   DateTime @default(now()) @map("submitted_at")
+
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  problem Problem @relation(fields: [problemId], references: [id], onDelete: Cascade)
+
+  @@map("submissions")
+  @@index([userId])
+  @@index([problemId])
+  @@index([status])
+  @@index([submittedAt])
+  @@index([userId, problemId])
+  @@index([userId, status])
+}
+
+model TestCase {
+  id             String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  problemId      String  @map("problem_id") @db.Uuid
+  input          String
+  expectedOutput String  @map("expected_output")
+  isSample       Boolean @default(false) @map("is_sample")
+  score          Int     @default(1)
+  order          Int     @default(0)
+
+  problem Problem @relation(fields: [problemId], references: [id], onDelete: Cascade)
+
+  @@map("test_cases")
+  @@index([problemId])
+  @@index([problemId, isSample])
+}
+
+// ============================================================
+// 5. Contest System
+// ============================================================
+
+model Contest {
+  id              String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  title           String   @db.VarChar(200)
+  description     String?
+  startTime       DateTime @map("start_time")
+  endTime         DateTime @map("end_time")
+  creatorId       String   @map("creator_id") @db.Uuid
+  isPublic        Boolean  @default(true) @map("is_public")
+  maxParticipants Int?     @map("max_participants")
+  status          String   @default("upcoming") @db.VarChar(20) // upcoming, running, ended
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  creator         User                 @relation("ContestCreator", fields: [creatorId], references: [id], onDelete: Cascade)
+  contestProblems ContestProblem[]
+  participants    ContestParticipant[]
+
+  @@map("contests")
+  @@index([startTime])
+  @@index([status])
+  @@index([creatorId])
+  @@index([isPublic, status])
+}
+
+model ContestProblem {
+  id           String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  contestId    String @map("contest_id") @db.Uuid
+  problemId    String @map("problem_id") @db.Uuid
+  problemOrder String @map("problem_order") @db.Char(1) // A, B, C, ...
+  score        Int    @default(100)
+
+  contest Contest @relation(fields: [contestId], references: [id], onDelete: Cascade)
+  problem Problem @relation(fields: [problemId], references: [id], onDelete: Cascade)
+
+  @@unique([contestId, problemId])
+  @@unique([contestId, problemOrder])
+  @@map("contest_problems")
+}
+
+model ContestParticipant {
+  id         String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  contestId  String   @map("contest_id") @db.Uuid
+  userId     String   @map("user_id") @db.Uuid
+  totalScore Int      @default(0) @map("total_score")
+  rank       Int?
+  penalty    Int      @default(0) // penalty in seconds
+  joinedAt   DateTime @default(now()) @map("joined_at")
+
+  contest Contest @relation(fields: [contestId], references: [id], onDelete: Cascade)
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([contestId, userId])
+  @@map("contest_participants")
+  @@index([contestId, totalScore])
+  @@index([userId])
+}
+
+// ============================================================
+// 6. Learning Path System
+// ============================================================
+
+model LearningPath {
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  title       String   @db.VarChar(200)
+  description String
+  coverUrl    String?  @map("cover_url") @db.VarChar(500)
+  difficulty  Int      @db.SmallInt // 1-5
+  sortOrder   Int      @default(0) @map("sort_order")
+  isPublished Boolean  @default(false) @map("is_published")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  modules      LearningModule[]
+  userProgress LearningProgress[]
+
+  @@map("learning_paths")
+  @@index([difficulty])
+  @@index([isPublished])
+}
+
+model LearningModule {
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  pathId      String   @map("path_id") @db.Uuid
+  title       String   @db.VarChar(200)
+  description String
+  sortOrder   Int      @default(0) @map("sort_order")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  path         LearningPath     @relation(fields: [pathId], references: [id], onDelete: Cascade)
+  problems     ModuleProblem[]
+  userProgress LearningProgress[]
+
+  @@map("learning_modules")
+  @@index([pathId])
+}
+
+model ModuleProblem {
+  id         String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  moduleId   String  @map("module_id") @db.Uuid
+  problemId  String  @map("problem_id") @db.Uuid
+  sortOrder  Int     @default(0) @map("sort_order")
+  isRequired Boolean @default(true) @map("is_required")
+
+  module  LearningModule @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+  problem Problem        @relation(fields: [problemId], references: [id], onDelete: Cascade)
+
+  @@unique([moduleId, problemId])
+  @@map("module_problems")
+}
+
+model LearningProgress {
+  id          String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId      String    @map("user_id") @db.Uuid
+  pathId      String    @map("path_id") @db.Uuid
+  moduleId    String?   @map("module_id") @db.Uuid
+  status      String    @default("not_started") @db.VarChar(20) // not_started, in_progress, completed
+  progress    Int       @default(0) // 0-100 percentage
+  startedAt   DateTime? @map("started_at")
+  completedAt DateTime? @map("completed_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+
+  user   User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  path   LearningPath    @relation(fields: [pathId], references: [id], onDelete: Cascade)
+  module LearningModule? @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, pathId, moduleId])
+  @@map("learning_progress")
+  @@index([userId])
+  @@index([pathId])
+  @@index([userId, status])
+}
+
+// ============================================================
+// 7. Community System
+// ============================================================
+
+model Post {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId    String   @map("user_id") @db.Uuid
+  title     String   @db.VarChar(200)
+  content   String
+  problemId String?  @map("problem_id") @db.Uuid
+  postType  String   @map("post_type") @db.VarChar(20) // discussion, solution, question
+  upvotes   Int      @default(0)
+  downvotes Int      @default(0)
+  viewCount Int      @default(0) @map("view_count")
+  isPinned  Boolean  @default(false) @map("is_pinned")
+  isLocked  Boolean  @default(false) @map("is_locked")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  problem  Problem?  @relation(fields: [problemId], references: [id], onDelete: SetNull)
+  tags     PostTag[]
+  comments Comment[]
+  votes    Vote[]
+
+  @@map("posts")
+  @@index([userId])
+  @@index([postType])
+  @@index([problemId])
+  @@index([createdAt])
+  @@index([upvotes])
+}
+
+model Comment {
+  id              String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId          String   @map("user_id") @db.Uuid
+  postId          String   @map("post_id") @db.Uuid
+  parentCommentId String?  @map("parent_comment_id") @db.Uuid
+  content         String
+  upvotes         Int      @default(0)
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  post          Post      @relation(fields: [postId], references: [id], onDelete: Cascade)
+  parentComment Comment?  @relation("CommentReplies", fields: [parentCommentId], references: [id], onDelete: Cascade)
+  replies       Comment[] @relation("CommentReplies")
+  votes         CommentVote[]
+  reports       Report[]
+  isDeleted     Boolean   @default(false) @map("is_deleted")
+  downvotes     Int       @default(0)
+
+  @@map("comments")
+  @@index([userId])
+  @@index([postId])
+  @@index([parentCommentId])
+  @@index([createdAt])
+}
+
+// ============================================================
+// 8. Points & Daily Challenge System
+// ============================================================
+
+model PointHistory {
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId      String   @map("user_id") @db.Uuid
+  points      Int      // positive = earned, negative = spent
+  type        String   @db.VarChar(50) // solve, contest, daily, achievement, bonus
+  description String?
+  relatedId   String?  @map("related_id") @db.Uuid
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("point_history")
+  @@index([userId, createdAt])
+}
+
+model DailyChallenge {
+  id           String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  problemId    String   @map("problem_id") @db.Uuid
+  challengeDate DateTime @unique @map("challenge_date") @db.Date
+  bonusPoints  Int      @default(50) @map("bonus_points")
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  problem     Problem                   @relation(fields: [problemId], references: [id], onDelete: Cascade)
+  completions DailyChallengeCompletion[]
+
+  @@map("daily_challenges")
+}
+
+model DailyChallengeCompletion {
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId      String   @map("user_id") @db.Uuid
+  challengeId String   @map("challenge_id") @db.Uuid
+  completedAt DateTime @default(now()) @map("completed_at")
+  timeTaken   Int?     @map("time_taken") // seconds
+
+  user      User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  challenge DailyChallenge @relation(fields: [challengeId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, challengeId])
+  @@map("daily_challenge_completions")
+}
+
+// ============================================================
+// 9. Login Streak & Virtual Items
+// ============================================================
+
+model LoginStreak {
+  id         String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId     String   @map("user_id") @db.Uuid
+  loginDate  DateTime @map("login_date") @db.Date
+  streakDays Int      @default(1) @map("streak_days")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, loginDate])
+  @@map("login_streaks")
+}
+
+model VirtualItem {
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name        String   @unique @db.VarChar(100)
+  description String
+  type        String   @db.VarChar(50) // badge, title, decoration, frame
+  rarity      String   @default("common") @db.VarChar(20) // common, rare, epic, legendary
+  iconUrl     String?  @map("icon_url") @db.VarChar(500)
+  price       Int      @default(0)
+  isActive    Boolean  @default(true) @map("is_active")
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  userItems UserVirtualItem[]
+
+  @@map("virtual_items")
+}
+
+model UserVirtualItem {
+  id         String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId     String   @map("user_id") @db.Uuid
+  itemId     String   @map("item_id") @db.Uuid
+  isEquipped Boolean  @default(false) @map("is_equipped")
+  acquiredAt DateTime @default(now()) @map("acquired_at")
+
+  user User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  item VirtualItem @relation(fields: [itemId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, itemId])
+  @@map("user_virtual_items")
+}
+
+// ============================================================
+// 10. Friendship System
+// ============================================================
+
+model Friendship {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId    String   @map("user_id") @db.Uuid
+  friendId  String   @map("friend_id") @db.Uuid
+  status    String   @default("pending") @db.VarChar(20) // pending, accepted, blocked
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user   User @relation("User", fields: [userId], references: [id], onDelete: Cascade)
+  friend User @relation("Friend", fields: [friendId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, friendId])
+  @@map("friendships")
+}
+
+// ============================================================
+// 11. Notification System
+// ============================================================
+
+model Notification {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId    String   @map("user_id") @db.Uuid
+  type      String   @db.VarChar(50) // follow, comment, vote, mention, system, message
+  title     String   @db.VarChar(200)
+  content   String
+  link      String?  @db.VarChar(500)
+  isRead    Boolean  @default(false) @map("is_read")
+  relatedId String?  @map("related_id") @db.Uuid
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("notifications")
+  @@index([userId, isRead])
+  @@index([createdAt])
+}
+
+// ============================================================
+// 12. Post Tags (Community)
+// ============================================================
+
+model PostTag {
+  id     String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  postId String @map("post_id") @db.Uuid
+  tagId  String @map("tag_id") @db.Uuid
+
+  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+  tag  Tag  @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@unique([postId, tagId])
+  @@map("post_tags")
+}
+
+// ============================================================
+// 13. Voting System
+// ============================================================
+
+model Vote {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId    String   @map("user_id") @db.Uuid
+  postId    String   @map("post_id") @db.Uuid
+  value     Int      // 1 for upvote, -1 for downvote
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, postId])
+  @@map("votes")
+}
+
+model CommentVote {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId    String   @map("user_id") @db.Uuid
+  commentId String   @map("comment_id") @db.Uuid
+  value     Int      // 1 for upvote, -1 for downvote
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  comment Comment @relation(fields: [commentId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, commentId])
+  @@map("comment_votes")
+}
+
+// ============================================================
+// 14. Reports
+// ============================================================
+
+model Report {
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  reporterId  String   @map("reporter_id") @db.Uuid
+  commentId   String?  @map("comment_id") @db.Uuid
+  postId      String?  @map("post_id") @db.Uuid
+  reason      String   @db.VarChar(200)
+  description String?
+  status      String   @default("pending") @db.VarChar(20) // pending, reviewed, resolved, dismissed
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  reporter User     @relation(fields: [reporterId], references: [id], onDelete: Cascade)
+  comment  Comment? @relation(fields: [commentId], references: [id], onDelete: Cascade)
+
+  @@index([status])
+  @@map("reports")
+}
+
+// ============================================================
+// 15. Social System (Follow)
+// ============================================================
+
+model Follow {
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  followerId  String   @map("follower_id") @db.Uuid
+  followingId String   @map("following_id") @db.Uuid
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  follower  User @relation("follower", fields: [followerId], references: [id], onDelete: Cascade)
+  following User @relation("following", fields: [followingId], references: [id], onDelete: Cascade)
+
+  @@unique([followerId, followingId])
+  @@map("follows")
+}
+
+// ============================================================
+// 16. Messaging System
+// ============================================================
+
+model Message {
+  id         String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  senderId   String   @map("sender_id") @db.Uuid
+  receiverId String   @map("receiver_id") @db.Uuid
+  content    String
+  isRead     Boolean  @default(false) @map("is_read")
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  sender   User @relation("sender", fields: [senderId], references: [id], onDelete: Cascade)
+  receiver User @relation("receiver", fields: [receiverId], references: [id], onDelete: Cascade)
+
+  @@index([senderId])
+  @@index([receiverId])
+  @@index([createdAt])
+  @@map("messages")
+}
+
+// ============================================================
+// 17. Activity Feed
+// ============================================================
+
+model Activity {
+  id         String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId     String   @map("user_id") @db.Uuid
+  type       String   @db.VarChar(50) // post, comment, vote, follow, solve
+  targetId   String?  @map("target_id") @db.Uuid
+  targetType String?  @map("target_type") @db.VarChar(50) // post, comment, user, problem
+  metadata   String?  // JSON string for extra data
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([createdAt])
+  @@map("activities")
+}
+
+// ============================================================
+// 18. Notification Settings
+// ============================================================
+
+model NotificationSetting {
+  id                   String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId               String  @unique @map("user_id") @db.Uuid
+  emailNotification    Boolean @default(true) @map("email_notification")
+  followNotification   Boolean @default(true) @map("follow_notification")
+  commentNotification  Boolean @default(true) @map("comment_notification")
+  voteNotification     Boolean @default(true) @map("vote_notification")
+  messageNotification  Boolean @default(true) @map("message_notification")
+  systemNotification   Boolean @default(true) @map("system_notification")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("notification_settings")
+}
