@@ -1,13 +1,37 @@
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { useState } from 'react';
+import { Menu } from 'lucide-react';
 
-const Header = () => {
+const navItems = [
+  { path: '/problems', label: '题库' },
+  { path: '/contests', label: '竞赛' },
+  { path: '/community', label: '社区' },
+  { path: '/leaderboard', label: '排行榜' },
+];
+
+interface HeaderProps {
+  onSidebarToggle?: () => void;
+}
+
+const Header = ({ onSidebarToggle }: HeaderProps) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const location = useLocation();
+
+  const isActive = (path: string) => location.pathname === path || location.pathname.startsWith(path + '/');
 
   return (
     <header className="bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg">
       <div className="container mx-auto px-4 py-3">
         <div className="flex justify-between items-center">
+          {/* Sidebar Toggle (mobile) */}
+          <button
+            className="md:hidden mr-2"
+            onClick={onSidebarToggle}
+            aria-label="打开侧边栏"
+          >
+            <Menu size={24} />
+          </button>
+
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-2">
             <div className="w-10 h-10 bg-white rounded-lg flex items-center justify-center">
@@ -18,18 +42,15 @@ const Header = () => {
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-6">
-            <Link to="/problems" className="hover:text-blue-200 transition-colors">
-              题库
-            </Link>
-            <Link to="/contests" className="hover:text-blue-200 transition-colors">
-              竞赛
-            </Link>
-            <Link to="/community" className="hover:text-blue-200 transition-colors">
-              社区
-            </Link>
-            <Link to="/leaderboard" className="hover:text-blue-200 transition-colors">
-              排行榜
-            </Link>
+            {navItems.map((item) => (
+              <Link
+                key={item.path}
+                to={item.path}
+                className={`transition-colors ${isActive(item.path) ? 'text-white font-semibold border-b-2 border-white pb-1' : 'text-white/80 hover:text-white'}`}
+              >
+                {item.label}
+              </Link>
+            ))}
           </nav>
 
           {/* Auth Buttons */}
@@ -67,18 +88,15 @@ const Header = () => {
         {isMenuOpen && (
           <div className="md:hidden mt-4 pb-4">
             <nav className="flex flex-col space-y-3">
-              <Link to="/problems" className="hover:text-blue-200 transition-colors">
-                题库
-              </Link>
-              <Link to="/contests" className="hover:text-blue-200 transition-colors">
-                竞赛
-              </Link>
-              <Link to="/community" className="hover:text-blue-200 transition-colors">
-                社区
-              </Link>
-              <Link to="/leaderboard" className="hover:text-blue-200 transition-colors">
-                排行榜
-              </Link>
+              {navItems.map((item) => (
+                <Link
+                  key={item.path}
+                  to={item.path}
+                  className={`transition-colors ${isActive(item.path) ? 'text-white font-semibold bg-white/10 rounded-lg px-2 py-1' : 'text-white/80 hover:text-white'}`}
+                >
+                  {item.label}
+                </Link>
+              ))}
             </nav>
             <div className="flex space-x-4 mt-4">
               <Link

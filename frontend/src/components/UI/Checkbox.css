@@ -1,0 +1,121 @@
+/* ============================================
+   Checkbox Component
+   ============================================ */
+
+.checkbox {
+  display: inline-flex;
+  align-items: flex-start;
+  gap: 10px;
+  cursor: pointer;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.checkbox__input {
+  position: absolute;
+  width: 0;
+  height: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Indicator box */
+.checkbox__indicator {
+  width: 18px;
+  height: 18px;
+  border-radius: var(--radius-sm);
+  border: 2px solid var(--border-default);
+  background: var(--bg-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all var(--transition-fast);
+  margin-top: 1px;
+}
+
+.checkbox--checked .checkbox__indicator,
+.checkbox--indeterminate .checkbox__indicator {
+  background: var(--primary-500);
+  border-color: var(--primary-500);
+}
+
+.checkbox__input:focus-visible + .checkbox__indicator {
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+}
+
+/* Check mark */
+.checkbox__check {
+  width: 10px;
+  height: 10px;
+  color: white;
+  animation: checkboxCheckIn 0.15s ease;
+}
+
+@keyframes checkboxCheckIn {
+  from {
+    transform: scale(0);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Label text */
+.checkbox__text {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-primary);
+  line-height: 1.4;
+}
+
+/* Hover */
+.checkbox:hover .checkbox__indicator {
+  border-color: var(--primary-400);
+}
+
+/* Disabled */
+.checkbox--disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.checkbox--disabled .checkbox__indicator {
+  background: var(--bg-tertiary);
+}
+
+/* ==================
+   CheckboxGroup
+   ================== */
+.checkbox-group {
+  display: flex;
+}
+
+.checkbox-group--vertical {
+  flex-direction: column;
+  gap: 8px;
+}
+
+.checkbox-group--horizontal {
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+/* Select all separator */
+.checkbox-group__separator {
+  height: 1px;
+  background: var(--border-light);
+  margin: 8px 0;
+}
+
+/* Dark mode */
+@media (prefers-color-scheme: dark) {
+  .checkbox--checked .checkbox__indicator,
+  .checkbox--indeterminate .checkbox__indicator {
+    background: var(--primary-600);
+    border-color: var(--primary-600);
+  }
+}

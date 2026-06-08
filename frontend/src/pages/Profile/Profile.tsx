@@ -1,9 +1,8 @@
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import {
   User,
   Mail,
   Calendar,
-  MapPin,
   Edit3,
   Trophy,
   Target,
@@ -16,70 +15,161 @@ import {
   Shield,
   Zap,
   ChevronRight,
+  X,
+  Loader2,
 } from 'lucide-react';
+import { useAuthStore } from '@/stores/useAuthStore';
+import { getUserProfile, updateProfile, type UserProfileData, type UpdateProfileData } from '@/services/users';
+import { getSubmissions } from '@/services/submissions';
+import { achievementApi } from '@/api/gamification';
+import type { Submission, PaginatedData } from '@/types';
 import './Profile.css';
-
-const mockUser = {
-  username: 'algorithm_master',
-  displayName: '算法大师',
-  email: 'master@example.com',
-  bio: '热爱算法，享受解题的乐趣。专注数据结构与算法竞赛。',
-  avatar: null,
-  joinDate: '2025-03-15',
-  location: '北京',
-  level: 42,
-  experience: 18500,
-  nextLevelExp: 20000,
-  rating: 2156,
-  rank: 128,
-  stats: {
-    solved: 486,
-    easy: 180,
-    medium: 230,
-    hard: 76,
-    totalSubmissions: 2340,
-    acceptanceRate: 72.5,
-    streak: 15,
-    maxStreak: 42,
-    contests: 28,
-    bestRank: 12,
-    avgRating: 2050,
-  },
-  achievements: [
-    { id: 1, name: '初出茅庐', desc: '完成第一道题目', icon: Star, color: 'amber', unlocked: true },
-    { id: 2, name: '百题斩', desc: '完成 100 道题目', icon: Target, color: 'blue', unlocked: true },
-    { id: 3, name: '连续签到', desc: '连续 7 天签到', icon: Flame, color: 'orange', unlocked: true },
-    { id: 4, name: '竞赛达人', desc: '参加 10 场竞赛', icon: Trophy, color: 'purple', unlocked: true },
-    { id: 5, name: '困难征服者', desc: '完成 50 道困难题', icon: Shield, color: 'red', unlocked: true },
-    { id: 6, name: '速度之星', desc: '在 5 分钟内 AC 一道题', icon: Zap, color: 'cyan', unlocked: true },
-    { id: 7, name: '全能选手', desc: '完成所有类型的题目', icon: Award, color: 'gold', unlocked: false },
-    { id: 8, name: '算法大师', desc: 'Rating 达到 2400', icon: Star, color: 'diamond', unlocked: false },
-  ],
-  recentSubmissions: [
-    { id: 1, problem: '两数之和', status: 'accepted', time: '2 小时前', lang: 'C++', runtime: '56ms' },
-    { id: 2, problem: '最长回文子串', status: 'wrong_answer', time: '3 小时前', lang: 'Python', runtime: '-' },
-    { id: 3, problem: '合并 K 个升序链表', status: 'accepted', time: '5 小时前', lang: 'C++', runtime: '128ms' },
-    { id: 4, problem: '二叉树的层序遍历', status: 'accepted', time: '昨天', lang: 'Java', runtime: '12ms' },
-    { id: 5, problem: '有效的括号', status: 'accepted', time: '昨天', lang: 'Python', runtime: '32ms' },
-    { id: 6, problem: '最大子数组和', status: 'time_limit', time: '2 天前', lang: 'C++', runtime: '-' },
-    { id: 7, problem: '接雨水', status: 'accepted', time: '2 天前', lang: 'C++', runtime: '8ms' },
-    { id: 8, problem: '搜索旋转排序数组', status: 'accepted', time: '3 天前', lang: 'Java', runtime: '0ms' },
-  ],
-  weeklyActivity: [3, 5, 2, 8, 4, 6, 1],
-};
 
 const statusLabels: Record<string, { text: string; class: string }> = {
   accepted: { text: '通过', class: 'accepted' },
   wrong_answer: { text: '错误', class: 'wrong' },
-  time_limit: { text: '超时', class: 'timeout' },
+  time_limit_exceeded: { text: '超时', class: 'timeout' },
   runtime_error: { text: '运行错误', class: 'error' },
+  compile_error: { text: '编译错误', class: 'error' },
+  pending: { text: '等待中', class: 'timeout' },
+  judging: { text: '评测中', class: 'timeout' },
+  memory_limit_exceeded: { text: '内存超限', class: 'timeout' },
 };
+
+const achievementMeta: Record<string, { icon: typeof Star; color: string }> = {
+  solve_1: { icon: Star, color: 'amber' },
+  solve_100: { icon: Target, color: 'blue' },
+  streak_7: { icon: Flame, color: 'orange' },
+  contest_10: { icon: Trophy, color: 'purple' },
+  hard_50: { icon: Shield, color: 'red' },
+  speed_5min: { icon: Zap, color: 'cyan' },
+  all_types: { icon: Award, color: 'gold' },
+  rating_2400: { icon: Star, color: 'diamond' },
+};
+
+function getAchievementMeta(category: string, index: number) {
+  const fallbackIcons = [Star, Target, Flame, Trophy, Shield, Zap, Award, Star];
+  const fallbackColors = ['amber', 'blue', 'orange', 'purple', 'red', 'cyan', 'gold', 'diamond'];
+  return achievementMeta[category] || {
+    icon: fallbackIcons[index % fallbackIcons.length],
+    color: fallbackColors[index % fallbackColors.length],
+  };
+}
+
+function relativeTime(dateStr: string): string {
+  const now = new Date();
+  const date = new Date(dateStr);
+  const diffMs = now.getTime() - date.getTime();
+  const diffMin = Math.floor(diffMs / 60000);
+  const diffHour = Math.floor(diffMs / 3600000);
+  const diffDay = Math.floor(diffMs / 86400000);
+
+  if (diffMin < 1) return '刚刚';
+  if (diffMin < 60) return `${diffMin} 分钟前`;
+  if (diffHour < 24) return `${diffHour} 小时前`;
+  if (diffDay < 2) return '昨天';
+  if (diffDay < 7) return `${diffDay} 天前`;
+  return date.toLocaleDateString('zh-CN');
+}
 
 export default function Profile() {
   const [activeTab, setActiveTab] = useState<'overview' | 'submissions' | 'achievements'>('overview');
+  const [profile, setProfile] = useState<UserProfileData | null>(null);
+  const [submissions, setSubmissions] = useState<Submission[]>([]);
+  const [achievements, setAchievements] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const user = mockUser;
-  const expPercent = (user.experience / user.nextLevelExp) * 100;
+  // Edit modal state
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [editForm, setEditForm] = useState({ username: '', bio: '' });
+  const [saving, setSaving] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
+
+  const { user: authUser, updateUser } = useAuthStore();
+  const userId = authUser?.id;
+
+  const fetchProfile = useCallback(async () => {
+    if (!userId) return;
+    try {
+      setLoading(true);
+      setError(null);
+      const [profileData, submissionsData, achievementsData] = await Promise.all([
+        getUserProfile(userId),
+        getSubmissions({ page: 1, pageSize: 20 }),
+        achievementApi.getMy().then((res: any) => res.data.data || []).catch(() => []),
+      ]);
+      setProfile(profileData);
+      setSubmissions(submissionsData.items || []);
+      setAchievements(achievementsData);
+    } catch (err: any) {
+      setError(err.message || '加载失败');
+    } finally {
+      setLoading(false);
+    }
+  }, [userId]);
+
+  useEffect(() => {
+    fetchProfile();
+  }, [fetchProfile]);
+
+  const handleOpenEdit = () => {
+    if (profile) {
+      setEditForm({ username: profile.username, bio: profile.bio || '' });
+    }
+    setSaveError(null);
+    setShowEditModal(true);
+  };
+
+  const handleSaveProfile = async () => {
+    try {
+      setSaving(true);
+      setSaveError(null);
+      const data: UpdateProfileData = {};
+      if (editForm.username !== profile?.username) data.username = editForm.username;
+      if (editForm.bio !== (profile?.bio || '')) data.bio = editForm.bio;
+      const updated = await updateProfile(data);
+      setProfile((prev) => prev ? { ...prev, ...updated } : prev);
+      updateUser({ username: updated.username, bio: updated.bio || undefined });
+      setShowEditModal(false);
+    } catch (err: any) {
+      setSaveError(err.response?.data?.message || err.message || '保存失败');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="profile-page">
+        <div className="container" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '60vh' }}>
+          <Loader2 size={36} className="animate-spin" style={{ color: 'var(--primary-500)' }} />
+        </div>
+      </div>
+    );
+  }
+
+  if (error || !profile) {
+    return (
+      <div className="profile-page">
+        <div className="container" style={{ textAlign: 'center', padding: '120px 0' }}>
+          <p style={{ color: 'var(--text-muted)', fontSize: 16 }}>{error || '无法加载用户信息'}</p>
+          <button className="profile-edit-btn" style={{ marginTop: 16 }} onClick={fetchProfile}>
+            重试
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  const displayName = profile.username;
+  const joinDate = profile.createdAt;
+  const stats = {
+    posts: profile._count.posts,
+    followers: profile._count.followers,
+    following: profile._count.following,
+    comments: profile._count.comments,
+  };
 
   return (
     <div className="profile-page">
@@ -91,38 +181,37 @@ export default function Profile() {
           </div>
           <div className="profile-info">
             <div className="profile-avatar">
-              <User size={40} />
+              {profile.avatarUrl ? (
+                <img src={profile.avatarUrl} alt={displayName} style={{ width: '100%', height: '100%', borderRadius: '50%', objectFit: 'cover' }} />
+              ) : (
+                <User size={40} />
+              )}
             </div>
             <div className="profile-details">
               <div className="profile-name-row">
-                <h1 className="profile-name">{user.displayName}</h1>
-                <span className="profile-level">Lv.{user.level}</span>
-                <button className="profile-edit-btn">
+                <h1 className="profile-name">{displayName}</h1>
+                <span className="profile-level">Lv.{profile.level}</span>
+                <button className="profile-edit-btn" onClick={handleOpenEdit}>
                   <Edit3 size={14} />
                   编辑资料
                 </button>
               </div>
-              <p className="profile-username">@{user.username}</p>
-              <p className="profile-bio">{user.bio}</p>
+              <p className="profile-username">@{profile.username}</p>
+              {profile.bio && <p className="profile-bio">{profile.bio}</p>}
               <div className="profile-meta">
                 <span className="profile-meta-item">
                   <Mail size={14} />
-                  {user.email}
-                </span>
-                <span className="profile-meta-item">
-                  <MapPin size={14} />
-                  {user.location}
+                  {authUser?.email}
                 </span>
                 <span className="profile-meta-item">
                   <Calendar size={14} />
-                  {new Date(user.joinDate).toLocaleDateString('zh-CN')} 加入
+                  {new Date(joinDate).toLocaleDateString('zh-CN')} 加入
                 </span>
               </div>
             </div>
             <div className="profile-rating-card">
-              <div className="profile-rating-value">{user.rating}</div>
+              <div className="profile-rating-value">{profile.rating}</div>
               <div className="profile-rating-label">竞赛 Rating</div>
-              <div className="profile-rating-rank">全球排名 #{user.rank}</div>
             </div>
           </div>
         </div>
@@ -134,8 +223,8 @@ export default function Profile() {
               <Target size={20} />
             </div>
             <div className="profile-stat-content">
-              <div className="profile-stat-value">{user.stats.solved}</div>
-              <div className="profile-stat-label">已解题目</div>
+              <div className="profile-stat-value">{stats.posts}</div>
+              <div className="profile-stat-label">发帖数</div>
             </div>
           </div>
           <div className="profile-stat-card">
@@ -143,8 +232,8 @@ export default function Profile() {
               <CheckCircle2 size={20} />
             </div>
             <div className="profile-stat-content">
-              <div className="profile-stat-value">{user.stats.acceptanceRate}%</div>
-              <div className="profile-stat-label">通过率</div>
+              <div className="profile-stat-value">{stats.followers}</div>
+              <div className="profile-stat-label">粉丝</div>
             </div>
           </div>
           <div className="profile-stat-card">
@@ -152,8 +241,8 @@ export default function Profile() {
               <Flame size={20} />
             </div>
             <div className="profile-stat-content">
-              <div className="profile-stat-value">{user.stats.streak}</div>
-              <div className="profile-stat-label">连续天数</div>
+              <div className="profile-stat-value">{stats.following}</div>
+              <div className="profile-stat-label">关注</div>
             </div>
           </div>
           <div className="profile-stat-card">
@@ -161,8 +250,8 @@ export default function Profile() {
               <Trophy size={20} />
             </div>
             <div className="profile-stat-content">
-              <div className="profile-stat-value">{user.stats.contests}</div>
-              <div className="profile-stat-label">参与竞赛</div>
+              <div className="profile-stat-value">{stats.comments}</div>
+              <div className="profile-stat-label">评论数</div>
             </div>
           </div>
         </div>
@@ -204,67 +293,46 @@ export default function Profile() {
                   <div className="progress-section">
                     <div className="progress-header">
                       <span>经验进度</span>
-                      <span>{user.experience.toLocaleString()} / {user.nextLevelExp.toLocaleString()}</span>
+                      <span>Lv.{profile.level}</span>
                     </div>
                     <div className="progress-bar">
-                      <div className="progress-fill" style={{ width: `${expPercent}%` }} />
-                    </div>
-                  </div>
-                  <div className="difficulty-progress">
-                    <div className="diff-prog-item">
-                      <div className="diff-prog-header">
-                        <span className="diff-prog-label diff-prog-label--easy">简单</span>
-                        <span>{user.stats.easy} / 300</span>
-                      </div>
-                      <div className="progress-bar progress-bar--sm">
-                        <div className="progress-fill progress-fill--easy" style={{ width: `${(user.stats.easy / 300) * 100}%` }} />
-                      </div>
-                    </div>
-                    <div className="diff-prog-item">
-                      <div className="diff-prog-header">
-                        <span className="diff-prog-label diff-prog-label--medium">中等</span>
-                        <span>{user.stats.medium} / 500</span>
-                      </div>
-                      <div className="progress-bar progress-bar--sm">
-                        <div className="progress-fill progress-fill--medium" style={{ width: `${(user.stats.medium / 500) * 100}%` }} />
-                      </div>
-                    </div>
-                    <div className="diff-prog-item">
-                      <div className="diff-prog-header">
-                        <span className="diff-prog-label diff-prog-label--hard">困难</span>
-                        <span>{user.stats.hard} / 200</span>
-                      </div>
-                      <div className="progress-bar progress-bar--sm">
-                        <div className="progress-fill progress-fill--hard" style={{ width: `${(user.stats.hard / 200) * 100}%` }} />
-                      </div>
+                      <div className="progress-fill" style={{ width: `${Math.min(100, (profile.level % 10) * 10)}%` }} />
                     </div>
                   </div>
                 </div>
 
-                {/* Weekly Activity */}
+                {/* Achievements Preview */}
                 <div className="profile-card">
-                  <h3 className="profile-card-title">
-                    <Calendar size={18} />
-                    本周活跃度
-                  </h3>
-                  <div className="weekly-chart">
-                    {user.weeklyActivity.map((count, i) => {
-                      const dayLabels = ['一', '二', '三', '四', '五', '六', '日'];
-                      const maxCount = Math.max(...user.weeklyActivity);
-                      const height = maxCount > 0 ? (count / maxCount) * 100 : 0;
+                  <div className="profile-card-header">
+                    <h3 className="profile-card-title">
+                      <Award size={18} />
+                      成就
+                    </h3>
+                    <button className="profile-card-link" onClick={() => setActiveTab('achievements')}>
+                      查看全部 <ChevronRight size={14} />
+                    </button>
+                  </div>
+                  <div className="achievement-mini-list">
+                    {achievements.slice(0, 4).map((ach: any, i: number) => {
+                      const meta = getAchievementMeta(ach.category || ach.achievement?.category || '', i);
+                      const Icon = meta.icon;
                       return (
-                        <div key={i} className="weekly-bar-group">
-                          <div className="weekly-bar-wrapper">
-                            <div
-                              className="weekly-bar"
-                              style={{ height: `${height}%` }}
-                            />
+                        <div key={ach.id || i} className={`achievement-mini achievement-mini--${meta.color}`}>
+                          <div className="achievement-mini-icon">
+                            <Icon size={20} />
                           </div>
-                          <span className="weekly-label">周{dayLabels[i]}</span>
-                          <span className="weekly-count">{count}</span>
+                          <div className="achievement-mini-info">
+                            <span className="achievement-mini-name">{ach.name || ach.achievement?.name || '成就'}</span>
+                            <span className="achievement-mini-desc">{ach.description || ach.achievement?.description || ''}</span>
+                          </div>
                         </div>
                       );
                     })}
+                    {achievements.length === 0 && (
+                      <p style={{ color: 'var(--text-muted)', fontSize: 14, textAlign: 'center', padding: 12 }}>
+                        暂无成就
+                      </p>
+                    )}
                   </div>
                 </div>
               </div>
@@ -283,49 +351,28 @@ export default function Profile() {
                     </button>
                   </div>
                   <div className="submission-list">
-                    {user.recentSubmissions.slice(0, 5).map((sub) => (
-                      <div key={sub.id} className="submission-item">
-                        <div className="submission-left">
-                          <span className={`submission-status submission-status--${statusLabels[sub.status].class}`}>
-                            {statusLabels[sub.status].text}
-                          </span>
-                          <span className="submission-problem">{sub.problem}</span>
-                        </div>
-                        <div className="submission-right">
-                          <span className="submission-lang">{sub.lang}</span>
-                          <span className="submission-time">{sub.time}</span>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Recent Achievements */}
-                <div className="profile-card">
-                  <div className="profile-card-header">
-                    <h3 className="profile-card-title">
-                      <Award size={18} />
-                      最近解锁
-                    </h3>
-                    <button className="profile-card-link" onClick={() => setActiveTab('achievements')}>
-                      查看全部 <ChevronRight size={14} />
-                    </button>
-                  </div>
-                  <div className="achievement-mini-list">
-                    {user.achievements.filter((a) => a.unlocked).slice(0, 4).map((ach) => {
-                      const Icon = ach.icon;
+                    {submissions.slice(0, 5).map((sub) => {
+                      const statusInfo = statusLabels[sub.status] || { text: sub.status, class: 'timeout' };
                       return (
-                        <div key={ach.id} className={`achievement-mini achievement-mini--${ach.color}`}>
-                          <div className="achievement-mini-icon">
-                            <Icon size={20} />
+                        <div key={sub.id} className="submission-item">
+                          <div className="submission-left">
+                            <span className={`submission-status submission-status--${statusInfo.class}`}>
+                              {statusInfo.text}
+                            </span>
+                            <span className="submission-problem">#{sub.problemId}</span>
                           </div>
-                          <div className="achievement-mini-info">
-                            <span className="achievement-mini-name">{ach.name}</span>
-                            <span className="achievement-mini-desc">{ach.desc}</span>
+                          <div className="submission-right">
+                            <span className="submission-lang">{sub.language}</span>
+                            <span className="submission-time">{relativeTime(sub.submittedAt)}</span>
                           </div>
                         </div>
                       );
                     })}
+                    {submissions.length === 0 && (
+                      <p style={{ color: 'var(--text-muted)', fontSize: 14, textAlign: 'center', padding: 12 }}>
+                        暂无提交记录
+                      </p>
+                    )}
                   </div>
                 </div>
               </div>
@@ -344,7 +391,7 @@ export default function Profile() {
                 <table className="submission-table">
                   <thead>
                     <tr>
-                      <th>题目</th>
+                      <th>题目 ID</th>
                       <th>状态</th>
                       <th>语言</th>
                       <th>运行时间</th>
@@ -352,19 +399,31 @@ export default function Profile() {
                     </tr>
                   </thead>
                   <tbody>
-                    {user.recentSubmissions.map((sub) => (
-                      <tr key={sub.id}>
-                        <td className="submission-problem-cell">{sub.problem}</td>
-                        <td>
-                          <span className={`submission-status submission-status--${statusLabels[sub.status].class}`}>
-                            {statusLabels[sub.status].text}
-                          </span>
+                    {submissions.map((sub) => {
+                      const statusInfo = statusLabels[sub.status] || { text: sub.status, class: 'timeout' };
+                      return (
+                        <tr key={sub.id}>
+                          <td className="submission-problem-cell">#{sub.problemId}</td>
+                          <td>
+                            <span className={`submission-status submission-status--${statusInfo.class}`}>
+                              {statusInfo.text}
+                            </span>
+                          </td>
+                          <td>{sub.language}</td>
+                          <td className="submission-runtime">
+                            {sub.executionTime != null ? `${sub.executionTime}ms` : '-'}
+                          </td>
+                          <td className="submission-time-cell">{relativeTime(sub.submittedAt)}</td>
+                        </tr>
+                      );
+                    })}
+                    {submissions.length === 0 && (
+                      <tr>
+                        <td colSpan={5} style={{ textAlign: 'center', color: 'var(--text-muted)', padding: 24 }}>
+                          暂无提交记录
                         </td>
-                        <td>{sub.lang}</td>
-                        <td className="submission-runtime">{sub.runtime}</td>
-                        <td className="submission-time-cell">{sub.time}</td>
                       </tr>
-                    ))}
+                    )}
                   </tbody>
                 </table>
               </div>
@@ -375,31 +434,78 @@ export default function Profile() {
         {activeTab === 'achievements' && (
           <div className="profile-content">
             <div className="achievements-grid">
-              {user.achievements.map((ach) => {
-                const Icon = ach.icon;
+              {achievements.map((ach: any, i: number) => {
+                const meta = getAchievementMeta(ach.category || ach.achievement?.category || '', i);
+                const Icon = meta.icon;
                 return (
                   <div
-                    key={ach.id}
-                    className={`achievement-card ${ach.unlocked ? `achievement-card--unlocked achievement-card--${ach.color}` : 'achievement-card--locked'}`}
+                    key={ach.id || i}
+                    className={`achievement-card achievement-card--unlocked achievement-card--${meta.color}`}
                   >
                     <div className="achievement-card-icon">
                       <Icon size={28} />
                     </div>
-                    <h4 className="achievement-card-name">{ach.name}</h4>
-                    <p className="achievement-card-desc">{ach.desc}</p>
-                    {!ach.unlocked && (
-                      <div className="achievement-card-lock">
-                        <Shield size={14} />
-                        未解锁
-                      </div>
-                    )}
+                    <h4 className="achievement-card-name">{ach.name || ach.achievement?.name || '成就'}</h4>
+                    <p className="achievement-card-desc">{ach.description || ach.achievement?.description || ''}</p>
                   </div>
                 );
               })}
+              {achievements.length === 0 && (
+                <div style={{ gridColumn: '1 / -1', textAlign: 'center', color: 'var(--text-muted)', padding: 40 }}>
+                  暂无成就徽章
+                </div>
+              )}
             </div>
           </div>
         )}
       </div>
+
+      {/* Edit Profile Modal */}
+      {showEditModal && (
+        <div className="modal-overlay" onClick={() => setShowEditModal(false)}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h2 className="modal-title">编辑资料</h2>
+              <button className="modal-close" onClick={() => setShowEditModal(false)}>
+                <X size={20} />
+              </button>
+            </div>
+            <div className="modal-body">
+              <div className="form-group">
+                <label className="form-label">用户名</label>
+                <input
+                  type="text"
+                  className="form-input"
+                  value={editForm.username}
+                  onChange={(e) => setEditForm((prev) => ({ ...prev, username: e.target.value }))}
+                  maxLength={50}
+                />
+              </div>
+              <div className="form-group">
+                <label className="form-label">个人简介</label>
+                <textarea
+                  className="form-textarea"
+                  value={editForm.bio}
+                  onChange={(e) => setEditForm((prev) => ({ ...prev, bio: e.target.value }))}
+                  maxLength={500}
+                  rows={4}
+                  placeholder="介绍一下自己..."
+                />
+              </div>
+              {saveError && (
+                <p className="form-error">{saveError}</p>
+              )}
+            </div>
+            <div className="modal-footer">
+              <button className="btn-cancel" onClick={() => setShowEditModal(false)}>取消</button>
+              <button className="btn-save" onClick={handleSaveProfile} disabled={saving}>
+                {saving ? <Loader2 size={16} className="animate-spin" /> : null}
+                {saving ? '保存中...' : '保存'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

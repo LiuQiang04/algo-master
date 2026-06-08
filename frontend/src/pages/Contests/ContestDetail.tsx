@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import {
   Trophy,
@@ -16,179 +16,78 @@ import {
   ArrowDown,
   RefreshCw,
   ExternalLink,
+  Loader2,
 } from 'lucide-react';
+import { contestService } from '@/services';
+import { useToast } from '@/hooks/useToast';
+import type { Contest, ContestStanding } from '@/types';
 import './ContestDetail.css';
 
-const mockContest = {
-  id: 1,
-  title: '周赛 #128',
-  description: '本周算法周赛，涵盖数组、字符串、动态规划等经典题目。请在规定时间内完成所有题目，祝你好运！',
-  startTime: '2026-06-08T20:00:00',
-  endTime: '2026-06-08T22:00:00',
-  duration: 7200, // seconds
-  status: 'running' as const,
-  participants: 1234,
-  problems: [
-    { order: 'A', title: '数字翻转', difficulty: 'easy', solved: 892, attempts: 1200 },
-    { order: 'B', title: '字符串匹配', difficulty: 'medium', solved: 456, attempts: 980 },
-    { order: 'C', title: '最短路径', difficulty: 'medium', solved: 234, attempts: 750 },
-    { order: 'D', title: '区间覆盖', difficulty: 'hard', solved: 89, attempts: 520 },
-  ],
-};
-
-interface RankEntry {
-  rank: number;
-  username: string;
-  rating: number;
-  totalScore: number;
-  totalTime: number;
-  penalty: number;
-  problemResults: {
-    order: string;
-    status: 'solved' | 'failed' | 'none';
-    attempts: number;
-    time: number | null;
-  }[];
-  rankChange: number;
-}
-
-const mockRanking: RankEntry[] = [
-  {
-    rank: 1,
-    username: 'algorithm_king',
-    rating: 2456,
-    totalScore: 400,
-    totalTime: 185,
-    penalty: 0,
-    problemResults: [
-      { order: 'A', status: 'solved', attempts: 1, time: 12 },
-      { order: 'B', status: 'solved', attempts: 1, time: 35 },
-      { order: 'C', status: 'solved', attempts: 1, time: 58 },
-      { order: 'D', status: 'solved', attempts: 2, time: 80 },
-    ],
-    rankChange: 2,
-  },
-  {
-    rank: 2,
-    username: 'code_ninja',
-    rating: 2389,
-    totalScore: 400,
-    totalTime: 198,
-    penalty: 20,
-    problemResults: [
-      { order: 'A', status: 'solved', attempts: 1, time: 8 },
-      { order: 'B', status: 'solved', attempts: 1, time: 42 },
-      { order: 'C', status: 'solved', attempts: 2, time: 68 },
-      { order: 'D', status: 'solved', attempts: 1, time: 80 },
-    ],
-    rankChange: -1,
-  },
-  {
-    rank: 3,
-    username: 'data_master',
-    rating: 2312,
-    totalScore: 300,
-    totalTime: 95,
-    penalty: 0,
-    problemResults: [
-      { order: 'A', status: 'solved', attempts: 1, time: 15 },
-      { order: 'B', status: 'solved', attempts: 1, time: 30 },
-      { order: 'C', status: 'solved', attempts: 1, time: 50 },
-      { order: 'D', status: 'failed', attempts: 3, time: null },
-    ],
-    rankChange: 1,
-  },
-  {
-    rank: 4,
-    username: 'binary_search',
-    rating: 2198,
-    totalScore: 300,
-    totalTime: 110,
-    penalty: 10,
-    problemResults: [
-      { order: 'A', status: 'solved', attempts: 1, time: 10 },
-      { order: 'B', status: 'solved', attempts: 2, time: 45 },
-      { order: 'C', status: 'solved', attempts: 1, time: 55 },
-      { order: 'D', status: 'none', attempts: 0, time: null },
-    ],
-    rankChange: 0,
-  },
-  {
-    rank: 5,
-    username: 'graph_theory',
-    rating: 2156,
-    totalScore: 200,
-    totalTime: 45,
-    penalty: 0,
-    problemResults: [
-      { order: 'A', status: 'solved', attempts: 1, time: 12 },
-      { order: 'B', status: 'solved', attempts: 1, time: 33 },
-      { order: 'C', status: 'none', attempts: 0, time: null },
-      { order: 'D', status: 'none', attempts: 0, time: null },
-    ],
-    rankChange: 3,
-  },
-  {
-    rank: 6,
-    username: 'dp_lover',
-    rating: 2089,
-    totalScore: 200,
-    totalTime: 52,
-    penalty: 10,
-    problemResults: [
-      { order: 'A', status: 'solved', attempts: 2, time: 18 },
-      { order: 'B', status: 'solved', attempts: 1, time: 34 },
-      { order: 'C', status: 'failed', attempts: 2, time: null },
-      { order: 'D', status: 'none', attempts: 0, time: null },
-    ],
-    rankChange: -2,
-  },
-  {
-    rank: 7,
-    username: 'stack_queue',
-    rating: 2034,
-    totalScore: 100,
-    totalTime: 15,
-    penalty: 0,
-    problemResults: [
-      { order: 'A', status: 'solved', attempts: 1, time: 15 },
-      { order: 'B', status: 'failed', attempts: 3, time: null },
-      { order: 'C', status: 'none', attempts: 0, time: null },
-      { order: 'D', status: 'none', attempts: 0, time: null },
-    ],
-    rankChange: 1,
-  },
-  {
-    rank: 8,
-    username: 'hash_map',
-    rating: 1987,
-    totalScore: 100,
-    totalTime: 22,
-    penalty: 10,
-    problemResults: [
-      { order: 'A', status: 'solved', attempts: 2, time: 22 },
-      { order: 'B', status: 'failed', attempts: 1, time: null },
-      { order: 'C', status: 'none', attempts: 0, time: null },
-      { order: 'D', status: 'none', attempts: 0, time: null },
-    ],
-    rankChange: -1,
-  },
-];
-
 export default function ContestDetail() {
-  const { id: _id } = useParams();
+  const { id } = useParams<{ id: string }>();
+  const contestId = Number(id);
+
+  const [contest, setContest] = useState<Contest | null>(null);
+  const [standings, setStandings] = useState<ContestStanding[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [standingsLoading, setStandingsLoading] = useState(false);
   const [activeTab, setActiveTab] = useState<'overview' | 'problems' | 'ranking'>('overview');
-  const [timeLeft, setTimeLeft] = useState(3600); // 1 hour left
+  const [timeLeft, setTimeLeft] = useState(0);
   const [lastRefresh, setLastRefresh] = useState(new Date());
+
+  const { error: showError } = useToast();
+
+  const fetchContest = useCallback(async () => {
+    if (!contestId) return;
+    setLoading(true);
+    try {
+      const data = await contestService.getContestById(contestId);
+      setContest(data);
+      // Calculate time left if running
+      if (data.status === 'running') {
+        const end = new Date(data.endTime).getTime();
+        const now = Date.now();
+        setTimeLeft(Math.max(0, Math.floor((end - now) / 1000)));
+      }
+    } catch {
+      showError('加载竞赛详情失败');
+    } finally {
+      setLoading(false);
+    }
+  }, [contestId, showError]);
+
+  const fetchStandings = useCallback(async () => {
+    if (!contestId) return;
+    setStandingsLoading(true);
+    try {
+      const data = await contestService.getContestStandings(contestId);
+      setStandings(data);
+      setLastRefresh(new Date());
+    } catch {
+      showError('加载排行榜失败');
+    } finally {
+      setStandingsLoading(false);
+    }
+  }, [contestId, showError]);
+
+  useEffect(() => {
+    fetchContest();
+  }, [fetchContest]);
+
+  useEffect(() => {
+    if (activeTab === 'ranking' || activeTab === 'overview') {
+      fetchStandings();
+    }
+  }, [activeTab, fetchStandings]);
 
   // Countdown timer
   useEffect(() => {
-    if (mockContest.status !== 'running') return;
+    if (!contest || contest.status !== 'running') return;
     const timer = setInterval(() => {
       setTimeLeft((prev) => (prev > 0 ? prev - 1 : 0));
     }, 1000);
     return () => clearInterval(timer);
-  }, []);
+  }, [contest]);
 
   const formatTime = (seconds: number) => {
     const h = Math.floor(seconds / 3600);
@@ -203,9 +102,46 @@ export default function ContestDetail() {
     return h > 0 ? `${h}h ${m}m` : `${m}m`;
   };
 
-  const handleRefresh = () => {
-    setLastRefresh(new Date());
+  const getDurationSeconds = (start: string, end: string) => {
+    return Math.floor((new Date(end).getTime() - new Date(start).getTime()) / 1000);
   };
+
+  const handleRefresh = () => {
+    fetchStandings();
+  };
+
+  if (loading) {
+    return (
+      <div className="contest-detail-page">
+        <div className="container">
+          <div className="cd-loading">
+            <Loader2 size={32} className="cl-loading-spinner" />
+            <p>加载中...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (!contest) {
+    return (
+      <div className="contest-detail-page">
+        <div className="container">
+          <div className="cd-loading">
+            <Trophy size={48} />
+            <p>竞赛不存在</p>
+            <Link to="/contests" className="cd-back">
+              <ChevronLeft size={18} />
+              返回竞赛列表
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  const durationSeconds = getDurationSeconds(contest.startTime, contest.endTime);
+  const problems = contest.problems || [];
 
   return (
     <div className="contest-detail-page">
@@ -222,40 +158,40 @@ export default function ContestDetail() {
         <div className="cd-info">
           <div className="cd-info-left">
             <div className="cd-status">
-              <span className={`status-dot status-dot--${mockContest.status}`} />
-              {mockContest.status === 'running' ? '进行中' : mockContest.status === 'upcoming' ? '即将开始' : '已结束'}
+              <span className={`status-dot status-dot--${contest.status}`} />
+              {contest.status === 'running' ? '进行中' : contest.status === 'upcoming' ? '即将开始' : '已结束'}
             </div>
-            <h1 className="cd-title">{mockContest.title}</h1>
-            <p className="cd-desc">{mockContest.description}</p>
+            <h1 className="cd-title">{contest.title}</h1>
+            <p className="cd-desc">{contest.description}</p>
             <div className="cd-meta">
               <span className="cd-meta-item">
                 <Calendar size={14} />
-                {new Date(mockContest.startTime).toLocaleString('zh-CN')}
+                {new Date(contest.startTime).toLocaleString('zh-CN')}
               </span>
               <span className="cd-meta-item">
                 <Clock size={14} />
-                时长 2 小时
+                时长 {formatMinutes(Math.floor(durationSeconds / 60))}
               </span>
               <span className="cd-meta-item">
                 <Target size={14} />
-                {mockContest.problems.length} 道题目
+                {contest.problemCount} 道题目
               </span>
               <span className="cd-meta-item">
                 <Users size={14} />
-                {mockContest.participants.toLocaleString()} 人参赛
+                {contest.participantCount.toLocaleString()} 人参赛
               </span>
             </div>
           </div>
 
           {/* Timer */}
-          {mockContest.status === 'running' && (
+          {contest.status === 'running' && (
             <div className="cd-timer">
               <div className="cd-timer-label">距离结束</div>
               <div className="cd-timer-value">{formatTime(timeLeft)}</div>
               <div className="cd-timer-bar">
                 <div
                   className="cd-timer-fill"
-                  style={{ width: `${(timeLeft / mockContest.duration) * 100}%` }}
+                  style={{ width: `${(timeLeft / durationSeconds) * 100}%` }}
                 />
               </div>
             </div>
@@ -294,28 +230,31 @@ export default function ContestDetail() {
                   <Target size={18} />
                   题目概览
                 </h3>
-                <div className="cd-problem-list">
-                  {mockContest.problems.map((p) => (
-                    <div key={p.order} className="cd-problem-item">
-                      <span className="cd-problem-order">{p.order}</span>
-                      <div className="cd-problem-info">
-                        <span className="cd-problem-name">{p.title}</span>
-                        <span className={`difficulty-badge difficulty-badge--${p.difficulty}`}>
-                          {p.difficulty === 'easy' ? '简单' : p.difficulty === 'medium' ? '中等' : '困难'}
-                        </span>
+                {problems.length > 0 ? (
+                  <div className="cd-problem-list">
+                    {problems.map((p) => (
+                      <div key={p.id} className="cd-problem-item">
+                        <span className="cd-problem-order">{p.label}</span>
+                        <div className="cd-problem-info">
+                          <span className="cd-problem-name">{p.problem?.title || `题目 ${p.label}`}</span>
+                          {p.problem?.difficulty && (
+                            <span className={`difficulty-badge difficulty-badge--${p.problem.difficulty}`}>
+                              {p.problem.difficulty === 'easy' ? '简单' : p.problem.difficulty === 'medium' ? '中等' : '困难'}
+                            </span>
+                          )}
+                        </div>
+                        <div className="cd-problem-stats">
+                          <span className="cd-problem-solved">
+                            <CheckCircle2 size={14} />
+                            {p.points} 分
+                          </span>
+                        </div>
                       </div>
-                      <div className="cd-problem-stats">
-                        <span className="cd-problem-solved">
-                          <CheckCircle2 size={14} />
-                          {p.solved}
-                        </span>
-                        <span className="cd-problem-rate">
-                          {((p.solved / p.attempts) * 100).toFixed(0)}%
-                        </span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="cd-empty-text">暂无题目信息</p>
+                )}
               </div>
 
               {/* Top 5 */}
@@ -324,24 +263,34 @@ export default function ContestDetail() {
                   <Trophy size={18} />
                   实时排名 Top 5
                 </h3>
-                <div className="cd-top-list">
-                  {mockRanking.slice(0, 5).map((entry) => (
-                    <div key={entry.rank} className="cd-top-item">
-                      <div className={`cd-top-rank cd-top-rank--${entry.rank <= 3 ? entry.rank : 'other'}`}>
-                        {entry.rank <= 3 ? <Medal size={16} /> : entry.rank}
-                      </div>
-                      <span className="cd-top-name">{entry.username}</span>
-                      <span className="cd-top-score">{entry.totalScore}</span>
-                      <span className="cd-top-time">{formatMinutes(entry.totalTime)}</span>
+                {standingsLoading ? (
+                  <div className="cd-card-loading">
+                    <Loader2 size={20} className="cl-loading-spinner" />
+                  </div>
+                ) : standings.length > 0 ? (
+                  <>
+                    <div className="cd-top-list">
+                      {standings.slice(0, 5).map((entry) => (
+                        <div key={entry.rank} className="cd-top-item">
+                          <div className={`cd-top-rank cd-top-rank--${entry.rank <= 3 ? entry.rank : 'other'}`}>
+                            {entry.rank <= 3 ? <Medal size={16} /> : entry.rank}
+                          </div>
+                          <span className="cd-top-name">{entry.username}</span>
+                          <span className="cd-top-score">{entry.score}</span>
+                          <span className="cd-top-time">{formatMinutes(entry.penalty)}</span>
+                        </div>
+                      ))}
                     </div>
-                  ))}
-                </div>
-                <button
-                  className="cd-card-link"
-                  onClick={() => setActiveTab('ranking')}
-                >
-                  查看完整排行榜 <ChevronRight size={14} />
-                </button>
+                    <button
+                      className="cd-card-link"
+                      onClick={() => setActiveTab('ranking')}
+                    >
+                      查看完整排行榜 <ChevronRight size={14} />
+                    </button>
+                  </>
+                ) : (
+                  <p className="cd-empty-text">暂无排名数据</p>
+                )}
               </div>
             </div>
           </div>
@@ -354,41 +303,45 @@ export default function ContestDetail() {
                 <Target size={18} />
                 竞赛题目
               </h3>
-              <div className="cd-problem-table-wrapper">
-                <table className="cd-problem-table">
-                  <thead>
-                    <tr>
-                      <th>编号</th>
-                      <th>题目</th>
-                      <th>难度</th>
-                      <th>通过率</th>
-                      <th>操作</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {mockContest.problems.map((p) => (
-                      <tr key={p.order}>
-                        <td className="cd-pt-order">{p.order}</td>
-                        <td className="cd-pt-title">{p.title}</td>
-                        <td>
-                          <span className={`difficulty-badge difficulty-badge--${p.difficulty}`}>
-                            {p.difficulty === 'easy' ? '简单' : p.difficulty === 'medium' ? '中等' : '困难'}
-                          </span>
-                        </td>
-                        <td className="cd-pt-rate">
-                          {p.solved}/{p.attempts} ({((p.solved / p.attempts) * 100).toFixed(0)}%)
-                        </td>
-                        <td>
-                          <Link to={`/problems/${p.order}`} className="cd-pt-link">
-                            <ExternalLink size={14} />
-                            做题
-                          </Link>
-                        </td>
+              {problems.length > 0 ? (
+                <div className="cd-problem-table-wrapper">
+                  <table className="cd-problem-table">
+                    <thead>
+                      <tr>
+                        <th>编号</th>
+                        <th>题目</th>
+                        <th>难度</th>
+                        <th>分值</th>
+                        <th>操作</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
+                    </thead>
+                    <tbody>
+                      {problems.map((p) => (
+                        <tr key={p.id}>
+                          <td className="cd-pt-order">{p.label}</td>
+                          <td className="cd-pt-title">{p.problem?.title || `题目 ${p.label}`}</td>
+                          <td>
+                            {p.problem?.difficulty && (
+                              <span className={`difficulty-badge difficulty-badge--${p.problem.difficulty}`}>
+                                {p.problem.difficulty === 'easy' ? '简单' : p.problem.difficulty === 'medium' ? '中等' : '困难'}
+                              </span>
+                            )}
+                          </td>
+                          <td className="cd-pt-rate">{p.points} 分</td>
+                          <td>
+                            <Link to={`/problems/${p.problemId}`} className="cd-pt-link">
+                              <ExternalLink size={14} />
+                              做题
+                            </Link>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              ) : (
+                <p className="cd-empty-text">暂无题目信息</p>
+              )}
             </div>
           </div>
         )}
@@ -405,79 +358,77 @@ export default function ContestDetail() {
                   <span className="cd-refresh-time">
                     最后更新: {lastRefresh.toLocaleTimeString('zh-CN')}
                   </span>
-                  <button className="cd-refresh-btn" onClick={handleRefresh}>
-                    <RefreshCw size={14} />
+                  <button className="cd-refresh-btn" onClick={handleRefresh} disabled={standingsLoading}>
+                    <RefreshCw size={14} className={standingsLoading ? 'cl-loading-spinner' : ''} />
                     刷新
                   </button>
                 </div>
               </div>
 
-              <div className="cd-ranking-wrapper">
-                <table className="cd-ranking-table">
-                  <thead>
-                    <tr>
-                      <th className="cd-rh-rank">排名</th>
-                      <th className="cd-rh-user">选手</th>
-                      <th className="cd-rh-score">总分</th>
-                      <th className="cd-rh-time">用时</th>
-                      {mockContest.problems.map((p) => (
-                        <th key={p.order} className="cd-rh-problem">{p.order}</th>
-                      ))}
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {mockRanking.map((entry) => (
-                      <tr key={entry.rank} className="cd-rank-row">
-                        <td className="cd-rd-rank">
-                          <div className="cd-rank-badge-wrap">
-                            <span className={`cd-rank-badge cd-rank-badge--${entry.rank <= 3 ? entry.rank : 'other'}`}>
-                              {entry.rank}
-                            </span>
-                            {entry.rankChange > 0 && (
-                              <span className="cd-rank-change cd-rank-change--up">
-                                <ArrowUp size={10} /> {entry.rankChange}
-                              </span>
-                            )}
-                            {entry.rankChange < 0 && (
-                              <span className="cd-rank-change cd-rank-change--down">
-                                <ArrowDown size={10} /> {Math.abs(entry.rankChange)}
-                              </span>
-                            )}
-                          </div>
-                        </td>
-                        <td className="cd-rd-user">
-                          <span className="cd-rd-username">{entry.username}</span>
-                          <span className="cd-rd-rating">{entry.rating}</span>
-                        </td>
-                        <td className="cd-rd-score">{entry.totalScore}</td>
-                        <td className="cd-rd-time">{formatMinutes(entry.totalTime)}</td>
-                        {entry.problemResults.map((pr) => (
-                          <td key={pr.order} className="cd-rd-problem">
-                            {pr.status === 'solved' && (
-                              <div className="cd-pr-solved">
-                                <CheckCircle2 size={14} />
-                                <span className="cd-pr-time">{pr.time}m</span>
-                                {pr.attempts > 1 && (
-                                  <span className="cd-pr-attempts">(-{pr.attempts - 1})</span>
-                                )}
-                              </div>
-                            )}
-                            {pr.status === 'failed' && (
-                              <div className="cd-pr-failed">
-                                <XCircle size={14} />
-                                <span className="cd-pr-attempts">(-{pr.attempts})</span>
-                              </div>
-                            )}
-                            {pr.status === 'none' && (
-                              <Minus size={14} className="cd-pr-none" />
-                            )}
-                          </td>
+              {standingsLoading && standings.length === 0 ? (
+                <div className="cd-card-loading">
+                  <Loader2 size={24} className="cl-loading-spinner" />
+                  <p>加载排行榜...</p>
+                </div>
+              ) : standings.length > 0 ? (
+                <div className="cd-ranking-wrapper">
+                  <table className="cd-ranking-table">
+                    <thead>
+                      <tr>
+                        <th className="cd-rh-rank">排名</th>
+                        <th className="cd-rh-user">选手</th>
+                        <th className="cd-rh-score">总分</th>
+                        <th className="cd-rh-time">罚时</th>
+                        {problems.map((p) => (
+                          <th key={p.id} className="cd-rh-problem">{p.label}</th>
                         ))}
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
+                    </thead>
+                    <tbody>
+                      {standings.map((entry) => (
+                        <tr key={entry.rank} className="cd-rank-row">
+                          <td className="cd-rd-rank">
+                            <div className="cd-rank-badge-wrap">
+                              <span className={`cd-rank-badge cd-rank-badge--${entry.rank <= 3 ? entry.rank : 'other'}`}>
+                                {entry.rank}
+                              </span>
+                            </div>
+                          </td>
+                          <td className="cd-rd-user">
+                            <span className="cd-rd-username">{entry.username}</span>
+                          </td>
+                          <td className="cd-rd-score">{entry.score}</td>
+                          <td className="cd-rd-time">{entry.penalty}</td>
+                          {entry.problems.map((pr, idx) => (
+                            <td key={idx} className="cd-rd-problem">
+                              {pr.status === 'solved' && (
+                                <div className="cd-pr-solved">
+                                  <CheckCircle2 size={14} />
+                                  {pr.time != null && <span className="cd-pr-time">{pr.time}m</span>}
+                                  {pr.attempts > 1 && (
+                                    <span className="cd-pr-attempts">(-{pr.attempts - 1})</span>
+                                  )}
+                                </div>
+                              )}
+                              {pr.status === 'attempted' && (
+                                <div className="cd-pr-failed">
+                                  <XCircle size={14} />
+                                  <span className="cd-pr-attempts">(-{pr.attempts})</span>
+                                </div>
+                              )}
+                              {pr.status === 'none' && (
+                                <Minus size={14} className="cd-pr-none" />
+                              )}
+                            </td>
+                          ))}
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              ) : (
+                <p className="cd-empty-text">暂无排名数据</p>
+              )}
             </div>
           </div>
         )}

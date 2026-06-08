@@ -1,11 +1,12 @@
 import { Outlet } from 'react-router-dom';
 import Navbar from './Navbar';
+import BottomNav from './BottomNav';
 
 export default function Layout() {
   return (
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
       <Navbar />
-      <main style={{ flex: 1 }}>
+      <main style={{ flex: 1, paddingBottom: 'var(--bottom-nav-height, 0px)' }}>
         <Outlet />
       </main>
       <footer style={{
@@ -19,6 +20,7 @@ export default function Layout() {
           <p>AlgoArena - Algorithm Competition Learning Platform</p>
         </div>
       </footer>
+      <BottomNav />
     </div>
   );
 }

@@ -1,0 +1,162 @@
+/* ============================================
+   Form Component
+   ============================================ */
+
+/* Form Layout */
+.form--vertical .form-item {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.form--horizontal .form-item {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.form--horizontal .form-item__label {
+  width: 100px;
+  text-align: right;
+  padding-top: 8px;
+  flex-shrink: 0;
+}
+
+.form--inline {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 16px;
+}
+
+.form--inline .form-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 0;
+}
+
+/* Form Item */
+.form-item {
+  margin-bottom: 20px;
+}
+
+.form-item:last-child {
+  margin-bottom: 0;
+}
+
+/* Label */
+.form-item__label {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-primary);
+  line-height: 1.5;
+}
+
+.form-item__required {
+  color: var(--danger-500);
+  margin-right: 2px;
+}
+
+.form-item--error .form-item__label {
+  color: var(--danger-600);
+}
+
+/* Control */
+.form-item__control {
+  flex: 1;
+  min-width: 0;
+}
+
+/* Error message */
+.form-item__error {
+  margin-top: 4px;
+  font-size: 12px;
+  color: var(--danger-500);
+  line-height: 1.4;
+  animation: formErrorIn 0.2s ease;
+}
+
+@keyframes formErrorIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Help text */
+.form-item__help {
+  margin-top: 4px;
+  font-size: 12px;
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+
+/* Error state for inputs */
+.form-item--error input,
+.form-item--error textarea,
+.form-item--error select {
+  border-color: var(--danger-500) !important;
+}
+
+.form-item--error input:focus,
+.form-item--error textarea:focus,
+.form-item--error select:focus {
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.15) !important;
+}
+
+/* Form actions */
+.form-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.form--horizontal .form-actions {
+  padding-left: 116px;
+}
+
+/* Dark mode */
+@media (prefers-color-scheme: dark) {
+  .form-item__required {
+    color: var(--danger-400);
+  }
+
+  .form-item--error .form-item__label {
+    color: var(--danger-400);
+  }
+
+  .form-item__error {
+    color: var(--danger-400);
+  }
+
+  .form-item--error input:focus,
+  .form-item--error textarea:focus,
+  .form-item--error select:focus {
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.25) !important;
+  }
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .form--horizontal .form-item {
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .form--horizontal .form-item__label {
+    width: auto;
+    text-align: left;
+    padding-top: 0;
+  }
+
+  .form--horizontal .form-actions {
+    padding-left: 0;
+  }
+}

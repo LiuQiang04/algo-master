@@ -497,31 +497,115 @@ docker compose up -d
 
 ---
 
-## 十二、后续开发计划
+## 十二、开发进度
 
-### Phase 1: 完善核心功能 (1周)
-- [ ] 集成前后端
-- [ ] 修复 TypeScript 错误
-- [ ] 运行和调试
-- [ ] 完善错误处理
+### 2026-06-08 上午 - 核心功能开发
 
-### Phase 2: 添加缺失功能 (2周)
-- [ ] 学习路径页面
-- [ ] 社区页面完善
-- [ ] 游戏化页面完善
+#### ✅ 已完成的功能
+
+**1. 页面清理与路由优化**
+- 清理重复页面文件（Home.tsx、Login.tsx、Register.tsx、Problems.tsx）
+- 统一路由配置，使用完整实现的页面组件
+- 添加学习路径页面路由（/paths、/paths/:id）
+
+**2. 前端页面连接后端API**
+- Home页面：连接热门题目和竞赛预告API
+- ProblemList页面：连接题目列表API，支持搜索、筛选、分页
+- ProblemDetail页面：连接题目详情API，实现真实代码提交
+- ContestList页面：连接竞赛列表API，实现报名功能
+- ContestDetail页面：连接竞赛详情API，实现排行榜数据
+- Profile页面：连接用户信息API，实现编辑资料功能
+
+**3. 新增页面**
+- 学习路径列表页（LearningPaths.tsx）
+- 学习路径详情页（LearningPathDetail.tsx）
+- 支持算法分类、学习进度跟踪、模块解锁
+
+**4. 核心UI组件库**
+
+| 组件 | 文件 | 功能 |
+|------|------|------|
+| CodeEditor | UI/CodeEditor.tsx | Monaco Editor封装，支持多语言、语法高亮、快捷键提交 |
+| SearchBar | UI/SearchBar.tsx | 全局搜索，支持搜索建议、历史记录、Ctrl+K触发 |
+| Pagination | UI/Pagination.tsx | 高级分页，支持快速跳转、每页条数选择 |
+| InfiniteScroll | UI/InfiniteScroll.tsx | 无限滚动加载，支持正向/反向滚动 |
+| TagSelector | UI/TagSelector.tsx | 标签选择器，支持多选、搜索、创建新标签 |
+| DatePicker | UI/DatePicker.tsx | 日期选择器，支持日期范围、时间选择、快捷选项 |
+| Chart | UI/Chart.tsx | 图表组件，支持折线图、柱状图、饼图 |
+| Modal | UI/Modal.tsx | 通用模态框，支持动画、键盘快捷键关闭 |
+| Tooltip | UI/Tooltip.tsx | 工具提示，支持自定义位置、箭头指向 |
+| Dropdown | UI/Dropdown.tsx | 下拉菜单，支持自定义触发器、菜单项、快捷键 |
+| ProgressBar | UI/ProgressBar.tsx | 进度条，支持线性、圆形进度条，动画效果 |
+| Avatar | UI/Avatar.tsx | 头像组件，支持图片、文字头像，状态指示 |
+| Badge | UI/Badge.tsx | 徽章组件，支持不同类型、颜色、可关闭 |
+| Switch | UI/Switch.tsx | 开关组件，支持不同尺寸、颜色、标签 |
+| Tabs | UI/Tabs.tsx | 标签页，支持水平、垂直布局，动画效果 |
+| Collapse | UI/Collapse.tsx | 折叠面板，支持手风琴模式、自定义图标 |
+| Stepper | UI/Stepper.tsx | 步进器，支持水平、垂直布局，自定义步骤状态 |
+| Rate | UI/Rate.tsx | 评分组件，支持半星评分、自定义图标 |
+| Tree | UI/Tree.tsx | 树形组件，支持展开/折叠、选择、拖拽排序 |
+| Table | UI/Table.tsx | 表格组件，支持排序、筛选、分页、自定义列 |
+| Form | UI/Form.tsx | 表单组件，支持表单验证、布局、表单项联动 |
+| Input | UI/Input.tsx | 输入框，支持不同类型、前后缀、字数统计 |
+| Select | UI/Select.tsx | 选择器，支持单选、多选、搜索、分组选项 |
+| Textarea | UI/Textarea.tsx | 文本域，支持自动调整高度、字数统计 |
+| Checkbox | UI/Checkbox.tsx | 复选框，支持复选框组、全选功能 |
+| Radio | UI/Radio.tsx | 单选框，支持单选框组、按钮样式 |
+
+**5. 全局功能组件**
+
+| 组件 | 文件 | 功能 |
+|------|------|------|
+| ErrorBoundary | ErrorBoundary.tsx | 全局错误边界，捕获React组件错误 |
+| Spinner | UI/Spinner.tsx | 旋转加载指示器 |
+| Skeleton | UI/Skeleton.tsx | 骨架屏组件 |
+| Toast | UI/Toast.tsx | 全局Toast通知 |
+| ConfirmDialog | UI/ConfirmDialog.tsx | 确认对话框 |
+| PageTransition | PageTransition.tsx | 页面过渡动画 |
+| Sidebar | Layout/Sidebar.tsx | 响应式侧边栏导航 |
+| BottomNav | Layout/BottomNav.tsx | 移动端底部导航栏 |
+| Header | Layout/Header.tsx | 导航栏高亮当前页面 |
+
+**6. 工具与服务**
+
+| 工具 | 文件 | 功能 |
+|------|------|------|
+| API服务 | services/index.ts | 统一导出所有API服务 |
+| 请求重试 | utils/request.ts | 自动重试、指数退避、重试条件判断 |
+| 缓存工具 | utils/cache.ts | 内存缓存、localStorage缓存、LRU淘汰 |
+| 数据持久化 | utils/persistence.ts | 状态持久化、过期时间、命名空间隔离 |
+| 性能监控 | utils/performance.ts | 页面加载、组件渲染、API请求耗时监控 |
+| 国际化 | i18n/ | 中英文支持、语言切换 |
+| 主题切换 | stores/useUIStore.ts | 亮色、暗色、跟随系统三种模式 |
+| 键盘快捷键 | hooks/useKeyboardShortcuts.ts | 全局快捷键注册、冲突检测 |
+| 代码片段 | UI/CodeSnippet.tsx | 代码片段管理、保存、加载、分享 |
+
+---
+
+### 📋 待实现功能（按优先级排序）
+
+#### 高优先级（核心功能完善）
+- [ ] 学习路径页面连接后端API
+- [ ] 算法可视化组件
+- [ ] 代码编辑器增强（更多语言支持、主题）
+- [ ] 竞赛系统完善（实时排行榜、倒计时）
+- [ ] 社区功能完善（帖子编辑、评论回复）
+
+#### 中优先级（用户体验优化）
+- [ ] 滑块组件（Slider）
+- [ ] 上传组件（Upload）
+- [ ] 通知组件（Notification）
+- [ ] 空状态组件（Empty）
+- [ ] 响应式优化
+- [ ] 动画效果增强
+- [ ] 可访问性改进
+
+#### 低优先级（高级功能）
 - [ ] 算法可视化
-
-### Phase 3: 优化和测试 (1周)
-- [ ] 性能优化
-- [ ] 单元测试
-- [ ] E2E 测试
-- [ ] 安全审计
-
-### Phase 4: 部署上线 (1周)
-- [ ] 生产环境配置
-- [ ] CI/CD 流水线
-- [ ] 监控告警
-- [ ] 文档完善
+- [ ] 实时协作编辑
+- [ ] 语音输入
+- [ ] 离线支持
+- [ ] PWA支持
 
 ---
 
@@ -545,6 +629,16 @@ docker compose up -d
 - 完成社区系统
 - 完成测试框架
 - 完成部署配置
+
+### 2026-06-08 上午
+- 清理重复页面，统一路由配置
+- 前端页面连接后端API（6个页面）
+- 创建学习路径页面
+- 集成Monaco Editor代码编辑器
+- 创建完整UI组件库（26个组件）
+- 添加全局功能组件（9个）
+- 添加工具与服务（9个）
+- 更新开发文档
 
 ---
 

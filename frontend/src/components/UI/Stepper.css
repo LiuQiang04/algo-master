@@ -1,0 +1,255 @@
+/* ============================================
+   Stepper Component
+   ============================================ */
+
+.stepper {
+  display: flex;
+}
+
+/* ==================
+   Horizontal
+   ================== */
+.stepper--horizontal {
+  flex-direction: row;
+  align-items: flex-start;
+}
+
+.stepper--horizontal .stepper__item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
+
+.stepper--horizontal .stepper__indicator {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 12px;
+}
+
+.stepper--horizontal .stepper__circle {
+  flex-shrink: 0;
+  z-index: 1;
+}
+
+.stepper--horizontal .stepper__line {
+  flex: 1;
+  height: 2px;
+  margin: 0 -1px;
+}
+
+.stepper--horizontal .stepper__content {
+  text-align: center;
+}
+
+/* ==================
+   Vertical
+   ================== */
+.stepper--vertical {
+  flex-direction: column;
+}
+
+.stepper--vertical .stepper__item {
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+  position: relative;
+}
+
+.stepper--vertical .stepper__item:not(:last-child) {
+  padding-bottom: 24px;
+}
+
+.stepper--vertical .stepper__indicator {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.stepper--vertical .stepper__circle {
+  flex-shrink: 0;
+  z-index: 1;
+}
+
+.stepper--vertical .stepper__line {
+  flex: 1;
+  width: 2px;
+  margin: -1px 0;
+}
+
+.stepper--vertical .stepper__content {
+  padding-top: 2px;
+}
+
+/* ==================
+   Circle
+   ================== */
+.stepper__circle {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all var(--transition-fast);
+  border: 2px solid var(--border-default);
+  background: var(--bg-primary);
+  color: var(--text-muted);
+}
+
+.stepper__number {
+  font-family: var(--font-mono);
+}
+
+/* Finish */
+.stepper__item--finish .stepper__circle {
+  background: var(--success-500);
+  border-color: var(--success-500);
+  color: white;
+}
+
+.stepper__item--finish .stepper__line {
+  background: var(--success-500);
+}
+
+/* Process */
+.stepper__item--process .stepper__circle {
+  background: var(--primary-500);
+  border-color: var(--primary-500);
+  color: white;
+}
+
+.stepper__item--process .stepper__line {
+  background: var(--border-light);
+}
+
+.stepper__spinner {
+  animation: stepperSpin 1s linear infinite;
+}
+
+@keyframes stepperSpin {
+  to { transform: rotate(360deg); }
+}
+
+/* Wait */
+.stepper__item--wait .stepper__circle {
+  background: var(--bg-primary);
+  border-color: var(--border-default);
+  color: var(--text-muted);
+}
+
+.stepper__item--wait .stepper__line {
+  background: var(--border-light);
+}
+
+/* ==================
+   Title & Description
+   ================== */
+.stepper__title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+  line-height: 1.4;
+}
+
+.stepper__item--wait .stepper__title {
+  color: var(--text-muted);
+}
+
+.stepper__item--finish .stepper__title {
+  color: var(--text-secondary);
+}
+
+.stepper__desc {
+  font-size: 12px;
+  color: var(--text-muted);
+  line-height: 1.5;
+  margin-top: 4px;
+}
+
+/* Horizontal description margin */
+.stepper--horizontal .stepper__desc {
+  max-width: 140px;
+}
+
+/* ==================
+   Clickable
+   ================== */
+.stepper__item--clickable {
+  cursor: pointer;
+}
+
+.stepper__item--clickable:hover .stepper__circle {
+  transform: scale(1.08);
+}
+
+.stepper__item--clickable:hover .stepper__title {
+  color: var(--primary-600);
+}
+
+/* ==================
+   Dark Mode
+   ================== */
+@media (prefers-color-scheme: dark) {
+  .stepper__item--finish .stepper__circle {
+    background: var(--success-600);
+    border-color: var(--success-600);
+  }
+
+  .stepper__item--process .stepper__circle {
+    background: var(--primary-600);
+    border-color: var(--primary-600);
+  }
+
+  .stepper__item--clickable:hover .stepper__title {
+    color: var(--primary-400);
+  }
+}
+
+/* ==================
+   Responsive
+   ================== */
+@media (max-width: 640px) {
+  .stepper--horizontal {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .stepper--horizontal .stepper__item {
+    flex-direction: row;
+    gap: 14px;
+    align-items: flex-start;
+    width: 100%;
+  }
+
+  .stepper--horizontal .stepper__indicator {
+    flex-direction: column;
+    width: auto;
+    margin-bottom: 0;
+  }
+
+  .stepper--horizontal .stepper__item:not(:last-child) {
+    padding-bottom: 20px;
+  }
+
+  .stepper--horizontal .stepper__line {
+    flex: 1;
+    width: 2px;
+    height: auto;
+    margin: -1px 0;
+  }
+
+  .stepper--horizontal .stepper__content {
+    text-align: left;
+    padding-top: 2px;
+  }
+
+  .stepper--horizontal .stepper__desc {
+    max-width: none;
+  }
+}

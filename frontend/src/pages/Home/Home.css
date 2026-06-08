@@ -550,6 +550,33 @@
 }
 
 /* ============================================
+   Loading & Error States
+   ============================================ */
+.home-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 24px;
+  color: var(--text-muted);
+  font-size: 15px;
+}
+
+.home-error {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 24px;
+  color: var(--danger-600);
+  font-size: 15px;
+}
+
+@media (prefers-color-scheme: dark) {
+  .home-error {
+    color: var(--danger-400);
+  }
+}
+
+/* ============================================
    Responsive
    ============================================ */
 @media (max-width: 1024px) {

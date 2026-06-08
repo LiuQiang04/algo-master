@@ -243,10 +243,22 @@
   color: var(--danger-600);
 }
 
+.contest-diff--rated {
+  background: var(--primary-50);
+  color: var(--primary-600);
+}
+
+.contest-diff--unrated {
+  background: var(--bg-tertiary);
+  color: var(--text-muted);
+}
+
 @media (prefers-color-scheme: dark) {
   .contest-diff--beginner { background: rgba(34, 197, 94, 0.15); }
   .contest-diff--intermediate { background: rgba(245, 158, 11, 0.15); }
   .contest-diff--advanced { background: rgba(239, 68, 68, 0.15); }
+  .contest-diff--rated { background: rgba(59, 130, 246, 0.15); }
+  .contest-diff--unrated { background: rgba(107, 114, 128, 0.15); }
 }
 
 .contest-card__title {
@@ -326,6 +338,27 @@
   transform: none;
 }
 
+/* Loading State */
+.cl-loading {
+  text-align: center;
+  padding: 80px 20px;
+  color: var(--text-muted);
+}
+
+.cl-loading p {
+  margin-top: 12px;
+  font-size: 14px;
+}
+
+.cl-loading-spinner {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
 /* Empty State */
 .cl-empty {
   text-align: center;
@@ -346,6 +379,13 @@
 }
 
 /* Responsive */
+.contest-card__btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
 @media (max-width: 768px) {
   .contest-list-page {
     padding-top: 80px;

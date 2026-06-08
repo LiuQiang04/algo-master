@@ -6,8 +6,8 @@ export async function submitCode(
   data: { language: string; code: string }
 ): Promise<SubmissionResult> {
   const res = await request.post<ApiResponse<SubmissionResult>>(
-    `/problems/${problemId}/submissions`,
-    data
+    '/submissions',
+    { ...data, problemId }
   );
   return res.data.data;
 }

@@ -1,45 +1,75 @@
-import type { ReactNode } from 'react';
+import { type ReactNode } from 'react';
+import { X } from 'lucide-react';
+import './Badge.css';
 
-type BadgeVariant = 'default' | 'primary' | 'success' | 'warning' | 'danger' | 'info';
-type BadgeSize = 'sm' | 'md';
+export type BadgeVariant = 'default' | 'primary' | 'success' | 'warning' | 'danger' | 'info';
+export type BadgeSize = 'sm' | 'md' | 'lg';
 
 interface BadgeProps {
   children: ReactNode;
   variant?: BadgeVariant;
   size?: BadgeSize;
+  icon?: ReactNode;
+  closable?: boolean;
+  onClose?: () => void;
+  color?: string;
   className?: string;
 }
 
 const variantStyles: Record<BadgeVariant, string> = {
-  default: 'bg-gray-100 text-gray-700',
-  primary: 'bg-blue-100 text-blue-700',
-  success: 'bg-green-100 text-green-700',
-  warning: 'bg-amber-100 text-amber-700',
-  danger: 'bg-red-100 text-red-700',
-  info: 'bg-cyan-100 text-cyan-700',
+  default: 'badge--default',
+  primary: 'badge--primary',
+  success: 'badge--success',
+  warning: 'badge--warning',
+  danger: 'badge--danger',
+  info: 'badge--info',
 };
 
 const sizeStyles: Record<BadgeSize, string> = {
-  sm: 'px-2 py-0.5 text-xs',
-  md: 'px-2.5 py-1 text-sm',
+  sm: 'badge--sm',
+  md: 'badge--md',
+  lg: 'badge--lg',
+};
+
+const closeSizeMap: Record<BadgeSize, number> = {
+  sm: 10,
+  md: 12,
+  lg: 14,
 };
 
 export default function Badge({
   children,
   variant = 'default',
   size = 'sm',
+  icon,
+  closable = false,
+  onClose,
+  color,
   className = '',
 }: BadgeProps) {
+  const style: React.CSSProperties = color
+    ? { backgroundColor: `${color}18`, color, borderColor: `${color}30` }
+    : {};
+
   return (
     <span
-      className={`
-        inline-flex items-center font-medium rounded-full
-        ${variantStyles[variant]}
-        ${sizeStyles[size]}
-        ${className}
-      `}
+      className={`badge ${variantStyles[variant]} ${sizeStyles[size]} ${className}`}
+      style={style}
     >
-      {children}
+      {icon && <span className="badge__icon">{icon}</span>}
+      <span className="badge__text">{children}</span>
+      {closable && (
+        <button
+          className="badge__close"
+          onClick={(e) => {
+            e.stopPropagation();
+            onClose?.();
+          }}
+          aria-label="移除"
+        >
+          <X size={closeSizeMap[size]} />
+        </button>
+      )}
     </span>
   );
 }

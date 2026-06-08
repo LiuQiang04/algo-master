@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import {
   Search,
@@ -9,57 +9,25 @@ import {
   Tag,
   X,
 } from 'lucide-react';
+import { getProblems, getProblemTags } from '@/services/problems';
+import type { ProblemListItem } from '@/types';
 import './ProblemList.css';
-
-interface Problem {
-  id: number;
-  title: string;
-  difficulty: 'easy' | 'medium' | 'hard';
-  tags: string[];
-  solves: number;
-  acceptance: number;
-  status?: 'solved' | 'attempted' | null;
-}
-
-const allTags = [
-  '数组', '字符串', '哈希表', '动态规划', '数学',
-  '排序', '贪心', '二分查找', '树', '图',
-  '链表', '栈', '队列', '堆', '递归',
-  'BFS', 'DFS', '回溯', '滑动窗口', '双指针',
-];
-
-const mockProblems: Problem[] = [
-  { id: 1, title: '两数之和', difficulty: 'easy', tags: ['数组', '哈希表'], solves: 12580, acceptance: 49.2, status: 'solved' },
-  { id: 2, title: '最长回文子串', difficulty: 'medium', tags: ['字符串', '动态规划'], solves: 8432, acceptance: 33.1, status: 'attempted' },
-  { id: 3, title: '合并 K 个升序链表', difficulty: 'hard', tags: ['链表', '堆'], solves: 3210, acceptance: 48.7 },
-  { id: 4, title: '二叉树的层序遍历', difficulty: 'medium', tags: ['树', 'BFS'], solves: 9876, acceptance: 63.5, status: 'solved' },
-  { id: 5, title: '有效的括号', difficulty: 'easy', tags: ['栈', '字符串'], solves: 15234, acceptance: 43.8, status: 'solved' },
-  { id: 6, title: '最大子数组和', difficulty: 'medium', tags: ['数组', '动态规划'], solves: 11230, acceptance: 50.2 },
-  { id: 7, title: '接雨水', difficulty: 'hard', tags: ['数组', '双指针', '动态规划'], solves: 2890, acceptance: 59.1 },
-  { id: 8, title: '搜索旋转排序数组', difficulty: 'medium', tags: ['数组', '二分查找'], solves: 6543, acceptance: 38.9 },
-  { id: 9, title: '最长公共前缀', difficulty: 'easy', tags: ['字符串'], solves: 10876, acceptance: 40.3 },
-  { id: 10, title: '三数之和', difficulty: 'medium', tags: ['数组', '排序', '双指针'], solves: 7654, acceptance: 32.7, status: 'attempted' },
-  { id: 11, title: '删除链表的倒数第 N 个结点', difficulty: 'medium', tags: ['链表', '双指针'], solves: 8901, acceptance: 40.1 },
-  { id: 12, title: '字母异位词分组', difficulty: 'medium', tags: ['哈希表', '字符串', '排序'], solves: 5432, acceptance: 67.2 },
-  { id: 13, title: '最小覆盖子串', difficulty: 'hard', tags: ['哈希表', '字符串', '滑动窗口'], solves: 2100, acceptance: 43.5 },
-  { id: 14, title: '买卖股票的最佳时机', difficulty: 'easy', tags: ['数组', '贪心'], solves: 13456, acceptance: 54.3 },
-  { id: 15, title: '二叉树的最大深度', difficulty: 'easy', tags: ['树', 'DFS'], solves: 14321, acceptance: 73.1, status: 'solved' },
-  { id: 16, title: '全排列', difficulty: 'medium', tags: ['数组', '回溯'], solves: 9123, acceptance: 75.4 },
-  { id: 17, title: '合并区间', difficulty: 'medium', tags: ['数组', '排序'], solves: 7890, acceptance: 44.8 },
-  { id: 18, title: '最大矩形', difficulty: 'hard', tags: ['栈', '数组', '动态规划'], solves: 1890, acceptance: 42.6 },
-  { id: 19, title: '对称二叉树', difficulty: 'easy', tags: ['树', 'DFS', 'BFS'], solves: 11567, acceptance: 55.2 },
-  { id: 20, title: '爬楼梯', difficulty: 'easy', tags: ['动态规划'], solves: 16789, acceptance: 51.8, status: 'solved' },
-];
 
 const ITEMS_PER_PAGE = 10;
 
-const difficultyLabels = {
+const difficultyLabels: Record<string, string> = {
   easy: '简单',
   medium: '中等',
   hard: '困难',
 };
 
 export default function ProblemList() {
+  const [problems, setProblems] = useState<ProblemListItem[]>([]);
+  const [total, setTotal] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
+  const [loading, setLoading] = useState(true);
+  const [allTags, setAllTags] = useState<string[]>([]);
+
   const [searchQuery, setSearchQuery] = useState('');
   const [difficultyFilter, setDifficultyFilter] = useState<string>('all');
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
@@ -67,34 +35,61 @@ export default function ProblemList() {
   const [currentPage, setCurrentPage] = useState(1);
   const [showTagPanel, setShowTagPanel] = useState(false);
 
-  const filteredProblems = useMemo(() => {
-    return mockProblems.filter((p) => {
-      const matchesSearch =
-        searchQuery === '' ||
-        p.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        p.id.toString().includes(searchQuery);
+  // Fetch tags on mount
+  useEffect(() => {
+    getProblemTags()
+      .then(setAllTags)
+      .catch(() => {
+        // Fallback tags if API not available
+        setAllTags([
+          '数组', '字符串', '哈希表', '动态规划', '数学',
+          '排序', '贪心', '二分查找', '树', '图',
+          '链表', '栈', '队列', '堆', '递归',
+          'BFS', 'DFS', '回溯', '滑动窗口', '双指针',
+        ]);
+      });
+  }, []);
 
-      const matchesDifficulty =
-        difficultyFilter === 'all' || p.difficulty === difficultyFilter;
+  // Fetch problems when filters change
+  const fetchProblems = useCallback(async () => {
+    setLoading(true);
+    try {
+      const params: Record<string, string | number> = {
+        page: currentPage,
+        pageSize: ITEMS_PER_PAGE,
+      };
+      if (searchQuery) params.keyword = searchQuery;
+      if (difficultyFilter !== 'all') params.difficulty = difficultyFilter;
+      if (selectedTags.length > 0) params.tag = selectedTags.join(',');
+      if (statusFilter !== 'all') params.status = statusFilter;
 
-      const matchesTags =
-        selectedTags.length === 0 || selectedTags.some((t) => p.tags.includes(t));
+      const data = await getProblems(params as any);
+      setProblems(data.items);
+      setTotal(data.total);
+      setTotalPages(data.totalPages);
+    } catch {
+      // If API fails, show empty state
+      setProblems([]);
+      setTotal(0);
+      setTotalPages(0);
+    } finally {
+      setLoading(false);
+    }
+  }, [currentPage, difficultyFilter, selectedTags, statusFilter, searchQuery]);
 
-      const matchesStatus =
-        statusFilter === 'all' ||
-        (statusFilter === 'solved' && p.status === 'solved') ||
-        (statusFilter === 'attempted' && p.status === 'attempted') ||
-        (statusFilter === 'todo' && !p.status);
+  useEffect(() => {
+    fetchProblems();
+  }, [fetchProblems]);
 
-      return matchesSearch && matchesDifficulty && matchesTags && matchesStatus;
-    });
-  }, [searchQuery, difficultyFilter, selectedTags, statusFilter]);
-
-  const totalPages = Math.ceil(filteredProblems.length / ITEMS_PER_PAGE);
-  const paginatedProblems = filteredProblems.slice(
-    (currentPage - 1) * ITEMS_PER_PAGE,
-    currentPage * ITEMS_PER_PAGE
-  );
+  // Debounced search
+  const [searchInput, setSearchInput] = useState('');
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setSearchQuery(searchInput);
+      setCurrentPage(1);
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [searchInput]);
 
   const toggleTag = (tag: string) => {
     setSelectedTags((prev) =>
@@ -104,6 +99,7 @@ export default function ProblemList() {
   };
 
   const clearFilters = () => {
+    setSearchInput('');
     setSearchQuery('');
     setDifficultyFilter('all');
     setSelectedTags([]);
@@ -120,7 +116,7 @@ export default function ProblemList() {
         <div className="pl-header">
           <div>
             <h1 className="pl-title">题库</h1>
-            <p className="pl-desc">共 {mockProblems.length} 道题目，持续更新中</p>
+            <p className="pl-desc">共 {total} 道题目，持续更新中</p>
           </div>
         </div>
 
@@ -131,14 +127,11 @@ export default function ProblemList() {
             <input
               type="text"
               placeholder="搜索题目编号或标题..."
-              value={searchQuery}
-              onChange={(e) => {
-                setSearchQuery(e.target.value);
-                setCurrentPage(1);
-              }}
+              value={searchInput}
+              onChange={(e) => setSearchInput(e.target.value)}
             />
-            {searchQuery && (
-              <button className="pl-search-clear" onClick={() => setSearchQuery('')}>
+            {searchInput && (
+              <button className="pl-search-clear" onClick={() => setSearchInput('')}>
                 <X size={16} />
               </button>
             )}
@@ -250,60 +243,70 @@ export default function ProblemList() {
 
         {/* Results Count */}
         <div className="pl-results-info">
-          <span>共 {filteredProblems.length} 道题目</span>
+          <span>共 {total} 道题目</span>
         </div>
+
+        {/* Loading State */}
+        {loading && (
+          <div className="pl-empty">
+            <div className="pd-spinner" />
+            <h3>加载中...</h3>
+          </div>
+        )}
 
         {/* Problem Table */}
-        <div className="pl-table-wrapper">
-          <table className="pl-table">
-            <thead>
-              <tr>
-                <th className="pl-th-status">状态</th>
-                <th className="pl-th-id">编号</th>
-                <th className="pl-th-title">题目</th>
-                <th className="pl-th-tags">标签</th>
-                <th className="pl-th-difficulty">难度</th>
-                <th className="pl-th-acceptance">通过率</th>
-                <th className="pl-th-solves">解题数</th>
-              </tr>
-            </thead>
-            <tbody>
-              {paginatedProblems.map((problem) => (
-                <tr key={problem.id} className="pl-row">
-                  <td className="pl-td-status">
-                    {problem.status === 'solved' && (
-                      <CheckCircle2 size={18} className="status-icon status-icon--solved" />
-                    )}
-                    {problem.status === 'attempted' && (
-                      <Code2 size={18} className="status-icon status-icon--attempted" />
-                    )}
-                  </td>
-                  <td className="pl-td-id">{problem.id}</td>
-                  <td className="pl-td-title">
-                    <Link to={`/problems/${problem.id}`}>{problem.title}</Link>
-                  </td>
-                  <td className="pl-td-tags">
-                    <div className="pl-tags-list">
-                      {problem.tags.slice(0, 3).map((tag) => (
-                        <span key={tag} className="pl-tag">{tag}</span>
-                      ))}
-                    </div>
-                  </td>
-                  <td className="pl-td-difficulty">
-                    <span className={`difficulty-badge difficulty-badge--${problem.difficulty}`}>
-                      {difficultyLabels[problem.difficulty]}
-                    </span>
-                  </td>
-                  <td className="pl-td-acceptance">{problem.acceptance}%</td>
-                  <td className="pl-td-solves">{problem.solves.toLocaleString()}</td>
+        {!loading && problems.length > 0 && (
+          <div className="pl-table-wrapper">
+            <table className="pl-table">
+              <thead>
+                <tr>
+                  <th className="pl-th-status">状态</th>
+                  <th className="pl-th-id">编号</th>
+                  <th className="pl-th-title">题目</th>
+                  <th className="pl-th-tags">标签</th>
+                  <th className="pl-th-difficulty">难度</th>
+                  <th className="pl-th-acceptance">通过率</th>
+                  <th className="pl-th-solves">解题数</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody>
+                {problems.map((problem) => (
+                  <tr key={problem.id} className="pl-row">
+                    <td className="pl-td-status">
+                      {problem.status === 'solved' && (
+                        <CheckCircle2 size={18} className="status-icon status-icon--solved" />
+                      )}
+                      {problem.status === 'attempted' && (
+                        <Code2 size={18} className="status-icon status-icon--attempted" />
+                      )}
+                    </td>
+                    <td className="pl-td-id">{problem.id}</td>
+                    <td className="pl-td-title">
+                      <Link to={`/problems/${problem.id}`}>{problem.title}</Link>
+                    </td>
+                    <td className="pl-td-tags">
+                      <div className="pl-tags-list">
+                        {problem.tags.slice(0, 3).map((tag) => (
+                          <span key={tag} className="pl-tag">{tag}</span>
+                        ))}
+                      </div>
+                    </td>
+                    <td className="pl-td-difficulty">
+                      <span className={`difficulty-badge difficulty-badge--${problem.difficulty}`}>
+                        {difficultyLabels[problem.difficulty]}
+                      </span>
+                    </td>
+                    <td className="pl-td-acceptance">{problem.acceptanceRate}%</td>
+                    <td className="pl-td-solves">{problem.solvedCount.toLocaleString()}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
 
         {/* Empty State */}
-        {filteredProblems.length === 0 && (
+        {!loading && problems.length === 0 && (
           <div className="pl-empty">
             <Search size={48} />
             <h3>没有找到匹配的题目</h3>

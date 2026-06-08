@@ -408,48 +408,8 @@
 /* Editor */
 .pd-editor {
   flex: 1;
-  display: flex;
-  overflow: auto;
-  background: #1e1e2e;
-}
-
-.pd-line-numbers {
-  display: flex;
-  flex-direction: column;
-  padding: 16px 0;
-  min-width: 48px;
-  text-align: right;
-  background: #181825;
-  user-select: none;
-}
-
-.pd-line-numbers span {
-  padding: 0 12px;
-  font-family: var(--font-mono);
-  font-size: 13px;
-  line-height: 20px;
-  color: #585b70;
-}
-
-.pd-code-input {
-  flex: 1;
-  padding: 16px;
-  background: transparent;
-  border: none;
-  font-family: var(--font-mono);
-  font-size: 14px;
-  line-height: 20px;
-  color: #cdd6f4;
-  resize: none;
-  outline: none;
-  tab-size: 4;
-  white-space: pre;
-  overflow-wrap: normal;
-  overflow-x: auto;
-}
-
-.pd-code-input::placeholder {
-  color: #585b70;
+  min-height: 0;
+  overflow: hidden;
 }
 
 /* Result Panel */

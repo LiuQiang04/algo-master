@@ -13,6 +13,10 @@ export async function getContestById(id: number): Promise<Contest> {
   return res.data.data;
 }
 
+export async function joinContest(id: number): Promise<void> {
+  await request.post<ApiResponse<null>>(`/contests/${id}/join`);
+}
+
 export async function getContestStandings(id: number): Promise<ContestStanding[]> {
   const res = await request.get<ApiResponse<ContestStanding[]>>(`/contests/${id}/standings`);
   return res.data.data;

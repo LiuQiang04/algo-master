@@ -476,6 +476,11 @@
   color: var(--primary-600);
 }
 
+.cd-refresh-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
 .cd-ranking-wrapper {
   overflow-x: auto;
 }
@@ -673,6 +678,52 @@
   .difficulty-badge--easy { background: rgba(34, 197, 94, 0.15); }
   .difficulty-badge--medium { background: rgba(245, 158, 11, 0.15); }
   .difficulty-badge--hard { background: rgba(239, 68, 68, 0.15); }
+}
+
+/* Loading & Empty States */
+.cd-loading {
+  text-align: center;
+  padding: 80px 20px;
+  color: var(--text-muted);
+}
+
+.cd-loading p {
+  margin-top: 12px;
+  font-size: 14px;
+}
+
+.cd-loading .cd-back {
+  margin-top: 20px;
+}
+
+.cl-loading-spinner {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.cd-empty-text {
+  font-size: 14px;
+  color: var(--text-muted);
+  text-align: center;
+  padding: 24px 0;
+}
+
+.cd-card-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 32px 0;
+  color: var(--text-muted);
+}
+
+.cd-card-loading p {
+  font-size: 13px;
 }
 
 /* Responsive */

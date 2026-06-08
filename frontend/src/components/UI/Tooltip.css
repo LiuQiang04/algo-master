@@ -1,0 +1,159 @@
+/* ============================================
+   Tooltip Component
+   ============================================ */
+
+.tooltip-trigger {
+  display: inline-flex;
+}
+
+.tooltip {
+  position: absolute;
+  z-index: 1100;
+  pointer-events: none;
+  animation: tooltipFadeIn 0.15s ease;
+}
+
+.tooltip__content {
+  max-width: 280px;
+  padding: 6px 12px;
+  background: var(--gray-800);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.5;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+  word-wrap: break-word;
+}
+
+.tooltip__arrow {
+  position: absolute;
+  width: 0;
+  height: 0;
+}
+
+/* Top */
+.tooltip--top .tooltip__arrow {
+  bottom: -5px;
+  transform: translateX(-50%);
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-top: 6px solid var(--gray-800);
+}
+
+/* Bottom */
+.tooltip--bottom .tooltip__arrow {
+  top: -5px;
+  transform: translateX(-50%);
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-bottom: 6px solid var(--gray-800);
+}
+
+/* Left */
+.tooltip--left .tooltip__arrow {
+  right: -5px;
+  transform: translateY(-50%);
+  border-top: 6px solid transparent;
+  border-bottom: 6px solid transparent;
+  border-left: 6px solid var(--gray-800);
+}
+
+/* Right */
+.tooltip--right .tooltip__arrow {
+  left: -5px;
+  transform: translateY(-50%);
+  border-top: 6px solid transparent;
+  border-bottom: 6px solid transparent;
+  border-right: 6px solid var(--gray-800);
+}
+
+/* Position-specific entrance animations */
+.tooltip--top {
+  animation: tooltipSlideUp 0.15s ease;
+}
+
+.tooltip--bottom {
+  animation: tooltipSlideDown 0.15s ease;
+}
+
+.tooltip--left {
+  animation: tooltipSlideLeft 0.15s ease;
+}
+
+.tooltip--right {
+  animation: tooltipSlideRight 0.15s ease;
+}
+
+@keyframes tooltipFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes tooltipSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes tooltipSlideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes tooltipSlideLeft {
+  from {
+    opacity: 0;
+    transform: translateX(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes tooltipSlideRight {
+  from {
+    opacity: 0;
+    transform: translateX(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Dark mode */
+@media (prefers-color-scheme: dark) {
+  .tooltip__content {
+    background: var(--gray-200);
+    color: var(--gray-900);
+  }
+
+  .tooltip--top .tooltip__arrow {
+    border-top-color: var(--gray-200);
+  }
+
+  .tooltip--bottom .tooltip__arrow {
+    border-bottom-color: var(--gray-200);
+  }
+
+  .tooltip--left .tooltip__arrow {
+    border-left-color: var(--gray-200);
+  }
+
+  .tooltip--right .tooltip__arrow {
+    border-right-color: var(--gray-200);
+  }
+}

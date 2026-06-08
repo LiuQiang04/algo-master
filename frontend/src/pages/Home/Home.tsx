@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import {
   Code2,
@@ -13,6 +14,9 @@ import {
   Clock,
   CheckCircle2,
 } from 'lucide-react';
+import { getPopularProblems, getUpcomingContests } from '@/services/home';
+import { formatNumber } from '@/utils/format';
+import type { ProblemListItem, Contest } from '@/types';
 import './Home.css';
 
 const features = [
@@ -61,19 +65,53 @@ const stats = [
   { value: '300+', label: '竞赛举办', icon: Trophy },
 ];
 
-const recentProblems = [
-  { id: 1, title: '两数之和', difficulty: 'easy', tags: ['数组', '哈希表'], solves: 12580 },
-  { id: 2, title: '最长回文子串', difficulty: 'medium', tags: ['字符串', '动态规划'], solves: 8432 },
-  { id: 3, title: '合并 K 个升序链表', difficulty: 'hard', tags: ['链表', '分治'], solves: 3210 },
-  { id: 4, title: '二叉树的层序遍历', difficulty: 'medium', tags: ['二叉树', 'BFS'], solves: 9876 },
-];
+/** 将 ISO 时间字符串格式化为中文友好的相对/绝对时间 */
+function formatContestTime(isoStr: string): string {
+  const date = new Date(isoStr);
+  const now = new Date();
+  const diffMs = date.getTime() - now.getTime();
+  const diffHours = Math.round(diffMs / (1000 * 60 * 60));
 
-const upcomingContests = [
-  { id: 1, title: '周赛 #128', time: '明天 20:00', duration: '2小时', participants: 1234 },
-  { id: 2, title: '月度挑战赛', time: '6月15日 14:00', duration: '3小时', participants: 5678 },
-];
+  if (diffHours < 0) return date.toLocaleDateString('zh-CN');
+  if (diffHours < 24) return `${diffHours} 小时后`;
+
+  const diffDays = Math.round(diffHours / 24);
+  if (diffDays <= 7) return `${diffDays} 天后`;
+
+  return date.toLocaleDateString('zh-CN', { month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+}
+
+/** 计算竞赛时长（小时） */
+function formatDuration(start: string, end: string): string {
+  const ms = new Date(end).getTime() - new Date(start).getTime();
+  const hours = Math.round(ms / (1000 * 60 * 60));
+  if (hours < 1) {
+    const minutes = Math.round(ms / (1000 * 60));
+    return `${minutes}分钟`;
+  }
+  return `${hours}小时`;
+}
 
 export default function Home() {
+  const [problems, setProblems] = useState<ProblemListItem[]>([]);
+  const [contests, setContests] = useState<Contest[]>([]);
+  const [problemsLoading, setProblemsLoading] = useState(true);
+  const [contestsLoading, setContestsLoading] = useState(true);
+  const [problemsError, setProblemsError] = useState<string | null>(null);
+  const [contestsError, setContestsError] = useState<string | null>(null);
+
+  useEffect(() => {
+    getPopularProblems(4)
+      .then(setProblems)
+      .catch(() => setProblemsError('加载题目失败'))
+      .finally(() => setProblemsLoading(false));
+
+    getUpcomingContests(2)
+      .then(setContests)
+      .catch(() => setContestsError('加载竞赛失败'))
+      .finally(() => setContestsLoading(false));
+  }, []);
+
   return (
     <div className="home">
       {/* Hero Section */}
@@ -154,32 +192,38 @@ export default function Home() {
             </Link>
           </div>
           <div className="problems-list">
-            {recentProblems.map((problem) => (
-              <Link
-                key={problem.id}
-                to={`/problems/${problem.id}`}
-                className="problem-row"
-              >
-                <div className="problem-row__left">
-                  <span className="problem-row__id">#{problem.id}</span>
-                  <span className="problem-row__title">{problem.title}</span>
-                </div>
-                <div className="problem-row__right">
-                  <div className="problem-row__tags">
-                    {problem.tags.map((tag) => (
-                      <span key={tag} className="tag">{tag}</span>
-                    ))}
+            {problemsLoading ? (
+              <div className="home-loading">加载中...</div>
+            ) : problemsError ? (
+              <div className="home-error">{problemsError}</div>
+            ) : (
+              problems.map((problem) => (
+                <Link
+                  key={problem.id}
+                  to={`/problems/${problem.id}`}
+                  className="problem-row"
+                >
+                  <div className="problem-row__left">
+                    <span className="problem-row__id">#{problem.id}</span>
+                    <span className="problem-row__title">{problem.title}</span>
                   </div>
-                  <span className={`difficulty difficulty--${problem.difficulty}`}>
-                    {problem.difficulty === 'easy' ? '简单' : problem.difficulty === 'medium' ? '中等' : '困难'}
-                  </span>
-                  <span className="problem-row__solves">
-                    <CheckCircle2 size={14} />
-                    {problem.solves.toLocaleString()}
-                  </span>
-                </div>
-              </Link>
-            ))}
+                  <div className="problem-row__right">
+                    <div className="problem-row__tags">
+                      {problem.tags.map((tag) => (
+                        <span key={tag} className="tag">{tag}</span>
+                      ))}
+                    </div>
+                    <span className={`difficulty difficulty--${problem.difficulty}`}>
+                      {problem.difficulty === 'easy' ? '简单' : problem.difficulty === 'medium' ? '中等' : '困难'}
+                    </span>
+                    <span className="problem-row__solves">
+                      <CheckCircle2 size={14} />
+                      {formatNumber(problem.solvedCount)}
+                    </span>
+                  </div>
+                </Link>
+              ))
+            )}
           </div>
         </div>
       </section>
@@ -197,29 +241,35 @@ export default function Home() {
             </Link>
           </div>
           <div className="contests-grid">
-            {upcomingContests.map((contest) => (
-              <div key={contest.id} className="contest-card">
-                <div className="contest-card__header">
-                  <Trophy size={20} />
-                  <h3 className="contest-card__title">{contest.title}</h3>
+            {contestsLoading ? (
+              <div className="home-loading">加载中...</div>
+            ) : contestsError ? (
+              <div className="home-error">{contestsError}</div>
+            ) : (
+              contests.map((contest) => (
+                <div key={contest.id} className="contest-card">
+                  <div className="contest-card__header">
+                    <Trophy size={20} />
+                    <h3 className="contest-card__title">{contest.title}</h3>
+                  </div>
+                  <div className="contest-card__info">
+                    <div className="contest-card__detail">
+                      <Clock size={16} />
+                      <span>{formatContestTime(contest.startTime)}</span>
+                    </div>
+                    <div className="contest-card__detail">
+                      <Target size={16} />
+                      <span>时长 {formatDuration(contest.startTime, contest.endTime)}</span>
+                    </div>
+                    <div className="contest-card__detail">
+                      <Users size={16} />
+                      <span>{formatNumber(contest.participantCount)} 人已报名</span>
+                    </div>
+                  </div>
+                  <button className="contest-card__btn">立即报名</button>
                 </div>
-                <div className="contest-card__info">
-                  <div className="contest-card__detail">
-                    <Clock size={16} />
-                    <span>{contest.time}</span>
-                  </div>
-                  <div className="contest-card__detail">
-                    <Target size={16} />
-                    <span>时长 {contest.duration}</span>
-                  </div>
-                  <div className="contest-card__detail">
-                    <Users size={16} />
-                    <span>{contest.participants.toLocaleString()} 人已报名</span>
-                  </div>
-                </div>
-                <button className="contest-card__btn">立即报名</button>
-              </div>
-            ))}
+              ))
+            )}
           </div>
         </div>
       </section>
