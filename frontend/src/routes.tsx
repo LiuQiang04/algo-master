@@ -10,6 +10,14 @@ import FeedPage from './pages/FeedPage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import PlaceholderPage from './pages/PlaceholderPage';
+import ProblemList from './pages/Problems/ProblemList';
+import ProblemDetail from './pages/Problems/ProblemDetail';
+import ContestList from './pages/Contests/ContestList';
+import ContestDetail from './pages/Contests/ContestDetail';
+import LearningPaths from './pages/LearningPaths/LearningPaths';
+import LearningPathDetail from './pages/LearningPaths/LearningPathDetail';
+import Profile from './pages/Profile/Profile';
+import Home from './pages/Home/Home';
 import {
   AchievementsPage,
   LeaderboardPage,
@@ -23,30 +31,8 @@ export const router = createBrowserRouter([
     path: '/',
     element: <Layout />,
     children: [
-      {
-        index: true,
-        element: (
-          <div className="container" style={{ padding: '60px 24px', textAlign: 'center' }}>
-            <h1 style={{ fontSize: 48, fontWeight: 800, marginBottom: 16, background: 'linear-gradient(135deg, var(--primary-600), var(--accent-500))', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
-              AlgoArena
-            </h1>
-            <p style={{ fontSize: 20, color: 'var(--text-secondary)', marginBottom: 40, maxWidth: 600, margin: '0 auto 40px' }}>
-              Master algorithms through practice, competition, and community collaboration
-            </p>
-            <div style={{ display: 'flex', gap: 16, justifyContent: 'center', flexWrap: 'wrap' }}>
-              <a href="/community" style={{
-                padding: '14px 32px', borderRadius: 'var(--radius-lg)',
-                background: 'var(--primary-600)', color: 'white', fontWeight: 600, fontSize: 16,
-              }}>Explore Community</a>
-              <a href="/problems" style={{
-                padding: '14px 32px', borderRadius: 'var(--radius-lg)',
-                border: '2px solid var(--primary-600)', color: 'var(--primary-600)',
-                fontWeight: 600, fontSize: 16,
-              }}>Browse Problems</a>
-            </div>
-          </div>
-        ),
-      },
+      { index: true, element: <Home /> },
+      // 社区路由
       { path: 'community', element: <CommunityPage /> },
       { path: 'community/new', element: <CreatePostPage /> },
       { path: 'posts/:id', element: <PostDetailPage /> },
@@ -54,10 +40,20 @@ export const router = createBrowserRouter([
       { path: 'messages', element: <MessagesPage /> },
       { path: 'notifications', element: <NotificationsPage /> },
       { path: 'feed', element: <FeedPage /> },
+      // 认证路由
       { path: 'login', element: <LoginPage /> },
       { path: 'register', element: <RegisterPage /> },
-      { path: 'problems', element: <PlaceholderPage title="Problems" description="Problem set and online judge coming soon. Practice algorithmic problems with real-time evaluation." /> },
-      { path: 'contests', element: <PlaceholderPage title="Contests" description="Contest system coming soon. Participate in timed competitions and climb the leaderboard." /> },
+      // 题库路由
+      { path: 'problems', element: <ProblemList /> },
+      { path: 'problems/:id', element: <ProblemDetail /> },
+      // 竞赛路由
+      { path: 'contests', element: <ContestList /> },
+      { path: 'contests/:id', element: <ContestDetail /> },
+      // 学习路径路由
+      { path: 'paths', element: <LearningPaths /> },
+      { path: 'paths/:id', element: <LearningPathDetail /> },
+      // 个人中心
+      { path: 'profile', element: <Profile /> },
       // 游戏化系统路由
       { path: 'achievements', element: <AchievementsPage /> },
       { path: 'leaderboard', element: <LeaderboardPage /> },

@@ -113,7 +113,7 @@ model Problem {
 
   submissions    Submission[]
   tags           ProblemTag[]
-  testCases      TestCase[]     @map("test_cases")
+  testCases      TestCase[]
   contestProblems ContestProblem[]
   dailyChallenges DailyChallenge[]
 

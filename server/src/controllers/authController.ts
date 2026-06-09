@@ -13,8 +13,9 @@ export async function register(req: Request, res: Response) {
 
 // 登录
 export async function login(req: Request, res: Response) {
-  const { email, password } = req.body;
-  const result = await authService.login({ email, password });
+  const { login, email, password } = req.body;
+  const loginField = login || email;
+  const result = await authService.login({ email: loginField, password });
   res.json({
     success: true,
     data: result,

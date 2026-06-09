@@ -26,7 +26,10 @@ const registerSchema = Joi.object({
 });
 
 const loginSchema = Joi.object({
-  email: Joi.string().email().required(),
+  login: Joi.string().required().messages({
+    'any.required': '请输入用户名或邮箱',
+  }),
+  email: Joi.string().optional(),
   password: Joi.string().required(),
 });
 

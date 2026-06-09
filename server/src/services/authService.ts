@@ -70,17 +70,22 @@ export async function register(data: {
   };
 }
 
-// 登录
+// 登录（支持用户名或邮箱）
 export async function login(data: { email: string; password: string }) {
   const { email, password } = data;
 
-  // 查找用户
-  const user = await prisma.user.findUnique({
-    where: { email },
+  // 查找用户（支持用户名或邮箱）
+  const user = await prisma.user.findFirst({
+    where: {
+      OR: [
+        { email: email },
+        { username: email },
+      ],
+    },
   });
 
   if (!user) {
-    throw new UnauthorizedError('邮箱或密码错误');
+    throw new UnauthorizedError('用户名/邮箱或密码错误');
   }
 
   // 验证密码

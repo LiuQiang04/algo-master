@@ -3,8 +3,10 @@ import { useState } from 'react';
 import { Menu } from 'lucide-react';
 
 const navItems = [
+  { path: '/', label: '首页' },
   { path: '/problems', label: '题库' },
   { path: '/contests', label: '竞赛' },
+  { path: '/paths', label: '学习路径' },
   { path: '/community', label: '社区' },
   { path: '/leaderboard', label: '排行榜' },
 ];

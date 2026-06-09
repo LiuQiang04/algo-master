@@ -381,7 +381,6 @@ async function main() {
   await prisma.$executeRaw`TRUNCATE TABLE point_history CASCADE`;
   await prisma.$executeRaw`TRUNCATE TABLE user_achievements CASCADE`;
   await prisma.$executeRaw`TRUNCATE TABLE achievements CASCADE`;
-  await prisma.$executeRaw`TRUNCATE TABLE votes CASCADE`;
   await prisma.$executeRaw`TRUNCATE TABLE comments CASCADE`;
   await prisma.$executeRaw`TRUNCATE TABLE posts CASCADE`;
   await prisma.$executeRaw`TRUNCATE TABLE contest_participants CASCADE`;
@@ -410,7 +409,6 @@ async function main() {
       username: 'admin',
       email: 'admin@algoarena.com',
       passwordHash: adminPassword,
-      role: 'ADMIN',
       level: 50,
       experiencePoints: 50000,
       rating: 2500,
