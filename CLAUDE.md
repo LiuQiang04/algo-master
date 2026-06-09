@@ -172,6 +172,34 @@ JWT_EXPIRES_IN=7d
 
 ## Development Workflow
 
+### Skill 使用规范
+
+**约束：后续开发必须使用已安装的 skill 优化开发流程**
+
+已安装的 skill：
+- `vercel-react-best-practices` - React 最佳实践（462K 安装量）
+- `webapp-testing` - Web 应用测试（92K 安装量）
+- `tailwind` - Tailwind CSS（64K 安装量）
+- `playwright-cli` - Playwright 测试（52K 安装量）
+- `playwright-best-practices` - Playwright 最佳实践（48K 安装量）
+- `typescript-advanced-types` - TypeScript 高级类型（46K 安装量）
+- `nodejs-backend-patterns` - Node.js 后端模式（36K 安装量）
+
+**使用场景：**
+| 开发任务 | 使用的 Skill |
+|---------|-------------|
+| React 组件开发 | `vercel-react-best-practices` |
+| 编写测试用例 | `webapp-testing`、`playwright-best-practices` |
+| Tailwind CSS 样式 | `tailwind` |
+| E2E 测试 | `playwright-cli`、`playwright-best-practices` |
+| TypeScript 类型定义 | `typescript-advanced-types` |
+| Node.js 后端开发 | `nodejs-backend-patterns` |
+
+**使用方式：**
+- 开发前检查是否有适配的 skill
+- 遵循 skill 中的最佳实践和代码规范
+- 使用 skill 提供的代码模板和示例
+
 ### 开发后必须执行的检查
 
 ```bash

@@ -625,7 +625,38 @@ docker compose up -d
 
 ## 十三、开发流程规范
 
-### 13.1 开发流程
+### 13.1 Skill 使用规范（强制）
+
+**约束：后续开发必须使用已安装的 skill 优化开发流程**
+
+已安装的 skill：
+| Skill | 安装量 | 用途 |
+|-------|--------|------|
+| `vercel-react-best-practices` | 462K | React 最佳实践 |
+| `webapp-testing` | 92K | Web 应用测试 |
+| `tailwind` | 64K | Tailwind CSS |
+| `playwright-cli` | 52K | Playwright 测试 |
+| `playwright-best-practices` | 48K | Playwright 最佳实践 |
+| `typescript-advanced-types` | 46K | TypeScript 高级类型 |
+| `nodejs-backend-patterns` | 36K | Node.js 后端模式 |
+
+**使用场景：**
+| 开发任务 | 使用的 Skill |
+|---------|-------------|
+| React 组件开发 | `vercel-react-best-practices` |
+| 编写测试用例 | `webapp-testing`、`playwright-best-practices` |
+| Tailwind CSS 样式 | `tailwind` |
+| E2E 测试 | `playwright-cli`、`playwright-best-practices` |
+| TypeScript 类型定义 | `typescript-advanced-types` |
+| Node.js 后端开发 | `nodejs-backend-patterns` |
+
+**使用方式：**
+1. 开发前检查是否有适配的 skill
+2. 遵循 skill 中的最佳实践和代码规范
+3. 使用 skill 提供的代码模板和示例
+4. 参考 skill 中的错误处理和性能优化建议
+
+### 13.2 开发流程
 
 ```
 开发前 → 开发中 → 开发后 → 提交
