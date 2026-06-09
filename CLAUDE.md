@@ -170,6 +170,41 @@ JWT_EXPIRES_IN=7d
 - 竞赛系统完善（实时排行榜、倒计时）
 - 社区功能完善（帖子编辑、评论回复）
 
+## Development Workflow
+
+### 开发后必须执行的检查
+
+```bash
+# 运行单元测试
+cd frontend && npm test
+cd server && npm test
+
+# 运行 lint 检查
+cd frontend && npm run lint
+
+# TypeScript 编译检查
+cd frontend && npx tsc --noEmit
+
+# 运行 E2E 测试（关键功能）
+npx playwright test --project=chromium
+```
+
+### 测试策略
+
+| 功能类型 | 测试方式 | 优先级 |
+|---------|---------|--------|
+| 核心功能（登录、注册） | 单元测试 + E2E 测试 | 高 |
+| 一般功能（页面显示） | 单元测试 | 中 |
+| 辅助功能（动画） | 手动测试 | 低 |
+
+### Bug 修复流程
+
+```
+发现 bug → 写测试复现 → 修复代码 → 确认测试通过 → 提交
+```
+
+详细开发流程规范请参考 `PROJECT.md` 第十三章。
+
 ## Known Issues
 
 - 根目录 `package.json` 的 `dev:client` 和 `build` 脚本引用 `client/` 而非 `frontend/`，直接用会报错。请在各子目录内执行命令。
