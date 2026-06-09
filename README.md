@@ -133,10 +133,56 @@ npm run dev
 ```bash
 cd backend
 npm install
+npm run db:migrate   # 运行数据库迁移
+npm run db:seed      # 初始化种子数据
 npm run dev
 ```
 
 API 运行在 http://localhost:3000
+
+#### 服务器开发
+
+```bash
+cd server
+npm install
+npm run db:setup     # 一键初始化数据库
+npm run dev
+```
+
+API 运行在 http://localhost:3001
+
+## 🧪 测试
+
+### 运行测试
+
+```bash
+# 前端单元测试
+cd frontend && npm test
+
+# 服务器单元测试
+cd server && npm test
+
+# E2E 测试（需要先启动 PostgreSQL 和 Redis）
+npx playwright test --project=chromium
+
+# TypeScript 编译检查
+cd frontend && npx tsc --noEmit
+cd server && npx tsc --noEmit
+```
+
+### 测试覆盖情况
+
+| 测试类型 | 数量 | 状态 |
+|---------|------|------|
+| 前端单元测试 | 52 | ✅ 全部通过 |
+| 服务器单元测试 | 97 | ✅ 全部通过 |
+| E2E 测试 | 31 | ✅ 全部通过 |
+
+### 测试数据
+
+种子数据包含测试用户：
+- **普通用户**: alice@example.com / Test123456
+- **管理员**: admin@algoarena.com / Admin123456
 
 ## 📚 API 文档
 
