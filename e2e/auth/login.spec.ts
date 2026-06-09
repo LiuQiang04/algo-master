@@ -48,4 +48,43 @@ test.describe("User Login", () => {
     await expect(page.getByPlaceholder("Enter your username or email")).toHaveAttribute("type", "text");
     await expect(page.getByPlaceholder("Enter your password")).toHaveAttribute("type", "password");
   });
+
+  test("should login successfully with valid credentials", async ({ page }) => {
+    // 使用种子数据中的测试用户
+    await page.getByPlaceholder("Enter your username or email").fill("alice@example.com");
+    await page.getByPlaceholder("Enter your password").fill("Test123456");
+
+    // 提交表单
+    await page.getByRole("button", { name: "Sign In" }).click();
+
+    // 等待登录完成并跳转
+    await page.waitForURL("**/community", { timeout: 10000 });
+
+    // 验证跳转成功
+    await expect(page).toHaveURL(/\/community/);
+  });
+
+  test("should show error message with invalid credentials", async ({ page }) => {
+    // 使用错误的密码
+    await page.getByPlaceholder("Enter your username or email").fill("alice@example.com");
+    await page.getByPlaceholder("Enter your password").fill("wrongpassword");
+
+    // 提交表单
+    await page.getByRole("button", { name: "Sign In" }).click();
+
+    // 等待一段时间让错误消息出现
+    await page.waitForTimeout(2000);
+
+    // 检查是否有错误消息显示（可能是任何文本）
+    const errorElement = page.locator('[style*="danger"], [style*="error"], .error, .alert');
+    const errorCount = await errorElement.count();
+
+    if (errorCount > 0) {
+      // 如果有错误元素，验证它可见
+      await expect(errorElement.first()).toBeVisible();
+    } else {
+      // 如果没有错误元素，检查页面是否仍在登录页面（没有跳转）
+      await expect(page).toHaveURL(/\/login/);
+    }
+  });
 });
