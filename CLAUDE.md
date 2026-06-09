@@ -174,7 +174,7 @@ JWT_EXPIRES_IN=7d
 
 ### Skill 使用规范
 
-**约束：后续开发必须使用已安装的 skill 优化开发流程**
+**建议：后续开发优先参考已安装的 skill 中的最佳实践，但不强制照搬**
 
 已安装的 skill：
 - `vercel-react-best-practices` - React 最佳实践（462K 安装量）
@@ -185,8 +185,8 @@ JWT_EXPIRES_IN=7d
 - `typescript-advanced-types` - TypeScript 高级类型（46K 安装量）
 - `nodejs-backend-patterns` - Node.js 后端模式（36K 安装量）
 
-**使用场景：**
-| 开发任务 | 使用的 Skill |
+**参考场景：**
+| 开发任务 | 参考的 Skill |
 |---------|-------------|
 | React 组件开发 | `vercel-react-best-practices` |
 | 编写测试用例 | `webapp-testing`、`playwright-best-practices` |
@@ -196,9 +196,10 @@ JWT_EXPIRES_IN=7d
 | Node.js 后端开发 | `nodejs-backend-patterns` |
 
 **使用方式：**
-- 开发前检查是否有适配的 skill
-- 遵循 skill 中的最佳实践和代码规范
-- 使用 skill 提供的代码模板和示例
+- 遇到技术问题时，优先查阅相关 skill
+- 根据项目实际情况灵活调整
+- 简单功能不必过度工程化
+- 鼓励创新，但要遵循基本规范
 
 ### 开发后必须执行的检查
 

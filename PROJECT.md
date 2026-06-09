@@ -625,9 +625,9 @@ docker compose up -d
 
 ## 十三、开发流程规范
 
-### 13.1 Skill 使用规范（强制）
+### 13.1 Skill 使用规范（建议）
 
-**约束：后续开发必须使用已安装的 skill 优化开发流程**
+**建议：后续开发优先参考已安装的 skill 中的最佳实践，但不强制照搬**
 
 已安装的 skill：
 | Skill | 安装量 | 用途 |
@@ -640,8 +640,8 @@ docker compose up -d
 | `typescript-advanced-types` | 46K | TypeScript 高级类型 |
 | `nodejs-backend-patterns` | 36K | Node.js 后端模式 |
 
-**使用场景：**
-| 开发任务 | 使用的 Skill |
+**参考场景：**
+| 开发任务 | 参考的 Skill |
 |---------|-------------|
 | React 组件开发 | `vercel-react-best-practices` |
 | 编写测试用例 | `webapp-testing`、`playwright-best-practices` |
@@ -651,10 +651,10 @@ docker compose up -d
 | Node.js 后端开发 | `nodejs-backend-patterns` |
 
 **使用方式：**
-1. 开发前检查是否有适配的 skill
-2. 遵循 skill 中的最佳实践和代码规范
-3. 使用 skill 提供的代码模板和示例
-4. 参考 skill 中的错误处理和性能优化建议
+1. 遇到技术问题时，优先查阅相关 skill
+2. 根据项目实际情况灵活调整
+3. 简单功能不必过度工程化
+4. 鼓励创新，但要遵循基本规范
 
 ### 13.2 开发流程
 
