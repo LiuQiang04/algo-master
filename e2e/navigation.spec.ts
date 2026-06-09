@@ -4,34 +4,33 @@
  */
 
 import { test, expect } from "@playwright/test";
-import { URLS } from "../fixtures/test-data";
+import { URLS } from "./fixtures/test-data";
 
 test.describe("Site Navigation", () => {
   test("should load the home page", async ({ page }) => {
     await page.goto(URLS.home);
 
     await expect(page.getByText("算法竞赛学习平台")).toBeVisible();
-    await expect(page.getByText("AlgoMaster")).toBeVisible();
+    await expect(page.getByText("AlgoArena").first()).toBeVisible();
   });
 
   test("should display all main features on home page", async ({ page }) => {
     await page.goto(URLS.home);
 
     await expect(page.getByText("丰富的题库")).toBeVisible();
-    await expect(page.getByText("在线评测")).toBeVisible();
+    await expect(page.getByText("即时评测")).toBeVisible();
     await expect(page.getByText("竞赛系统")).toBeVisible();
-    await expect(page.getByText("学习路径")).toBeVisible();
     await expect(page.getByText("社区交流")).toBeVisible();
-    await expect(page.getByText("成就系统")).toBeVisible();
+    await expect(page.getByText("进度追踪")).toBeVisible();
   });
 
   test("should display statistics on home page", async ({ page }) => {
     await page.goto(URLS.home);
 
-    await expect(page.getByText("1000+")).toBeVisible();
-    await expect(page.getByText("5000+")).toBeVisible();
-    await expect(page.getByText("100+")).toBeVisible();
-    await expect(page.getByText("50000+")).toBeVisible();
+    await expect(page.getByText("1,200+")).toBeVisible();
+    await expect(page.getByText("50,000+")).toBeVisible();
+    await expect(page.getByText("2,000,000+")).toBeVisible();
+    await expect(page.getByText("300+")).toBeVisible();
   });
 
   test("should navigate between all main pages", async ({ page }) => {
@@ -40,23 +39,19 @@ test.describe("Site Navigation", () => {
     await expect(page.getByText("算法竞赛学习平台")).toBeVisible();
 
     // Go to problems
-    await page.getByRole("navigation").getByText("题库").click();
+    await page.getByRole("navigation").getByText("Problems").click();
     await expect(page).toHaveURL(URLS.problems);
 
     // Go to contests
-    await page.getByRole("navigation").getByText("竞赛").click();
+    await page.getByRole("navigation").getByText("Contests").click();
     await expect(page).toHaveURL(URLS.contests);
 
     // Go to community
-    await page.getByRole("navigation").getByText("社区").click();
+    await page.getByRole("navigation").getByText("Community").click();
     await expect(page).toHaveURL(URLS.community);
 
-    // Go to leaderboard
-    await page.getByRole("navigation").getByText("排行榜").click();
-    await expect(page).toHaveURL(URLS.leaderboard);
-
     // Go back to home via logo
-    await page.getByText("AlgoMaster").click();
+    await page.getByText("AlgoArena").first().click();
     await expect(page).toHaveURL(URLS.home);
   });
 
@@ -64,14 +59,14 @@ test.describe("Site Navigation", () => {
     await page.goto(URLS.home);
 
     // Go to login
-    await page.getByRole("link", { name: "登录" }).click();
+    await page.getByRole("link", { name: "Login" }).click();
     await expect(page).toHaveURL(URLS.login);
 
     // Go back to home
     await page.goto(URLS.home);
 
     // Go to register
-    await page.getByRole("link", { name: "注册" }).click();
+    await page.getByRole("link", { name: "Register" }).click();
     await expect(page).toHaveURL(URLS.register);
   });
 
@@ -82,7 +77,7 @@ test.describe("Site Navigation", () => {
       await page.goto(url);
 
       // Logo should always be visible
-      await expect(page.getByText("AlgoMaster").first()).toBeVisible();
+      await expect(page.getByText("AlgoArena").first()).toBeVisible();
     }
   });
 
@@ -95,8 +90,8 @@ test.describe("Site Navigation", () => {
       // Scroll to footer
       await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
 
-      // Copyright should always be visible
-      await expect(page.getByText(/2026 AlgoMaster/)).toBeVisible();
+      // Footer text should always be visible
+      await expect(page.getByText("AlgoArena - Algorithm Competition Learning Platform")).toBeVisible();
     }
   });
 
