@@ -6,7 +6,22 @@
 import { render, screen, fireEvent } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { BrowserRouter } from "react-router-dom";
-import Login from "../../pages/Login";
+import Login from "../../pages/LoginPage";
+
+// Mock the auth store
+const mockLogin = jest.fn().mockResolvedValue(undefined);
+jest.mock("../../store/authStore", () => ({
+  useAuthStore: () => ({
+    login: mockLogin,
+  }),
+}));
+
+// Mock useNavigate
+const mockNavigate = jest.fn();
+jest.mock("react-router-dom", () => ({
+  ...jest.requireActual("react-router-dom"),
+  useNavigate: () => mockNavigate,
+}));
 
 function renderWithRouter(ui: React.ReactElement) {
   return render(<BrowserRouter>{ui}</BrowserRouter>);
@@ -17,50 +32,36 @@ describe("Login Page", () => {
     it("should render the login form title", () => {
       renderWithRouter(<Login />);
 
-      expect(screen.getByText("登录到 AlgoMaster")).toBeInTheDocument();
+      expect(screen.getByText("Sign in to your account")).toBeInTheDocument();
     });
 
     it("should render the register link", () => {
       renderWithRouter(<Login />);
 
-      expect(screen.getByText("立即注册")).toBeInTheDocument();
-      expect(screen.getByText(/还没有账号/)).toBeInTheDocument();
+      expect(screen.getByText("Sign up")).toBeInTheDocument();
+      expect(screen.getByText(/Don't have an account/)).toBeInTheDocument();
     });
 
     it("should render email input field", () => {
       renderWithRouter(<Login />);
 
-      const emailInput = screen.getByPlaceholderText("邮箱地址");
+      const emailInput = screen.getByPlaceholderText("Enter your username or email");
       expect(emailInput).toBeInTheDocument();
-      expect(emailInput).toHaveAttribute("type", "email");
-      expect(emailInput).toBeRequired();
+      expect(emailInput).toHaveAttribute("type", "text");
     });
 
     it("should render password input field", () => {
       renderWithRouter(<Login />);
 
-      const passwordInput = screen.getByPlaceholderText("密码");
+      const passwordInput = screen.getByPlaceholderText("Enter your password");
       expect(passwordInput).toBeInTheDocument();
       expect(passwordInput).toHaveAttribute("type", "password");
-      expect(passwordInput).toBeRequired();
-    });
-
-    it("should render remember me checkbox", () => {
-      renderWithRouter(<Login />);
-
-      expect(screen.getByLabelText("记住我")).toBeInTheDocument();
-    });
-
-    it("should render forgot password link", () => {
-      renderWithRouter(<Login />);
-
-      expect(screen.getByText("忘记密码？")).toBeInTheDocument();
     });
 
     it("should render submit button", () => {
       renderWithRouter(<Login />);
 
-      const submitButton = screen.getByRole("button", { name: "登录" });
+      const submitButton = screen.getByRole("button", { name: "Sign In" });
       expect(submitButton).toBeInTheDocument();
       expect(submitButton).toHaveAttribute("type", "submit");
     });
@@ -68,7 +69,7 @@ describe("Login Page", () => {
     it("should have correct link to register page", () => {
       renderWithRouter(<Login />);
 
-      const registerLink = screen.getByText("立即注册").closest("a");
+      const registerLink = screen.getByText("Sign up").closest("a");
       expect(registerLink).toHaveAttribute("href", "/register");
     });
   });
@@ -78,7 +79,7 @@ describe("Login Page", () => {
       const user = userEvent.setup();
       renderWithRouter(<Login />);
 
-      const emailInput = screen.getByPlaceholderText("邮箱地址");
+      const emailInput = screen.getByPlaceholderText("Enter your username or email");
       await user.type(emailInput, "test@example.com");
 
       expect(emailInput).toHaveValue("test@example.com");
@@ -88,33 +89,27 @@ describe("Login Page", () => {
       const user = userEvent.setup();
       renderWithRouter(<Login />);
 
-      const passwordInput = screen.getByPlaceholderText("密码");
+      const passwordInput = screen.getByPlaceholderText("Enter your password");
       await user.type(passwordInput, "password123");
 
       expect(passwordInput).toHaveValue("password123");
     });
 
-    it("should call handleSubmit on form submission", () => {
-      const consoleSpy = jest.spyOn(console, "log").mockImplementation();
+    it("should call handleSubmit on form submission", async () => {
       renderWithRouter(<Login />);
 
-      const emailInput = screen.getByPlaceholderText("邮箱地址");
-      const passwordInput = screen.getByPlaceholderText("密码");
-      const submitButton = screen.getByRole("button", { name: "登录" });
+      const emailInput = screen.getByPlaceholderText("Enter your username or email");
+      const passwordInput = screen.getByPlaceholderText("Enter your password");
+      const submitButton = screen.getByRole("button", { name: "Sign In" });
 
       fireEvent.change(emailInput, { target: { value: "test@example.com" } });
       fireEvent.change(passwordInput, { target: { value: "password123" } });
       fireEvent.click(submitButton);
 
-      expect(consoleSpy).toHaveBeenCalledWith(
-        "Login:",
-        expect.objectContaining({
-          email: "test@example.com",
-          password: "password123",
-        })
-      );
+      // Wait for async login to complete
+      await screen.findByText("Sign In");
 
-      consoleSpy.mockRestore();
+      expect(mockLogin).toHaveBeenCalledWith("test@example.com", "password123");
     });
   });
 });

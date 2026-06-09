@@ -72,7 +72,8 @@ describe("Header Component", () => {
     it("should have a mobile menu button", () => {
       renderWithRouter(<Header />);
 
-      const menuButton = screen.getByRole("button");
+      // 使用 aria-label 来区分两个按钮
+      const menuButton = screen.getByRole("button", { name: /打开侧边栏/i });
       expect(menuButton).toBeInTheDocument();
       expect(menuButton).toHaveClass("md:hidden");
     });
@@ -80,11 +81,15 @@ describe("Header Component", () => {
     it("should toggle mobile menu when button is clicked", () => {
       renderWithRouter(<Header />);
 
-      const menuButton = screen.getByRole("button");
+      // 找到移动端菜单按钮（第二个 md:hidden 按钮）
+      const buttons = screen.getAllByRole("button");
+      const mobileMenuButton = buttons.find(btn => btn.classList.contains("md:hidden") && !btn.getAttribute("aria-label"));
+
+      expect(mobileMenuButton).toBeInTheDocument();
 
       // Menu should be hidden initially
       // Click to open
-      fireEvent.click(menuButton);
+      fireEvent.click(mobileMenuButton!);
 
       // After clicking, mobile nav links should be visible
       // The mobile menu contains duplicate links
@@ -95,12 +100,16 @@ describe("Header Component", () => {
     it("should close mobile menu when button is clicked again", () => {
       renderWithRouter(<Header />);
 
-      const menuButton = screen.getByRole("button");
+      // 找到移动端菜单按钮
+      const buttons = screen.getAllByRole("button");
+      const mobileMenuButton = buttons.find(btn => btn.classList.contains("md:hidden") && !btn.getAttribute("aria-label"));
+
+      expect(mobileMenuButton).toBeInTheDocument();
 
       // Open menu
-      fireEvent.click(menuButton);
+      fireEvent.click(mobileMenuButton!);
       // Close menu
-      fireEvent.click(menuButton);
+      fireEvent.click(mobileMenuButton!);
 
       // After closing, only desktop links should be visible
       const links = screen.getAllByText("题库");

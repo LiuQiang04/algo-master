@@ -12,3 +12,17 @@ Object.assign(globalThis, {
   TextEncoder,
   TextDecoder,
 });
+
+// Mock import.meta.env for Vite environment variables
+Object.defineProperty(globalThis, 'import', {
+  value: {
+    meta: {
+      env: {
+        VITE_USE_MOCK: 'false',
+        VITE_API_BASE_URL: 'http://localhost:3001',
+      },
+    },
+  },
+  writable: true,
+  configurable: true,
+});

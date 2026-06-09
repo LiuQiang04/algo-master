@@ -6,7 +6,22 @@
 import { render, screen, fireEvent } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { BrowserRouter } from "react-router-dom";
-import Register from "../../pages/Register";
+import Register from "../../pages/RegisterPage";
+
+// Mock the auth store
+const mockRegister = jest.fn().mockResolvedValue(undefined);
+jest.mock("../../store/authStore", () => ({
+  useAuthStore: () => ({
+    register: mockRegister,
+  }),
+}));
+
+// Mock useNavigate
+const mockNavigate = jest.fn();
+jest.mock("react-router-dom", () => ({
+  ...jest.requireActual("react-router-dom"),
+  useNavigate: () => mockNavigate,
+}));
 
 function renderWithRouter(ui: React.ReactElement) {
   return render(<BrowserRouter>{ui}</BrowserRouter>);
@@ -17,64 +32,52 @@ describe("Register Page", () => {
     it("should render the register form title", () => {
       renderWithRouter(<Register />);
 
-      expect(screen.getByText("注册 AlgoMaster 账号")).toBeInTheDocument();
+      expect(screen.getByText("Create your account")).toBeInTheDocument();
     });
 
     it("should render the login link", () => {
       renderWithRouter(<Register />);
 
-      expect(screen.getByText("立即登录")).toBeInTheDocument();
-      expect(screen.getByText(/已有账号/)).toBeInTheDocument();
+      expect(screen.getByText("Sign in")).toBeInTheDocument();
+      expect(screen.getByText(/Already have an account/)).toBeInTheDocument();
     });
 
     it("should render username input field", () => {
       renderWithRouter(<Register />);
 
-      const usernameInput = screen.getByPlaceholderText("用户名");
+      const usernameInput = screen.getByPlaceholderText("Choose a username");
       expect(usernameInput).toBeInTheDocument();
       expect(usernameInput).toHaveAttribute("type", "text");
-      expect(usernameInput).toBeRequired();
     });
 
     it("should render email input field", () => {
       renderWithRouter(<Register />);
 
-      const emailInput = screen.getByPlaceholderText("邮箱地址");
+      const emailInput = screen.getByPlaceholderText("Enter your email");
       expect(emailInput).toBeInTheDocument();
       expect(emailInput).toHaveAttribute("type", "email");
-      expect(emailInput).toBeRequired();
     });
 
     it("should render password input field", () => {
       renderWithRouter(<Register />);
 
-      const passwordInput = screen.getByPlaceholderText("密码");
+      const passwordInput = screen.getByPlaceholderText("At least 6 characters");
       expect(passwordInput).toBeInTheDocument();
       expect(passwordInput).toHaveAttribute("type", "password");
-      expect(passwordInput).toBeRequired();
     });
 
     it("should render confirm password input field", () => {
       renderWithRouter(<Register />);
 
-      const confirmPasswordInput = screen.getByPlaceholderText("确认密码");
+      const confirmPasswordInput = screen.getByPlaceholderText("Re-enter your password");
       expect(confirmPasswordInput).toBeInTheDocument();
       expect(confirmPasswordInput).toHaveAttribute("type", "password");
-      expect(confirmPasswordInput).toBeRequired();
-    });
-
-    it("should render terms agreement checkbox", () => {
-      renderWithRouter(<Register />);
-
-      const checkbox = screen.getByLabelText(/我同意/);
-      expect(checkbox).toBeInTheDocument();
-      expect(checkbox).toBeRequired();
     });
 
     it("should render submit button", () => {
       renderWithRouter(<Register />);
 
-      const submitButton = screen.getByRole("button", { name: "注册" });
+      const submitButton = screen.getByRole("button", { name: "Create Account" });
       expect(submitButton).toBeInTheDocument();
       expect(submitButton).toHaveAttribute("type", "submit");
     });
@@ -82,7 +85,7 @@ describe("Register Page", () => {
     it("should have correct link to login page", () => {
       renderWithRouter(<Register />);
 
-      const loginLink = screen.getByText("立即登录").closest("a");
+      const loginLink = screen.getByText("Sign in").closest("a");
       expect(loginLink).toHaveAttribute("href", "/login");
     });
   });
@@ -92,7 +95,7 @@ describe("Register Page", () => {
       const user = userEvent.setup();
       renderWithRouter(<Register />);
 
-      const usernameInput = screen.getByPlaceholderText("用户名");
+      const usernameInput = screen.getByPlaceholderText("Choose a username");
       await user.type(usernameInput, "newuser");
 
       expect(usernameInput).toHaveValue("newuser");
@@ -102,7 +105,7 @@ describe("Register Page", () => {
       const user = userEvent.setup();
       renderWithRouter(<Register />);
 
-      const emailInput = screen.getByPlaceholderText("邮箱地址");
+      const emailInput = screen.getByPlaceholderText("Enter your email");
       await user.type(emailInput, "new@example.com");
 
       expect(emailInput).toHaveValue("new@example.com");
@@ -112,7 +115,7 @@ describe("Register Page", () => {
       const user = userEvent.setup();
       renderWithRouter(<Register />);
 
-      const passwordInput = screen.getByPlaceholderText("密码");
+      const passwordInput = screen.getByPlaceholderText("At least 6 characters");
       await user.type(passwordInput, "password123");
 
       expect(passwordInput).toHaveValue("password123");
@@ -122,7 +125,7 @@ describe("Register Page", () => {
       const user = userEvent.setup();
       renderWithRouter(<Register />);
 
-      const confirmPasswordInput = screen.getByPlaceholderText("确认密码");
+      const confirmPasswordInput = screen.getByPlaceholderText("Re-enter your password");
       await user.type(confirmPasswordInput, "password123");
 
       expect(confirmPasswordInput).toHaveValue("password123");
@@ -130,57 +133,43 @@ describe("Register Page", () => {
   });
 
   describe("Password Confirmation", () => {
-    it("should alert when passwords do not match", () => {
-      const alertSpy = jest.spyOn(window, "alert").mockImplementation();
+    it("should show error when passwords do not match", () => {
       renderWithRouter(<Register />);
 
-      const usernameInput = screen.getByPlaceholderText("用户名");
-      const emailInput = screen.getByPlaceholderText("邮箱地址");
-      const passwordInput = screen.getByPlaceholderText("密码");
-      const confirmPasswordInput = screen.getByPlaceholderText("确认密码");
-      const checkbox = screen.getByLabelText(/我同意/);
-      const form = screen.getByRole("button", { name: "注册" }).closest("form")!;
+      const usernameInput = screen.getByPlaceholderText("Choose a username");
+      const emailInput = screen.getByPlaceholderText("Enter your email");
+      const passwordInput = screen.getByPlaceholderText("At least 6 characters");
+      const confirmPasswordInput = screen.getByPlaceholderText("Re-enter your password");
+      const form = screen.getByRole("button", { name: "Create Account" }).closest("form")!;
 
       fireEvent.change(usernameInput, { target: { value: "newuser" } });
       fireEvent.change(emailInput, { target: { value: "new@example.com" } });
       fireEvent.change(passwordInput, { target: { value: "password123" } });
       fireEvent.change(confirmPasswordInput, { target: { value: "differentpassword" } });
-      fireEvent.click(checkbox);
       fireEvent.submit(form);
 
-      expect(alertSpy).toHaveBeenCalledWith("密码不匹配");
-
-      alertSpy.mockRestore();
+      expect(screen.getByText("Passwords do not match")).toBeInTheDocument();
     });
 
-    it("should log registration data when passwords match", () => {
-      const consoleSpy = jest.spyOn(console, "log").mockImplementation();
+    it("should log registration data when passwords match", async () => {
       renderWithRouter(<Register />);
 
-      const usernameInput = screen.getByPlaceholderText("用户名");
-      const emailInput = screen.getByPlaceholderText("邮箱地址");
-      const passwordInput = screen.getByPlaceholderText("密码");
-      const confirmPasswordInput = screen.getByPlaceholderText("确认密码");
-      const checkbox = screen.getByLabelText(/我同意/);
-      const form = screen.getByRole("button", { name: "注册" }).closest("form")!;
+      const usernameInput = screen.getByPlaceholderText("Choose a username");
+      const emailInput = screen.getByPlaceholderText("Enter your email");
+      const passwordInput = screen.getByPlaceholderText("At least 6 characters");
+      const confirmPasswordInput = screen.getByPlaceholderText("Re-enter your password");
+      const form = screen.getByRole("button", { name: "Create Account" }).closest("form")!;
 
       fireEvent.change(usernameInput, { target: { value: "newuser" } });
       fireEvent.change(emailInput, { target: { value: "new@example.com" } });
       fireEvent.change(passwordInput, { target: { value: "password123" } });
       fireEvent.change(confirmPasswordInput, { target: { value: "password123" } });
-      fireEvent.click(checkbox);
       fireEvent.submit(form);
 
-      expect(consoleSpy).toHaveBeenCalledWith(
-        "Register:",
-        expect.objectContaining({
-          username: "newuser",
-          email: "new@example.com",
-          password: "password123",
-        })
-      );
+      // Wait for async register to complete
+      await screen.findByText("Create Account");
 
-      consoleSpy.mockRestore();
+      expect(mockRegister).toHaveBeenCalledWith("newuser", "new@example.com", "password123");
     });
   });
 });

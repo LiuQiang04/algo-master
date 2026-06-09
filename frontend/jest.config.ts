@@ -52,6 +52,11 @@ const config: Config = {
   coverageDirectory: "coverage",
   coverageReporters: ["text", "lcov", "clover"],
   verbose: true,
+  globals: {
+    "ts-jest": {
+      useESM: true,
+    },
+  },
 };
 
 export default config;
