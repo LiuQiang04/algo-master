@@ -51,8 +51,10 @@ export default function CommunityPage() {
       if (search) params.search = search;
       params.sortBy = sortBy;
       const { data } = await api.get('/posts', { params });
-      setPosts(data.data);
-      setTotal(data.pagination.total);
+      // 后端返回格式: { success: true, data: { posts: [...], total, page, totalPages } }
+      const result = data.data;
+      setPosts(result.posts || []);
+      setTotal(result.total || 0);
     } catch (err) {
       console.error('Failed to fetch posts', err);
     } finally {

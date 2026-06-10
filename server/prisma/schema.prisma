@@ -116,6 +116,7 @@ model Problem {
   testCases      TestCase[]
   contestProblems ContestProblem[]
   dailyChallenges DailyChallenge[]
+  posts          Post[]
 
   @@map("problems")
 }
@@ -239,6 +240,7 @@ model Post {
   createdAt  DateTime @default(now()) @map("created_at")
 
   user     User      @relation(fields: [userId], references: [id])
+  problem  Problem?  @relation(fields: [problemId], references: [id])
   comments Comment[]
 
   @@map("posts")
