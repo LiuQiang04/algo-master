@@ -301,7 +301,7 @@ function PostCard({ post }: { post: Post }) {
             <Eye size={12} />
             {post.viewCount}
           </span>
-          {post.tags.length > 0 && (
+          {post.tags && post.tags.length > 0 && (
             <div style={{ display: 'flex', gap: 4 }}>
               {post.tags.slice(0, 3).map(({ tag }) => (
                 <span key={tag.id} style={{
