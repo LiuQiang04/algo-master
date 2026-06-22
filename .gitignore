@@ -46,3 +46,6 @@ dump.rdb
 # Test results
 test-results/
 e2e-report/
+
+# Authentication state (contains session tokens)
+.auth/
