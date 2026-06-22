@@ -58,7 +58,12 @@ request.interceptors.request.use(
 request.interceptors.response.use(
   (response: AxiosResponse<ApiResponse<unknown>>) => {
     const { data } = response;
-    if (data.code !== 0) {
+    // 后端返回 { success: true, data: ... } 格式
+    // 兼容 { code: 0, data: ... } 格式
+    if (data.code !== undefined && data.code !== 0) {
+      return Promise.reject(new Error(data.message || '请求失败'));
+    }
+    if (data.success === false) {
       return Promise.reject(new Error(data.message || '请求失败'));
     }
     return response;

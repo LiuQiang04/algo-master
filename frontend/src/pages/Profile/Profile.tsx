@@ -94,19 +94,24 @@ export default function Profile() {
     try {
       setLoading(true);
       setError(null);
-      const [profileData, submissionsData, achievementsData] = await Promise.all([
-        getUserProfile(userId),
-        getSubmissions({ page: 1, pageSize: 20 }),
-        achievementApi.getMy().then((res: any) => res.data.data || []).catch(() => []),
-      ]);
+      const profileData = await getUserProfile(userId);
       setProfile(profileData);
-      setSubmissions(submissionsData.items || []);
-      setAchievements(achievementsData);
     } catch (err: any) {
       setError(err.message || '加载失败');
     } finally {
       setLoading(false);
     }
+  }, [userId]);
+
+  // Load submissions and achievements independently (non-blocking)
+  useEffect(() => {
+    if (!userId) return;
+    getSubmissions({ page: 1, pageSize: 20 })
+      .then((data) => setSubmissions(data.items || []))
+      .catch(() => {});
+    achievementApi.getMy()
+      .then((res: any) => setAchievements(res.data.data || []))
+      .catch(() => {});
   }, [userId]);
 
   useEffect(() => {
@@ -165,10 +170,10 @@ export default function Profile() {
   const displayName = profile.username;
   const joinDate = profile.createdAt;
   const stats = {
-    posts: profile._count.posts,
-    followers: profile._count.followers,
-    following: profile._count.following,
-    comments: profile._count.comments,
+    posts: profile._count?.posts || 0,
+    followers: profile._count?.followers || 0,
+    following: profile._count?.following || 0,
+    comments: profile._count?.comments || 0,
   };
 
   return (
