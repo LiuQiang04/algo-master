@@ -1,299 +1,92 @@
-# AlgoMaster - 算法竞赛学习平台
+# AlgoMaster
 
-一个功能丰富、设计美观的算法竞赛学习平台，帮助你系统学习算法，提升编程能力，在竞赛中取得好成绩。
+算法竞赛学习平台。做这个项目是因为市面上的 OJ 网站大多只提供题目，缺少系统化的学习路径和社区氛围。
 
-## 🚀 功能特色
-
-### 📚 题库系统
-
-- 丰富的题目资源，涵盖各种算法和数据结构
-- 多维度筛选：难度、标签、状态
-- 实时代码评测，支持多种编程语言
-
-### 🏆 竞赛系统
-
-- 模拟真实竞赛环境
-- 实时排行榜
-- Rating 系统
-
-### 🎮 游戏化系统
-
-- 积分和等级系统
-- 成就徽章系统
-- 每日挑战任务
-- 虚拟物品奖励
-
-### 👥 社区系统
-
-- 讨论区和题解分享
-- 评论和投票系统
-- 用户关注和私信
-
-### 🎯 学习路径
-
-- 个性化学习推荐
-- 知识图谱可视化
-- 学习进度跟踪
-
-## 🛠️ 技术栈
-
-| 层级   | 技术                                           |
-| ------ | ---------------------------------------------- |
-| 前端   | React 19 + TypeScript + Tailwind CSS v4 + Vite |
-| 后端   | Node.js + Express + TypeScript + Prisma ORM    |
-| 数据库 | PostgreSQL 16 + Redis 7                        |
-| 部署   | Docker + Docker Compose                        |
-
-## 📦 项目结构
+## 文档结构
 
 ```
-20260607/
-├── frontend/              # 前端 React 应用
-│   ├── src/
-│   │   ├── components/    # 组件
-│   │   ├── pages/         # 页面
-│   │   ├── hooks/         # 自定义 Hook
-│   │   ├── utils/         # 工具函数
-│   │   └── types/         # TypeScript 类型
-│   ├── package.json
-│   └── vite.config.ts
-│
-├── backend/               # 后端 API 服务
-│   ├── src/
-│   │   ├── controllers/   # 控制器
-│   │   ├── routes/        # 路由
-│   │   ├── middleware/    # 中间件
-│   │   ├── services/      # 服务层
-│   │   └── utils/         # 工具函数
-│   ├── prisma/
-│   │   └── schema.prisma  # 数据库模型
-│   └── package.json
-│
-├── server/                # 游戏化和 OJ 服务
-│   ├── src/
-│   │   ├── services/      # 服务
-│   │   ├── controllers/   # 控制器
-│   │   └── routes/        # 路由
-│   └── package.json
-│
-├── docker-compose.yml     # Docker 部署配置
-├── architecture-design.md # 架构设计文档
-└── README.md              # 项目说明
+docs/
+├── README.md              # 文档索引（本文件）
+├── development-workflow.md # 开发流程规范
+├── architecture-design.md  # 系统架构设计
+└── testing-guide.md       # 测试指南
+
+.planning/                  # planning-with-files 自动管理
+├── task_plan.md           # 当前任务计划
+├── progress.md            # 进度日志
+└── findings.md            # 研究发现
 ```
 
-## 🚀 快速开始
+**核心文档**：
+- [README.md](README.md) - 项目说明、快速开始
+- [PROJECT.md](PROJECT.md) - 开发细节、API、数据库、进度
+- [docs/development-workflow.md](docs/development-workflow.md) - 开发流程、skills 使用
 
-### 前置要求
+## 现在能用的功能
 
-- Docker 和 Docker Compose
-- Node.js 18+（可选，用于本地开发）
-- PostgreSQL 16（可选，用于本地开发）
-- Redis 7（可选，用于本地开发）
+**题库** - 目前有题目列表、详情页、代码编辑器。支持按难度和标签筛选，提交后能看到评测结果。代码编辑器用的 Monaco Editor，体验还行。
 
-### 使用 Docker Compose（推荐）
+**竞赛** - 有竞赛列表和详情页，能看到倒计时和题目列表。排行榜用 Redis Sorted Set 实现，查询速度不错。
 
-1. 克隆项目
+**社区** - 可以发帖、评论、点赞。帖子支持置顶和标签分类。这块功能基本完整，但评论回复还没做。
 
-```bash
-cd D:\Files\school\project\20260607
-```
+**个人中心** - 能看到用户信息、提交历史、成就徽章。编辑资料的功能也有了。
 
-2. 启动服务
+**游戏化** - 后端做好了积分、成就、排行榜、每日挑战、虚拟物品。前端页面还没写，这是接下来的重点。
+
+**学习路径** - 页面做了，但还没接后端 API。计划是按算法分类，用户可以跟踪学习进度。
+
+## 技术栈
+
+前端用 React 19 + TypeScript + Tailwind CSS v4 + Vite 8。状态管理用 Zustand，路由用 React Router v7。
+
+后端是 Node.js + Express + Prisma + PostgreSQL 16 + Redis 7。有两个服务：backend 是主 API 服务（端口 3000），server 是游戏化和 OJ 服务（端口 3001）。
+
+前端只和 server 通信（端口 3001），Vite 配置里 `/api` 代理指向的是 server。
+
+## 快速开始
+
+用 Docker 是最省事的方式：
 
 ```bash
 docker compose up -d
 ```
 
-3. 访问网站
+这会启动 PostgreSQL、Redis、后端服务和前端。访问 http://localhost:80 就能看到页面。
 
-- 前端：http://localhost:80
-- 后端 API：http://localhost:3000
-- 服务器：http://localhost:3001
+如果想本地开发，分别在 frontend 和 server 目录下 `npm install && npm run dev`。需要先确保 PostgreSQL 和 Redis 在跑。
 
-4. 停止服务
+种子数据里有两个测试用户：
+- 普通用户：alice@example.com / Test123456
+- 管理员：admin@algoarena.com / Admin123456
 
+## 测试
+
+共 338 个测试：
+
+- 前端单元测试 107 个 - 覆盖了主要页面和状态管理
+- Server 单元测试 141 个 - 覆盖了中间件和游戏化服务
+- E2E 测试 90 个（67 通过，12 选择器问题，11 待调整）
+
+跑测试：
 ```bash
-docker compose down
+cd frontend && npm test    # 前端测试
+cd server && npm test      # Server 测试
+npx playwright test        # E2E 测试
 ```
 
-### 本地开发
+## 还没做的
 
-#### 前端开发
+- 成就页面、排行榜、每日挑战、虚拟商店的前端
+- 学习路径接后端 API
+- 算法可视化组件
+- 社区的帖子编辑和评论回复
+- 竞赛的实时排行榜
 
-```bash
-cd frontend
-npm install
-npm run dev
-```
+## 已知问题
 
-访问 http://localhost:5173
+根目录 package.json 的 `dev:client` 和 `build` 脚本引用的是 `client/` 而不是 `frontend/`，直接跑会报错。请在各子目录内执行命令。
 
-#### 后端开发
+部分页面还是 PlaceholderPage（Problems, Contests），前后端集成也没完全搞定。
 
-```bash
-cd backend
-npm install
-npm run db:migrate   # 运行数据库迁移
-npm run db:seed      # 初始化种子数据
-npm run dev
-```
-
-API 运行在 http://localhost:3000
-
-#### 服务器开发
-
-```bash
-cd server
-npm install
-npm run db:setup     # 一键初始化数据库
-npm run dev
-```
-
-API 运行在 http://localhost:3001
-
-## 🧪 测试
-
-### 运行测试
-
-```bash
-# 前端单元测试
-cd frontend && npm test
-
-# 服务器单元测试
-cd server && npm test
-
-# E2E 测试（需要先启动 PostgreSQL 和 Redis）
-npx playwright test --project=chromium
-
-# TypeScript 编译检查
-cd frontend && npx tsc --noEmit
-cd server && npx tsc --noEmit
-```
-
-### 测试覆盖情况
-
-| 测试类型 | 数量 | 状态 |
-|---------|------|------|
-| 前端单元测试 | 52 | ✅ 全部通过 |
-| 服务器单元测试 | 97 | ✅ 全部通过 |
-| E2E 测试 | 31 | ✅ 全部通过 |
-
-### 测试数据
-
-种子数据包含测试用户：
-- **普通用户**: alice@example.com / Test123456
-- **管理员**: admin@algoarena.com / Admin123456
-
-## 📚 API 文档
-
-### 认证接口
-
-```
-POST /api/auth/register    # 用户注册
-POST /api/auth/login       # 用户登录
-POST /api/auth/logout      # 用户登出
-```
-
-### 用户接口
-
-```
-GET  /api/users/me         # 获取当前用户信息
-PUT  /api/users/me         # 更新用户信息
-GET  /api/users/:id        # 获取用户公开信息
-```
-
-### 题目接口
-
-```
-GET  /api/problems         # 获取题目列表
-GET  /api/problems/:id     # 获取题目详情
-POST /api/problems         # 创建题目（管理员）
-```
-
-### 提交接口
-
-```
-POST /api/submissions      # 提交代码
-GET  /api/submissions      # 获取提交历史
-GET  /api/submissions/:id  # 获取提交详情
-```
-
-### 竞赛接口
-
-```
-GET  /api/contests         # 获取竞赛列表
-GET  /api/contests/:id     # 获取竞赛详情
-POST /api/contests/:id/join # 加入竞赛
-```
-
-### 社区接口
-
-```
-GET  /api/posts            # 获取帖子列表
-POST /api/posts            # 创建帖子
-GET  /api/posts/:id        # 获取帖子详情
-```
-
-### 游戏化接口
-
-```
-GET  /api/achievements     # 获取成就列表
-GET  /api/leaderboard      # 获取排行榜
-GET  /api/daily-challenge  # 获取每日挑战
-```
-
-## 🎨 UI 设计
-
-- 响应式设计，适配各种设备
-- 暗色/亮色主题切换
-- 流畅的动画效果
-- 直观的用户界面
-
-## 🔒 安全特性
-
-- JWT 令牌认证
-- 密码加密存储
-- CORS 跨域保护
-- 输入验证和过滤
-- 速率限制
-
-## 📈 性能优化
-
-- 前端代码分割和懒加载
-- 后端缓存策略
-- 数据库索引优化
-- CDN 静态资源加速
-
-## 🤝 贡献指南
-
-欢迎贡献代码！请遵循以下步骤：
-
-1. Fork 项目
-2. 创建功能分支 (`git checkout -b feature/AmazingFeature`)
-3. 提交更改 (`git commit -m 'Add some AmazingFeature'`)
-4. 推送到分支 (`git push origin feature/AmazingFeature`)
-5. 创建 Pull Request
-
-## 📄 许可证
-
-本项目采用 MIT 许可证 - 查看 [LICENSE](LICENSE) 文件了解详情
-
-## 📧 联系我们
-
-- 邮箱：support@algomaster.com
-- GitHub：github.com/algomaster
-
-## 🙏 致谢
-
-感谢所有为这个项目做出贡献的人！
-
----
-
-**AlgoMaster** - 让算法学习更有趣！ 🚀
-
-算法竞赛网站完整架构设计方案
-
-提供技术栈、功能模块、数据库详细信息
-
-@architect❯ 提供技术栈、功能模块、数据库详细信息
-  好的，以下是面向开发落地的详细信息汇总。
+代理关闭后还会发空闲通知，这个 bug 还没修。
