@@ -52,7 +52,7 @@ export default function PostDetailPage() {
   const fetchPost = useCallback(async () => {
     try {
       const { data } = await api.get(`/posts/${id}`);
-      setPost(data.data);
+      setPost(data.data || null);
     } catch {
       navigate('/community');
     }
@@ -61,7 +61,7 @@ export default function PostDetailPage() {
   const fetchComments = useCallback(async () => {
     try {
       const { data } = await api.get(`/comments/post/${id}`);
-      setComments(data.data);
+      setComments(data.data || []);
     } catch {}
   }, [id]);
 
@@ -155,7 +155,7 @@ export default function PostDetailPage() {
                 background: typeColors[post.postType] || typeColors.discussion,
                 color: 'var(--text-secondary)',
               }}>{post.postType}</span>
-              {post.tags.map(({ tag }) => (
+              {(post.tags || []).map(({ tag }) => (
                 <span key={tag.id} style={{
                   padding: '2px 10px', borderRadius: 'var(--radius-full)', fontSize: 12,
                   background: 'var(--bg-tertiary)', color: 'var(--text-secondary)',

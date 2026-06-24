@@ -144,7 +144,13 @@ JWT_EXPIRES_IN=7d
 
 ## Project Status
 
-**当前进度**: 83% 完成 (50+ 任务已完成)
+**当前进度**: 90% 完成 (60+ 任务已完成)
+
+### 测试覆盖情况
+- **前端单元测试**: 107 个 ✅
+- **Server 单元测试**: 141 个 ✅
+- **E2E 测试**: 73 个 ✅（全部通过）
+- **总测试数**: 321 个 ✅
 
 ### 已完成页面
 - 首页 (`/`) - 英雄区域、统计数据、功能展示、热门题目、竞赛预告
@@ -155,9 +161,9 @@ JWT_EXPIRES_IN=7d
 - 个人中心 (`/profile`) - 个人信息、学习进度、成就徽章、提交历史
 - 登录/注册 (`/login`, `/register`)
 - 学习路径 (`/paths`, `/paths/:id`) - 算法分类、学习进度跟踪、模块解锁
+- 社区页面 (`/community`) - 帖子列表、详情、创建（已测试）
 
 ### 待完成页面
-- 社区页面 (`/community`) - 帖子列表、详情、创建
 - 成就页面 (`/achievements`)
 - 排行榜 (`/leaderboard`)
 - 每日挑战 (`/daily-challenge`)
@@ -169,6 +175,7 @@ JWT_EXPIRES_IN=7d
 - 代码编辑器增强（更多语言支持、主题）
 - 竞赛系统完善（实时排行榜、倒计时）
 - 社区功能完善（帖子编辑、评论回复）
+- 增加游戏化系统测试覆盖
 
 ## Development Workflow
 
@@ -176,30 +183,82 @@ JWT_EXPIRES_IN=7d
 
 **建议：后续开发优先参考已安装的 skill 中的最佳实践，但不强制照搬**
 
-已安装的 skill：
-- `vercel-react-best-practices` - React 最佳实践（462K 安装量）
+已安装 40 个 skills，按类别分组：
+
+#### 开发流程类（必须使用）
+- `brainstorming` - 创意工作前的头脑风暴（任何新功能开发前）
+- `systematic-debugging` - 系统化调试（任何 bug/测试失败前）
+- `verification-before-completion` - 完成前验证（声明完成前）
+- `test-driven-development` - TDD 核心（任何功能/bugfix 前）
+- `planning-with-files` - 持久化计划跟踪（复杂任务）
+
+#### 测试相关
 - `webapp-testing` - Web 应用测试（92K 安装量）
-- `tailwind` - Tailwind CSS（64K 安装量）
 - `playwright-cli` - Playwright 测试（52K 安装量）
 - `playwright-best-practices` - Playwright 最佳实践（48K 安装量）
+- `tdd` - TDD 实践
+
+#### 代码质量
+- `karpathy-guidelines` - 减少编码错误
+- `improve-codebase-architecture` - 改进代码架构
+- `requesting-code-review` - 请求代码审查
+- `receiving-code-review` - 接收审查反馈
+
+#### 前端/UI
+- `vercel-react-best-practices` - React 最佳实践（462K 安装量）
+- `tailwind` - Tailwind CSS（64K 安装量）
+- `ui-ux-pro-max` - UI/UX 设计指南
+- `frontend-design` - 前端设计
 - `typescript-advanced-types` - TypeScript 高级类型（46K 安装量）
+
+#### 后端
 - `nodejs-backend-patterns` - Node.js 后端模式（36K 安装量）
 
+#### 文档处理
+- `humanizer-zh` - 去除 AI 写作痕迹
+- `writing-skills` - 编写技能文档
+- `skill-creator` - 创建技能
+- `markitdown` - 文档转 Markdown
+
 **参考场景：**
-| 开发任务 | 参考的 Skill |
-|---------|-------------|
-| React 组件开发 | `vercel-react-best-practices` |
-| 编写测试用例 | `webapp-testing`、`playwright-best-practices` |
-| Tailwind CSS 样式 | `tailwind` |
-| E2E 测试 | `playwright-cli`、`playwright-best-practices` |
-| TypeScript 类型定义 | `typescript-advanced-types` |
-| Node.js 后端开发 | `nodejs-backend-patterns` |
+| 开发任务 | 必须使用 | 推荐使用 |
+|---------|---------|---------|
+| 新功能开发 | `brainstorming` | `planning-with-files`、`writing-plans` |
+| Bug 修复 | `systematic-debugging`、`test-driven-development` | `verification-before-completion` |
+| React 组件开发 | - | `vercel-react-best-practices`、`tailwind` |
+| 编写测试 | `test-driven-development` | `webapp-testing`、`playwright-best-practices` |
+| E2E 测试 | - | `playwright-cli`、`playwright-best-practices` |
+| 代码重构 | - | `improve-codebase-architecture`、`karpathy-guidelines` |
+| 文档整理 | - | `humanizer-zh` |
+| 完成任务 | `verification-before-completion` | `requesting-code-review` |
 
 **使用方式：**
 - 遇到技术问题时，优先查阅相关 skill
 - 根据项目实际情况灵活调整
 - 简单功能不必过度工程化
 - 鼓励创新，但要遵循基本规范
+
+### 文档结构
+
+```
+docs/
+├── README.md              # 文档索引
+├── development-workflow.md # 开发流程规范（详细）
+├── architecture-design.md  # 系统架构设计
+└── testing-guide.md       # 测试指南
+
+.planning/                  # planning-with-files 自动管理
+├── task_plan.md           # 当前任务计划
+├── progress.md            # 进度日志
+└── findings.md            # 研究发现
+```
+
+**核心文档**：
+- `README.md` - 项目说明、快速开始
+- `PROJECT.md` - 开发细节、API、数据库、进度
+- `docs/development-workflow.md` - 开发流程、skills 使用（详细版）
+
+**注意**：`.planning/` 目录由 `planning-with-files` skill 自动管理，不需要手动编辑。
 
 ### 开发后必须执行的检查
 
@@ -226,13 +285,18 @@ npx playwright test --project=chromium
 | 一般功能（页面显示） | 单元测试 | 中 |
 | 辅助功能（动画） | 手动测试 | 低 |
 
+**测试覆盖情况**:
+- **前端单元测试**: 107 个 (ProblemList, CommunityPage, authStore 等)
+- **Server 单元测试**: 141 个 (errorHandler, validate, leaderboard 等)
+- **E2E 测试**: 73 个 (全部通过，覆盖登录、导航、题目、社区、竞赛、个人资料)
+
 ### Bug 修复流程
 
 ```
-发现 bug → 写测试复现 → 修复代码 → 确认测试通过 → 提交
+发现 bug → systematic-debugging（找根因） → test-driven-development（写测试） → 修复代码 → verification-before-completion（验证） → requesting-code-review（审查）
 ```
 
-详细开发流程规范请参考 `PROJECT.md` 第十三章。
+详细开发流程规范请参考 `docs/development-workflow.md`。
 
 ## Known Issues
 

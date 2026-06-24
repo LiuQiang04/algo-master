@@ -4,14 +4,14 @@
 
 export const TEST_USERS = {
   valid: {
-    username: "e2etestuser",
-    email: "e2etest@algoarena.test",
-    password: "E2ETest@123456",
+    username: "alice",
+    email: "alice@example.com",
+    password: "Test123456",
   },
   admin: {
-    username: "e2eadmin",
-    email: "e2eadmin@algoarena.test",
-    password: "E2EAdmin@123456",
+    username: "bob",
+    email: "bob@example.com",
+    password: "Test123456",
   },
 };
 
@@ -22,6 +22,7 @@ export const URLS = {
   problems: "/problems",
   contests: "/contests",
   community: "/community",
+  profile: "/profile",
   leaderboard: "/leaderboard",
 };
 
