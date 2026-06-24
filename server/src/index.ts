@@ -19,6 +19,7 @@ import leaderboardRoutes from './routes/leaderboard';
 import dailyChallengeRoutes from './routes/dailyChallenge';
 import virtualItemRoutes from './routes/virtualItems';
 import gamificationRoutes from './routes/gamification';
+import learningPathsRoutes from './routes/learningPaths';
 
 // 创建Express应用
 const app = express();
@@ -83,6 +84,7 @@ app.use('/api/leaderboard', leaderboardRoutes);
 app.use('/api/daily-challenge', dailyChallengeRoutes);
 app.use('/api/virtual-items', virtualItemRoutes);
 app.use('/api/gamification', gamificationRoutes);
+app.use('/api/paths', learningPathsRoutes);
 
 // API文档（开发环境）
 if (config.isDev) {
@@ -102,6 +104,7 @@ if (config.isDev) {
         dailyChallenge: '/api/daily-challenge',
         virtualItems: '/api/virtual-items',
         gamification: '/api/gamification',
+        learningPaths: '/api/paths',
       },
     });
   });

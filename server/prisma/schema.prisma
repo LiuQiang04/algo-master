@@ -10,34 +10,35 @@ datasource db {
 // ==================== 用户系统 ====================
 
 model User {
-  id             String    @id @default(uuid()) @db.Uuid
-  username       String    @unique @db.VarChar(50)
-  email          String    @unique @db.VarChar(100)
-  passwordHash   String    @map("password_hash") @db.VarChar(255)
-  avatarUrl      String?   @map("avatar_url") @db.VarChar(500)
-  bio            String?
-  rating         Int       @default(1500)
-  experiencePoints Int     @default(0) @map("experience_points")
-  level          Int       @default(1)
-  region         String?   @db.VarChar(100)
-  title          String?   @db.VarChar(100)
-  createdAt      DateTime  @default(now()) @map("created_at")
-  updatedAt      DateTime  @updatedAt @map("updated_at")
+  id               String   @id @default(uuid()) @db.Uuid
+  username         String   @unique @db.VarChar(50)
+  email            String   @unique @db.VarChar(100)
+  passwordHash     String   @map("password_hash") @db.VarChar(255)
+  avatarUrl        String?  @map("avatar_url") @db.VarChar(500)
+  bio              String?
+  rating           Int      @default(1500)
+  experiencePoints Int      @default(0) @map("experience_points")
+  level            Int      @default(1)
+  region           String?  @db.VarChar(100)
+  title            String?  @db.VarChar(100)
+  createdAt        DateTime @default(now()) @map("created_at")
+  updatedAt        DateTime @updatedAt @map("updated_at")
 
   // Relations
-  achievements       UserAchievement[]
-  pointHistory       PointHistory[]
-  submissions        Submission[]
-  contestsCreated    Contest[]          @relation("ContestCreator")
-  contestParticipations ContestParticipant[]
-  posts              Post[]
-  comments           Comment[]
+  achievements              UserAchievement[]
+  pointHistory              PointHistory[]
+  submissions               Submission[]
+  contestsCreated           Contest[]                  @relation("ContestCreator")
+  contestParticipations     ContestParticipant[]
+  posts                     Post[]
+  comments                  Comment[]
   dailyChallengeCompletions DailyChallengeCompletion[]
-  virtualItems       UserVirtualItem[]
-  loginStreaks       LoginStreak[]
-  friends            Friendship[]       @relation("User")
-  friendOf           Friendship[]       @relation("Friend")
-  notifications      Notification[]
+  virtualItems              UserVirtualItem[]
+  loginStreaks              LoginStreak[]
+  friends                   Friendship[]               @relation("User")
+  friendOf                  Friendship[]               @relation("Friend")
+  notifications             Notification[]
+  learningProgress          LearningProgress[]
 
   @@map("users")
 }
@@ -45,16 +46,16 @@ model User {
 // ==================== 成就系统 ====================
 
 model Achievement {
-  id            String   @id @default(uuid()) @db.Uuid
-  name          String   @unique @db.VarChar(100)
-  description   String
-  category      String   @db.VarChar(50) // problem, learning, social, contest, special
-  iconUrl       String?  @map("icon_url") @db.VarChar(500)
-  rarity        String   @default("common") @db.VarChar(20) // common, rare, epic, legendary
-  points        Int      @default(10)
-  requirement   Json     // { type: "solve_count", value: 100 } 等
-  isActive      Boolean  @default(true) @map("is_active")
-  createdAt     DateTime @default(now()) @map("created_at")
+  id          String   @id @default(uuid()) @db.Uuid
+  name        String   @unique @db.VarChar(100)
+  description String
+  category    String   @db.VarChar(50) // problem, learning, social, contest, special
+  iconUrl     String?  @map("icon_url") @db.VarChar(500)
+  rarity      String   @default("common") @db.VarChar(20) // common, rare, epic, legendary
+  points      Int      @default(10)
+  requirement Json // { type: "solve_count", value: 100 } 等
+  isActive    Boolean  @default(true) @map("is_active")
+  createdAt   DateTime @default(now()) @map("created_at")
 
   userAchievements UserAchievement[]
 
@@ -80,7 +81,7 @@ model UserAchievement {
 model PointHistory {
   id          String   @id @default(uuid()) @db.Uuid
   userId      String   @map("user_id") @db.Uuid
-  points      Int      // 正数为获得，负数为消耗
+  points      Int // 正数为获得，负数为消耗
   type        String   @db.VarChar(50) // solve, contest, daily, achievement, bonus
   description String?
   relatedId   String?  @map("related_id") @db.Uuid // 关联的题目/竞赛ID
@@ -111,19 +112,20 @@ model Problem {
   submitCount  Int      @default(0) @map("submit_count")
   createdAt    DateTime @default(now()) @map("created_at")
 
-  submissions    Submission[]
-  tags           ProblemTag[]
-  testCases      TestCase[]
+  submissions     Submission[]
+  tags            ProblemTag[]
+  testCases       TestCase[]
   contestProblems ContestProblem[]
   dailyChallenges DailyChallenge[]
-  posts          Post[]
+  posts           Post[]
+  moduleProblems  ModuleProblem[]
 
   @@map("problems")
 }
 
 model Tag {
-  id       String @id @default(uuid()) @db.Uuid
-  name     String @unique @db.VarChar(50)
+  id       String  @id @default(uuid()) @db.Uuid
+  name     String  @unique @db.VarChar(50)
   category String? @db.VarChar(50)
 
   problems ProblemTag[]
@@ -144,12 +146,12 @@ model ProblemTag {
 }
 
 model TestCase {
-  id            String  @id @default(uuid()) @db.Uuid
-  problemId     String  @map("problem_id") @db.Uuid
-  input         String
-  expectedOutput String @map("expected_output")
-  isSample      Boolean @default(false) @map("is_sample")
-  score         Int     @default(1)
+  id             String  @id @default(uuid()) @db.Uuid
+  problemId      String  @map("problem_id") @db.Uuid
+  input          String
+  expectedOutput String  @map("expected_output")
+  isSample       Boolean @default(false) @map("is_sample")
+  score          Int     @default(1)
 
   problem Problem @relation(fields: [problemId], references: [id])
 
@@ -190,7 +192,7 @@ model Contest {
   maxParticipants Int?     @map("max_participants")
   createdAt       DateTime @default(now()) @map("created_at")
 
-  creator      User                @relation("ContestCreator", fields: [creatorId], references: [id])
+  creator      User                 @relation("ContestCreator", fields: [creatorId], references: [id])
   problems     ContestProblem[]
   participants ContestParticipant[]
 
@@ -198,11 +200,11 @@ model Contest {
 }
 
 model ContestProblem {
-  id          String @id @default(uuid()) @db.Uuid
-  contestId   String @map("contest_id") @db.Uuid
-  problemId   String @map("problem_id") @db.Uuid
+  id           String @id @default(uuid()) @db.Uuid
+  contestId    String @map("contest_id") @db.Uuid
+  problemId    String @map("problem_id") @db.Uuid
   problemOrder String @map("problem_order") @db.VarChar(1)
-  score       Int    @default(100)
+  score        Int    @default(100)
 
   contest Contest @relation(fields: [contestId], references: [id])
   problem Problem @relation(fields: [problemId], references: [id])
@@ -212,12 +214,12 @@ model ContestProblem {
 }
 
 model ContestParticipant {
-  id          String   @id @default(uuid()) @db.Uuid
-  contestId   String   @map("contest_id") @db.Uuid
-  userId      String   @map("user_id") @db.Uuid
-  totalScore  Int      @default(0) @map("total_score")
-  rank        Int?
-  joinedAt    DateTime @default(now()) @map("joined_at")
+  id         String   @id @default(uuid()) @db.Uuid
+  contestId  String   @map("contest_id") @db.Uuid
+  userId     String   @map("user_id") @db.Uuid
+  totalScore Int      @default(0) @map("total_score")
+  rank       Int?
+  joinedAt   DateTime @default(now()) @map("joined_at")
 
   contest Contest @relation(fields: [contestId], references: [id])
   user    User    @relation(fields: [userId], references: [id])
@@ -229,15 +231,15 @@ model ContestParticipant {
 // ==================== 社区系统 ====================
 
 model Post {
-  id         String   @id @default(uuid()) @db.Uuid
-  userId     String   @map("user_id") @db.Uuid
-  title      String   @db.VarChar(200)
-  content    String
-  problemId  String?  @map("problem_id") @db.Uuid
-  postType   String   @map("post_type") @db.VarChar(20)
-  upvotes    Int      @default(0)
-  downvotes  Int      @default(0)
-  createdAt  DateTime @default(now()) @map("created_at")
+  id        String   @id @default(uuid()) @db.Uuid
+  userId    String   @map("user_id") @db.Uuid
+  title     String   @db.VarChar(200)
+  content   String
+  problemId String?  @map("problem_id") @db.Uuid
+  postType  String   @map("post_type") @db.VarChar(20)
+  upvotes   Int      @default(0)
+  downvotes Int      @default(0)
+  createdAt DateTime @default(now()) @map("created_at")
 
   user     User      @relation(fields: [userId], references: [id])
   problem  Problem?  @relation(fields: [problemId], references: [id])
@@ -247,16 +249,16 @@ model Post {
 }
 
 model Comment {
-  id                String   @id @default(uuid()) @db.Uuid
-  userId            String   @map("user_id") @db.Uuid
-  postId            String   @map("post_id") @db.Uuid
-  parentCommentId   String?  @map("parent_comment_id") @db.Uuid
-  content           String
-  createdAt         DateTime @default(now()) @map("created_at")
+  id              String   @id @default(uuid()) @db.Uuid
+  userId          String   @map("user_id") @db.Uuid
+  postId          String   @map("post_id") @db.Uuid
+  parentCommentId String?  @map("parent_comment_id") @db.Uuid
+  content         String
+  createdAt       DateTime @default(now()) @map("created_at")
 
-  user    User    @relation(fields: [userId], references: [id])
-  post    Post    @relation(fields: [postId], references: [id])
-  parent  Comment? @relation("CommentReplies", fields: [parentCommentId], references: [id])
+  user    User      @relation(fields: [userId], references: [id])
+  post    Post      @relation(fields: [postId], references: [id])
+  parent  Comment?  @relation("CommentReplies", fields: [parentCommentId], references: [id])
   replies Comment[] @relation("CommentReplies")
 
   @@map("comments")
@@ -265,24 +267,24 @@ model Comment {
 // ==================== 每日挑战系统 ====================
 
 model DailyChallenge {
-  id          String   @id @default(uuid()) @db.Uuid
-  problemId   String   @map("problem_id") @db.Uuid
+  id            String   @id @default(uuid()) @db.Uuid
+  problemId     String   @map("problem_id") @db.Uuid
   challengeDate DateTime @unique @map("challenge_date") @db.Date
-  bonusPoints Int      @default(50) @map("bonus_points")
-  createdAt   DateTime @default(now()) @map("created_at")
+  bonusPoints   Int      @default(50) @map("bonus_points")
+  createdAt     DateTime @default(now()) @map("created_at")
 
-  problem     Problem                   @relation(fields: [problemId], references: [id])
+  problem     Problem                    @relation(fields: [problemId], references: [id])
   completions DailyChallengeCompletion[]
 
   @@map("daily_challenges")
 }
 
 model DailyChallengeCompletion {
-  id            String   @id @default(uuid()) @db.Uuid
-  userId        String   @map("user_id") @db.Uuid
-  challengeId   String   @map("challenge_id") @db.Uuid
-  completedAt   DateTime @default(now()) @map("completed_at")
-  timeTaken     Int?     @map("time_taken") // 秒
+  id          String   @id @default(uuid()) @db.Uuid
+  userId      String   @map("user_id") @db.Uuid
+  challengeId String   @map("challenge_id") @db.Uuid
+  completedAt DateTime @default(now()) @map("completed_at")
+  timeTaken   Int?     @map("time_taken") // 秒
 
   user      User           @relation(fields: [userId], references: [id])
   challenge DailyChallenge @relation(fields: [challengeId], references: [id])
@@ -294,10 +296,10 @@ model DailyChallengeCompletion {
 // ==================== 登录连续天数 ====================
 
 model LoginStreak {
-  id          String   @id @default(uuid()) @db.Uuid
-  userId      String   @map("user_id") @db.Uuid
-  loginDate   DateTime @map("login_date") @db.Date
-  streakDays  Int      @default(1) @map("streak_days")
+  id         String   @id @default(uuid()) @db.Uuid
+  userId     String   @map("user_id") @db.Uuid
+  loginDate  DateTime @map("login_date") @db.Date
+  streakDays Int      @default(1) @map("streak_days")
 
   user User @relation(fields: [userId], references: [id])
 
@@ -330,7 +332,7 @@ model UserVirtualItem {
   isEquipped Boolean  @default(false) @map("is_equipped")
   acquiredAt DateTime @default(now()) @map("acquired_at")
 
-  user User         @relation(fields: [userId], references: [id])
+  user User        @relation(fields: [userId], references: [id])
   item VirtualItem @relation(fields: [itemId], references: [id])
 
   @@unique([userId, itemId])
@@ -340,11 +342,11 @@ model UserVirtualItem {
 // ==================== 好友系统 ====================
 
 model Friendship {
-  id         String   @id @default(uuid()) @db.Uuid
-  userId     String   @map("user_id") @db.Uuid
-  friendId   String   @map("friend_id") @db.Uuid
-  status     String   @default("pending") @db.VarChar(20) // pending, accepted, blocked
-  createdAt  DateTime @default(now()) @map("created_at")
+  id        String   @id @default(uuid()) @db.Uuid
+  userId    String   @map("user_id") @db.Uuid
+  friendId  String   @map("friend_id") @db.Uuid
+  status    String   @default("pending") @db.VarChar(20) // pending, accepted, blocked
+  createdAt DateTime @default(now()) @map("created_at")
 
   user   User @relation("User", fields: [userId], references: [id])
   friend User @relation("Friend", fields: [friendId], references: [id])
@@ -353,17 +355,91 @@ model Friendship {
   @@map("friendships")
 }
 
+// ==================== 学习路径系统 ====================
+
+model LearningPath {
+  id          String   @id @default(uuid()) @db.Uuid
+  title       String   @db.VarChar(200)
+  description String
+  coverUrl    String?  @map("cover_url") @db.VarChar(500)
+  difficulty  Int      @db.SmallInt // 1-5
+  sortOrder   Int      @default(0) @map("sort_order")
+  isPublished Boolean  @default(false) @map("is_published")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  modules      LearningModule[]
+  userProgress LearningProgress[]
+
+  @@index([difficulty])
+  @@index([isPublished])
+  @@map("learning_paths")
+}
+
+model LearningModule {
+  id          String   @id @default(uuid()) @db.Uuid
+  pathId      String   @map("path_id") @db.Uuid
+  title       String   @db.VarChar(200)
+  description String
+  sortOrder   Int      @default(0) @map("sort_order")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  path         LearningPath       @relation(fields: [pathId], references: [id], onDelete: Cascade)
+  problems     ModuleProblem[]
+  userProgress LearningProgress[]
+
+  @@index([pathId])
+  @@map("learning_modules")
+}
+
+model ModuleProblem {
+  id         String  @id @default(uuid()) @db.Uuid
+  moduleId   String  @map("module_id") @db.Uuid
+  problemId  String  @map("problem_id") @db.Uuid
+  sortOrder  Int     @default(0) @map("sort_order")
+  isRequired Boolean @default(true) @map("is_required")
+
+  module  LearningModule @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+  problem Problem        @relation(fields: [problemId], references: [id], onDelete: Cascade)
+
+  @@unique([moduleId, problemId])
+  @@map("module_problems")
+}
+
+model LearningProgress {
+  id          String    @id @default(uuid()) @db.Uuid
+  userId      String    @map("user_id") @db.Uuid
+  pathId      String    @map("path_id") @db.Uuid
+  moduleId    String?   @map("module_id") @db.Uuid
+  status      String    @default("not_started") @db.VarChar(20) // not_started, in_progress, completed
+  progress    Int       @default(0) // 0-100 percentage
+  startedAt   DateTime? @map("started_at")
+  completedAt DateTime? @map("completed_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+
+  user   User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  path   LearningPath    @relation(fields: [pathId], references: [id], onDelete: Cascade)
+  module LearningModule? @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, pathId, moduleId])
+  @@index([userId])
+  @@index([pathId])
+  @@index([userId, status])
+  @@map("learning_progress")
+}
+
 // ==================== 通知系统 ====================
 
 model Notification {
-  id         String   @id @default(uuid()) @db.Uuid
-  userId     String   @map("user_id") @db.Uuid
-  type       String   @db.VarChar(50)
-  title      String   @db.VarChar(200)
-  content    String
-  isRead     Boolean  @default(false) @map("is_read")
-  relatedId  String?  @map("related_id") @db.Uuid
-  createdAt  DateTime @default(now()) @map("created_at")
+  id        String   @id @default(uuid()) @db.Uuid
+  userId    String   @map("user_id") @db.Uuid
+  type      String   @db.VarChar(50)
+  title     String   @db.VarChar(200)
+  content   String
+  isRead    Boolean  @default(false) @map("is_read")
+  relatedId String?  @map("related_id") @db.Uuid
+  createdAt DateTime @default(now()) @map("created_at")
 
   user User @relation(fields: [userId], references: [id])
 
