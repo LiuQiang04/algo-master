@@ -47,13 +47,42 @@ npm test             # Jest 测试
 npm test -- --testPathPattern="auth"  # 运行单个测试文件
 ```
 
-### Docker
+### 🛑 启动服务规范（必须遵守）
+
+**每次启动 Server 或 Frontend 之前，必须先杀掉该端口上的旧进程：**
+
 ```bash
-docker compose -f docker-compose.dev.yml up -d  # 仅启动 PostgreSQL + Redis (开发用)
-docker compose up -d                              # 启动所有服务 (含前端/后端/服务器)
+# 先杀旧进程，再启新服务（防止端口冲突）
+pwsh -Command "netstat -ano | Select-String ':3001\s' | ForEach-Object { Stop-Process -Id (($_ -split '\s+')[-1]) -Force -SilentlyContinue }"
+cd server && npm run dev
+
+pwsh -Command "netstat -ano | Select-String ':5173\s' | ForEach-Object { Stop-Process -Id (($_ -split '\s+')[-1]) -Force -SilentlyContinue }"
+cd frontend && npm run dev
+```
+
+**用完即关：** 验证完功能后，立即用 `pwsh scripts/stop-dev.ps1` 关闭服务，不留孤儿进程。
+
+### 开发环境管理
+
+```bash
+# 一键启动开发环境（会清理旧的端口冲突进程）
+pwsh scripts/start-dev.ps1
+
+# 一键关闭开发环境
+pwsh scripts/stop-dev.ps1
+
+# 或手动起停单个服务
+cd server && npm run dev                          # 启动 Server (端口 3001)
+cd frontend && npm run dev                        # 启动 Frontend (端口 5173)
+```
+
+**重要**: 主机自带 PostgreSQL 服务，不需要 Docker 启动。Redis 仅 E2E 测试需要。
+
+### Docker（仅生产部署用）
+```bash
+docker compose up -d                              # 启动所有服务
 docker compose --profile production up -d         # 生产环境
 docker compose down                               # 停止服务
-docker compose down -v                            # 停止并删除数据卷
 ```
 
 ### E2E 测试
@@ -179,6 +208,26 @@ JWT_EXPIRES_IN=7d
 
 ## Development Workflow
 
+### 🚀 任务执行规范（必须遵守）
+
+**每次接到开发任务时，必须自动调用 `planning-with-files` skill 进行持久化计划跟踪：**
+
+```typescript
+// 每次任务开始时自动执行
+Skill({ skill: "planning-with-files", args: "任务描述" })
+```
+
+**执行流程：**
+1. 接到任务 → 立即调用 `/planning-with-files`
+2. 创建任务计划 → `.planning/task_plan.md`
+3. 逐步执行 → 更新进度到 `.planning/progress.md`
+4. 完成后 → 自动同步 Git（commit + 可选 push）
+
+**为什么使用：**
+- 任务进度持久化，断点续传
+- 自动生成进度日志，便于复盘
+- 防止遗漏步骤，确保完整性
+
 ### Skill 使用规范
 
 **建议：后续开发优先参考已安装的 skill 中的最佳实践，但不强制照搬**
@@ -233,10 +282,36 @@ JWT_EXPIRES_IN=7d
 | 完成任务 | `verification-before-completion` | `requesting-code-review` |
 
 **使用方式：**
+- **每次任务必须先调用 `/planning-with-files`**
 - 遇到技术问题时，优先查阅相关 skill
 - 根据项目实际情况灵活调整
 - 简单功能不必过度工程化
 - 鼓励创新，但要遵循基本规范
+
+### 📦 完成任务后自动同步（必须执行）
+
+**每完成一个任务或子任务后，必须执行以下操作：**
+
+```bash
+# 1. 更新相关文档（如适用）
+#    - README.md（新功能说明）
+#    - PROJECT.md（进度更新）
+#    - CLAUDE.md（架构变更）
+
+# 2. Git 提交（描述性提交信息）
+git add .
+git commit -m "feat: 描述性提交信息"
+
+# 3. 可选：推送到远程（根据情况）
+# git push
+```
+
+**提交信息格式：**
+- `feat: 新增xxx功能`
+- `fix: 修复xxx问题`
+- `test: 新增xxx测试`
+- `docs: 更新xxx文档`
+- `refactor: 重构xxx模块`
 
 ### 文档结构
 
