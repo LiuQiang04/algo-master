@@ -72,6 +72,7 @@ async function main() {
         experiencePoints: 50000,
         level: 50,
         role: "admin",
+        region: "北京",
       },
     }),
     prisma.user.create({
@@ -84,6 +85,7 @@ async function main() {
         experiencePoints: 30000,
         level: 35,
         role: "moderator",
+        region: "上海",
       },
     }),
     prisma.user.create({
@@ -95,6 +97,7 @@ async function main() {
         rating: 2100,
         experiencePoints: 15000,
         level: 20,
+        region: "上海",
       },
     }),
     prisma.user.create({
@@ -106,6 +109,7 @@ async function main() {
         rating: 1200,
         experiencePoints: 3000,
         level: 5,
+        region: "深圳",
       },
     }),
     prisma.user.create({
@@ -117,6 +121,7 @@ async function main() {
         rating: 1800,
         experiencePoints: 8000,
         level: 12,
+        region: "杭州",
       },
     }),
   ]);
