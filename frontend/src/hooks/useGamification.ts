@@ -127,7 +127,7 @@ export function useUserRank() {
     const fetchRanks = async () => {
       try {
         const response = await leaderboardApi.getMyRank();
-        setRanks(response.data.data);
+        setRanks(response.data);
       } catch (err) {
         console.error('Failed to fetch ranks:', err);
       } finally {
