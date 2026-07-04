@@ -2,55 +2,95 @@ import React, { useState } from 'react';
 import { useLeaderboard, useUserRank } from '../../hooks/useGamification';
 import LeaderboardTable from '../../components/gamification/LeaderboardTable';
 
+const TABS = [
+  { id: 'global' as const, label: '全球排行', icon: '🌍' },
+  { id: 'friends' as const, label: '好友排行', icon: '👥' },
+  { id: 'region' as const, label: '地区排行', icon: '📍' },
+];
+
 const LeaderboardPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'global' | 'friends' | 'region'>('global');
   const { entries, loading, error, hasMore, loadMore } = useLeaderboard(activeTab);
   const { ranks } = useUserRank();
 
-  const tabs = [
-    { id: 'global' as const, label: '全球排行', icon: '🌍' },
-    { id: 'friends' as const, label: '好友排行', icon: '👥' },
-    { id: 'region' as const, label: '地区排行', icon: '📍' },
-  ];
-
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div style={{ minHeight: '100vh', background: 'var(--bg-secondary)', padding: '32px 0' }}>
+      <div style={{ maxWidth: 800, margin: '0 auto', padding: '0 24px' }}>
         {/* 页面标题 */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">排行榜</h1>
-          <p className="mt-2 text-gray-600">
+        <div style={{ marginBottom: 32 }}>
+          <h1 style={{ fontSize: 28, fontWeight: 700, color: 'var(--text-primary)', margin: 0 }}>
+            排行榜
+          </h1>
+          <p style={{ margin: '8px 0 0', color: 'var(--text-secondary)', fontSize: 14 }}>
             查看你在全球用户中的排名，与好友一较高下！
           </p>
         </div>
 
         {/* 用户排名卡片 */}
         {ranks && (
-          <div className="grid grid-cols-2 gap-4 mb-8">
-            <div className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg shadow-md p-6 text-white">
-              <p className="text-sm opacity-80">全球排名</p>
-              <p className="text-4xl font-bold mt-2">#{ranks.global}</p>
-              <p className="text-sm mt-2 opacity-80">全球用户中的位置</p>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 32 }}>
+            <div
+              style={{
+                background: 'linear-gradient(135deg, var(--primary-600), #1D4ED8)',
+                borderRadius: 'var(--radius-lg)',
+                padding: 24,
+                boxShadow: 'var(--shadow-md)',
+                color: 'white',
+              }}
+            >
+              <p style={{ fontSize: 13, opacity: 0.8, margin: 0 }}>全球排名</p>
+              <p style={{ fontSize: 36, fontWeight: 700, margin: '8px 0' }}>#{ranks.global}</p>
+              <p style={{ fontSize: 13, opacity: 0.8, margin: 0 }}>全球用户中的位置</p>
             </div>
-            <div className="bg-gradient-to-br from-purple-500 to-purple-600 rounded-lg shadow-md p-6 text-white">
-              <p className="text-sm opacity-80">好友排名</p>
-              <p className="text-4xl font-bold mt-2">#{ranks.friends}</p>
-              <p className="text-sm mt-2 opacity-80">好友中的位置</p>
+            <div
+              style={{
+                background: 'linear-gradient(135deg, #7C3AED, #6D28D9)',
+                borderRadius: 'var(--radius-lg)',
+                padding: 24,
+                boxShadow: 'var(--shadow-md)',
+                color: 'white',
+              }}
+            >
+              <p style={{ fontSize: 13, opacity: 0.8, margin: 0 }}>好友排名</p>
+              <p style={{ fontSize: 36, fontWeight: 700, margin: '8px 0' }}>#{ranks.friends}</p>
+              <p style={{ fontSize: 13, opacity: 0.8, margin: 0 }}>好友中的位置</p>
             </div>
           </div>
         )}
 
         {/* 标签页 */}
-        <div className="flex space-x-1 bg-gray-100 p-1 rounded-lg mb-6">
-          {tabs.map((tab) => (
+        <div
+          style={{
+            display: 'flex',
+            gap: 4,
+            background: 'var(--bg-secondary)',
+            padding: 4,
+            borderRadius: 'var(--radius-lg)',
+            marginBottom: 24,
+            border: '1px solid var(--border-light)',
+          }}
+        >
+          {TABS.map((tab) => (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`flex-1 flex items-center justify-center gap-2 py-2 px-4 rounded-md text-sm font-medium transition-colors ${
-                activeTab === tab.id
-                  ? 'bg-white text-gray-900 shadow-sm'
-                  : 'text-gray-600 hover:text-gray-900'
-              }`}
+              style={{
+                flex: 1,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: 8,
+                padding: '10px 16px',
+                border: 'none',
+                borderRadius: 'var(--radius-md)',
+                fontSize: 14,
+                fontWeight: 500,
+                cursor: 'pointer',
+                background: activeTab === tab.id ? 'var(--bg-card)' : 'transparent',
+                color: activeTab === tab.id ? 'var(--text-primary)' : 'var(--text-muted)',
+                boxShadow: activeTab === tab.id ? 'var(--shadow-sm)' : 'none',
+                transition: 'all 0.15s',
+              }}
             >
               <span>{tab.icon}</span>
               <span>{tab.label}</span>
@@ -60,15 +100,34 @@ const LeaderboardPage: React.FC = () => {
 
         {/* 错误提示 */}
         {error && (
-          <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
-            <p className="text-red-600">{error}</p>
+          <div
+            style={{
+              padding: '12px 16px',
+              borderRadius: 'var(--radius-md)',
+              background: 'var(--danger-50)',
+              color: 'var(--danger-700)',
+              border: '1px solid var(--danger-200)',
+              marginBottom: 24,
+              fontSize: 14,
+            }}
+          >
+            {error}
           </div>
         )}
 
-        {/* 排行榜表格 */}
+        {/* 加载/内容 */}
         {loading && entries.length === 0 ? (
-          <div className="flex justify-center py-12">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
+          <div style={{ display: 'flex', justifyContent: 'center', padding: 48 }}>
+            <div
+              style={{
+                width: 40,
+                height: 40,
+                borderRadius: '50%',
+                border: '3px solid var(--border-light)',
+                borderTopColor: 'var(--primary-600)',
+                animation: 'spin 0.8s linear infinite',
+              }}
+            />
           </div>
         ) : (
           <>
@@ -76,13 +135,23 @@ const LeaderboardPage: React.FC = () => {
               entries={entries}
               showFriendIndicator={activeTab === 'friends'}
             />
-
             {hasMore && (
-              <div className="text-center mt-6">
+              <div style={{ textAlign: 'center', marginTop: 24 }}>
                 <button
                   onClick={loadMore}
                   disabled={loading}
-                  className="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:opacity-50"
+                  style={{
+                    padding: '10px 24px',
+                    background: 'var(--primary-600)',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: 'var(--radius-md)',
+                    fontSize: 14,
+                    fontWeight: 600,
+                    cursor: loading ? 'not-allowed' : 'pointer',
+                    opacity: loading ? 0.7 : 1,
+                    transition: 'opacity 0.15s',
+                  }}
                 >
                   {loading ? '加载中...' : '加载更多'}
                 </button>
