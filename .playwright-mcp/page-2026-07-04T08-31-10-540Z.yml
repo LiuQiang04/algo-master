@@ -1,0 +1,53 @@
+- generic [ref=f3e3]:
+  - navigation [ref=f3e4]:
+    - generic [ref=f3e5]:
+      - link "AlgoArena" [ref=f3e6] [cursor=pointer]:
+        - /url: /
+        - img [ref=f3e7]
+        - generic [ref=f3e11]: AlgoArena
+      - generic [ref=f3e12]:
+        - link "Problems" [ref=f3e13] [cursor=pointer]:
+          - /url: /problems
+          - img [ref=f3e14]
+          - generic [ref=f3e16]: Problems
+        - link "Contests" [ref=f3e17] [cursor=pointer]:
+          - /url: /contests
+          - img [ref=f3e18]
+          - generic [ref=f3e24]: Contests
+        - link "Community" [ref=f3e25] [cursor=pointer]:
+          - /url: /community
+          - img [ref=f3e26]
+          - generic [ref=f3e31]: Community
+      - generic [ref=f3e33]:
+        - img [ref=f3e34]
+        - textbox "Search community..." [ref=f3e37]
+      - generic [ref=f3e38]:
+        - link [ref=f3e39] [cursor=pointer]:
+          - /url: /notifications
+          - img [ref=f3e40]
+        - link [ref=f3e43] [cursor=pointer]:
+          - /url: /messages
+          - img [ref=f3e44]
+        - button "A alice_wang" [ref=f3e47] [cursor=pointer]:
+          - generic [ref=f3e48]: A
+          - generic [ref=f3e49]: alice_wang
+          - img [ref=f3e50]
+        - button [ref=f3e52] [cursor=pointer]:
+          - img [ref=f3e53]
+  - main [ref=f3e54]:
+    - generic [ref=f3e56]:
+      - generic [ref=f3e57]:
+        - heading "排行榜" [level=1] [ref=f3e58]
+        - paragraph [ref=f3e59]: 查看你在全球用户中的排名，与好友一较高下！
+      - generic [ref=f3e60]:
+        - button "🌍 全球排行" [ref=f3e61] [cursor=pointer]:
+          - generic [ref=f3e62]: 🌍
+          - generic [ref=f3e63]: 全球排行
+        - button "👥 好友排行" [ref=f3e64] [cursor=pointer]:
+          - generic [ref=f3e65]: 👥
+          - generic [ref=f3e66]: 好友排行
+        - button "📍 地区排行" [ref=f3e67] [cursor=pointer]:
+          - generic [ref=f3e68]: 📍
+          - generic [ref=f3e69]: 地区排行
+  - contentinfo [ref=f3e72]:
+    - paragraph [ref=f3e74]: AlgoArena - Algorithm Competition Learning Platform

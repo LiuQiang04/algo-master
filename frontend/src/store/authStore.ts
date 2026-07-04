@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import api from '../api/client';
+import { useAuthStore as usePersistentAuthStore } from '../stores/useAuthStore';
 
 interface User {
   id: string;
@@ -29,23 +30,26 @@ export const useAuthStore = create<AuthState>((set) => ({
 
   login: async (login, password) => {
     const { data } = await api.post('/auth/login', { login, password });
-    const { user, token } = data.data;
-    localStorage.setItem('token', token);
+    const { user, accessToken } = data.data;
+    localStorage.setItem('token', accessToken);
     localStorage.setItem('user', JSON.stringify(user));
-    set({ user, token });
+    usePersistentAuthStore.getState().setAuth(accessToken, user);
+    set({ user, token: accessToken });
   },
 
   register: async (username, email, password) => {
     const { data } = await api.post('/auth/register', { username, email, password });
-    const { user, token } = data.data;
-    localStorage.setItem('token', token);
+    const { user, accessToken } = data.data;
+    localStorage.setItem('token', accessToken);
     localStorage.setItem('user', JSON.stringify(user));
-    set({ user, token });
+    usePersistentAuthStore.getState().setAuth(accessToken, user);
+    set({ user, token: accessToken });
   },
 
   logout: () => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
+    usePersistentAuthStore.getState().logout();
     set({ user: null, token: null });
   },
 

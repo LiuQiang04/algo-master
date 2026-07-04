@@ -1,0 +1,125 @@
+- generic [ref=f3e3]:
+  - navigation [ref=f3e4]:
+    - generic [ref=f3e5]:
+      - link "AlgoArena" [ref=f3e6] [cursor=pointer]:
+        - /url: /
+        - img [ref=f3e7]
+        - generic [ref=f3e11]: AlgoArena
+      - generic [ref=f3e12]:
+        - link "Problems" [ref=f3e13] [cursor=pointer]:
+          - /url: /problems
+          - img [ref=f3e14]
+          - generic [ref=f3e16]: Problems
+        - link "Contests" [ref=f3e17] [cursor=pointer]:
+          - /url: /contests
+          - img [ref=f3e18]
+          - generic [ref=f3e24]: Contests
+        - link "Community" [ref=f3e25] [cursor=pointer]:
+          - /url: /community
+          - img [ref=f3e26]
+          - generic [ref=f3e31]: Community
+      - generic [ref=f3e33]:
+        - img [ref=f3e34]
+        - textbox "Search community..." [ref=f3e37]
+      - generic [ref=f3e38]:
+        - link [ref=f3e73] [cursor=pointer]:
+          - /url: /notifications
+          - img [ref=f3e74]
+        - link [ref=f3e77] [cursor=pointer]:
+          - /url: /messages
+          - img [ref=f3e78]
+        - button "A alice_wang" [ref=f3e81] [cursor=pointer]:
+          - generic [ref=f3e82]: A
+          - generic [ref=f3e83]: alice_wang
+          - img [ref=f3e84]
+        - button [ref=f3e42] [cursor=pointer]:
+          - img [ref=f3e43]
+  - main [ref=f3e44]:
+    - generic [ref=f3e86]:
+      - generic [ref=f3e87]:
+        - generic [ref=f3e88]:
+          - heading "Community" [level=1] [ref=f3e89]
+          - paragraph [ref=f3e90]: Discuss algorithms, share solutions, and learn together
+        - link "New Post" [ref=f3e91] [cursor=pointer]:
+          - /url: /community/new
+          - img [ref=f3e92]
+          - text: New Post
+      - generic [ref=f3e93]:
+        - complementary [ref=f3e94]:
+          - generic [ref=f3e95]:
+            - heading "Post Type" [level=3] [ref=f3e96]:
+              - img [ref=f3e97]
+              - text: Post Type
+            - button "All" [ref=f3e99] [cursor=pointer]
+            - button "Discussions" [ref=f3e100] [cursor=pointer]
+            - button "Solutions" [ref=f3e101] [cursor=pointer]
+            - button "Questions" [ref=f3e102] [cursor=pointer]
+          - heading "Popular Tags" [level=3] [ref=f3e104]
+        - generic [ref=f3e105]:
+          - generic [ref=f3e107]:
+            - button "Latest" [ref=f3e108] [cursor=pointer]:
+              - img [ref=f3e109]
+              - text: Latest
+            - button "Top" [ref=f3e112] [cursor=pointer]:
+              - img [ref=f3e113]
+              - text: Top
+          - generic [ref=f3e116]:
+            - link "45 votes discussion Welcome to Algo OJ! Welcome everyone! This is the place to discuss algorithms, share solutions, and help each other grow. Feel free to ask questions and share your knowle C charlie_li 10 days ago 0" [ref=f3e117] [cursor=pointer]:
+              - /url: /posts/bad68092-25f0-435f-bb1c-56d9a2b6707b
+              - generic [ref=f3e118]:
+                - generic [ref=f3e119]: "45"
+                - generic [ref=f3e120]: votes
+              - generic [ref=f3e121]:
+                - generic [ref=f3e122]:
+                  - generic [ref=f3e123]: discussion
+                  - heading "Welcome to Algo OJ!" [level=3] [ref=f3e124]
+                - paragraph [ref=f3e125]: Welcome everyone! This is the place to discuss algorithms, share solutions, and help each other grow. Feel free to ask questions and share your knowle
+                - generic [ref=f3e126]:
+                  - generic [ref=f3e127]:
+                    - generic [ref=f3e128]: C
+                    - generic [ref=f3e129]: charlie_li
+                  - generic [ref=f3e130]: 10 days ago
+                  - generic [ref=f3e131]:
+                    - img [ref=f3e132]
+                    - text: "0"
+                  - img [ref=f3e135]
+            - 'link "32 votes solution [Solution] Maximum Subarray Sum - Kadane Algorithm Explained In this post, I will explain the Kadane algorithm for finding the maximum subarray sum. The key insight is: if the running sum becomes negative, we r M moderator 10 days ago 0" [ref=f3e138] [cursor=pointer]':
+              - /url: /posts/65886a61-df39-4ef6-aacc-5757cda289c4
+              - generic [ref=f3e139]:
+                - generic [ref=f3e140]: "32"
+                - generic [ref=f3e141]: votes
+              - generic [ref=f3e142]:
+                - generic [ref=f3e143]:
+                  - generic [ref=f3e144]: solution
+                  - heading "[Solution] Maximum Subarray Sum - Kadane Algorithm Explained" [level=3] [ref=f3e145]
+                - paragraph [ref=f3e146]: "In this post, I will explain the Kadane algorithm for finding the maximum subarray sum. The key insight is: if the running sum becomes negative, we r"
+                - generic [ref=f3e147]:
+                  - generic [ref=f3e148]:
+                    - generic [ref=f3e149]: M
+                    - generic [ref=f3e150]: moderator
+                  - generic [ref=f3e151]: 10 days ago
+                  - generic [ref=f3e152]:
+                    - img [ref=f3e153]
+                    - text: "0"
+                  - img [ref=f3e156]
+            - link "15 votes question How to approach DP problems? I have been struggling with dynamic programming problems. Can anyone share some tips on how to identify DP problems and come up with the recurrence re A alice_wang 10 days ago 2" [ref=f3e159] [cursor=pointer]:
+              - /url: /posts/74751b8a-dc04-42bd-8b3d-974b2dd12459
+              - generic [ref=f3e160]:
+                - generic [ref=f3e161]: "15"
+                - generic [ref=f3e162]: votes
+              - generic [ref=f3e163]:
+                - generic [ref=f3e164]:
+                  - generic [ref=f3e165]: question
+                  - heading "How to approach DP problems?" [level=3] [ref=f3e166]
+                - paragraph [ref=f3e167]: I have been struggling with dynamic programming problems. Can anyone share some tips on how to identify DP problems and come up with the recurrence re
+                - generic [ref=f3e168]:
+                  - generic [ref=f3e169]:
+                    - generic [ref=f3e170]: A
+                    - generic [ref=f3e171]: alice_wang
+                  - generic [ref=f3e172]: 10 days ago
+                  - generic [ref=f3e173]:
+                    - img [ref=f3e174]
+                    - text: "2"
+                  - img [ref=f3e177]
+  - contentinfo [ref=f3e70]:
+    - paragraph [ref=f3e72]: AlgoArena - Algorithm Competition Learning Platform

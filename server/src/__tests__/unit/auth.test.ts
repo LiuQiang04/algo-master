@@ -65,17 +65,16 @@ describe("Auth Middleware", () => {
 
   describe("authenticate", () => {
     it("should throw UnauthorizedError when no authorization header is provided", async () => {
-      await expect(
-        authenticate(req as AuthRequest, res as Response, next)
-      ).rejects.toThrow(UnauthorizedError);
+      await authenticate(req as AuthRequest, res as Response, next);
+
+      expect(next).toHaveBeenCalledWith(expect.any(UnauthorizedError));
     });
 
     it("should throw UnauthorizedError when header does not start with 'Bearer '", async () => {
       req.headers = { authorization: "Basic sometoken" };
 
-      await expect(
-        authenticate(req as AuthRequest, res as Response, next)
-      ).rejects.toThrow(UnauthorizedError);
+      await authenticate(req as AuthRequest, res as Response, next);
+      expect(next).toHaveBeenCalledWith(expect.any(UnauthorizedError));
     });
 
     it("should throw UnauthorizedError when token verification fails", async () => {
@@ -84,9 +83,8 @@ describe("Auth Middleware", () => {
         throw new Error("Invalid token");
       });
 
-      await expect(
-        authenticate(req as AuthRequest, res as Response, next)
-      ).rejects.toThrow(UnauthorizedError);
+      await authenticate(req as AuthRequest, res as Response, next);
+      expect(next).toHaveBeenCalledWith(expect.any(UnauthorizedError));
     });
 
     it("should throw UnauthorizedError when user is not found in database", async () => {
@@ -99,9 +97,8 @@ describe("Auth Middleware", () => {
       });
       (mockPrisma.user.findUnique as jest.Mock).mockResolvedValue(null);
 
-      await expect(
-        authenticate(req as AuthRequest, res as Response, next)
-      ).rejects.toThrow(UnauthorizedError);
+      await authenticate(req as AuthRequest, res as Response, next);
+      expect(next).toHaveBeenCalledWith(expect.any(UnauthorizedError));
     });
 
     it("should call next and set req.user when authentication succeeds", async () => {
@@ -210,19 +207,18 @@ describe("Auth Middleware", () => {
   describe("authorize", () => {
     it("should throw UnauthorizedError when user is not set", () => {
       const middleware = authorize("admin");
+      middleware(req as AuthRequest, res as Response, next);
 
-      expect(() => {
-        middleware(req as AuthRequest, res as Response, next);
-      }).toThrow(UnauthorizedError);
+      expect(next).toHaveBeenCalledWith(expect.any(UnauthorizedError));
     });
 
     it("should throw ForbiddenError when user role is not allowed", () => {
       req.user = { ...testUser, role: "user" };
       const middleware = authorize("admin");
 
-      expect(() => {
-        middleware(req as AuthRequest, res as Response, next);
-      }).toThrow(ForbiddenError);
+      middleware(req as AuthRequest, res as Response, next);
+
+      expect(next).toHaveBeenCalledWith(expect.any(ForbiddenError));
     });
 
     it("should call next when user role is allowed", () => {

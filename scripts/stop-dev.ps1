@@ -10,11 +10,11 @@ function Kill-ProcessOnPort {
     param([int]$Port)
     $conn = netstat -ano | Select-String ":$Port\s"
     if ($conn) {
-        $pid = ($conn -split '\s+')[-1]
-        $process = Get-Process -Id $pid -ErrorAction SilentlyContinue
+        $procId = ($conn -split '\s+')[-1]
+        $process = Get-Process -Id $procId -ErrorAction SilentlyContinue
         if ($process -and $process.Name -ne "System") {
-            Stop-Process -Id $pid -Force -ErrorAction SilentlyContinue
-            Write-Status "  → 已关闭端口 $Port (PID: $pid)" Green
+            Stop-Process -Id $procId -Force -ErrorAction SilentlyContinue
+            Write-Status "  → 已关闭端口 $Port (PID: $procId)" Green
         }
     } else {
         Write-Status "  → 端口 $Port 无进程" Gray

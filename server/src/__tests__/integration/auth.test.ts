@@ -51,7 +51,10 @@ function createAuthTestApp() {
   // Protected route
   app.get("/api/protected", async (req, res, next) => {
     try {
-      await authenticate(req as AuthRequest, res, () => {
+      await authenticate(req as AuthRequest, res, (err?: any) => {
+        if (err) {
+          return res.status(err.statusCode || 401).json({ error: err.message });
+        }
         res.json({ message: "Access granted", user: (req as AuthRequest).user });
       });
     } catch (error: any) {

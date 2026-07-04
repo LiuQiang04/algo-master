@@ -14,11 +14,11 @@ function Kill-ProcessOnPort {
     param([int]$Port)
     $conn = netstat -ano | Select-String ":$Port\s"
     if ($conn) {
-        $pid = ($conn -split '\s+')[-1]
-        $process = Get-Process -Id $pid -ErrorAction SilentlyContinue
+        $procId = ($conn -split '\s+')[-1]
+        $process = Get-Process -Id $procId -ErrorAction SilentlyContinue
         if ($process -and $process.Name -ne "System") {
-            Stop-Process -Id $pid -Force -ErrorAction SilentlyContinue
-            Write-Status "  → 已关闭端口 $Port (PID: $pid)" Yellow
+            Stop-Process -Id $procId -Force -ErrorAction SilentlyContinue
+            Write-Status "  → 已关闭端口 $Port (PID: $procId)" Yellow
         }
     }
 }
@@ -39,11 +39,22 @@ if ($pgRunning) {
 # 2. 启动 Redis（如果不在运行）
 $redisPort = netstat -ano | Select-String ":6379\s" | Select-String "LISTENING"
 if (-not $redisPort) {
-    try {
-        docker start algo-redis 2>$null
-        if (-not $?) { docker run -d --name algo-redis -p 6379:6379 redis:7-alpine 2>$null }
+    Write-Status "启动 Redis..." Yellow
+    # 先确保 Docker Desktop 在运行
+    $dockerRunning = $true
+    try { docker ps 2>&1 | Out-Null } catch { $dockerRunning = $false }
+    if (-not $dockerRunning) {
+        Write-Status "启动 Docker Desktop..." Yellow
+        Start-Process -FilePath "D:\smallapps\Docker\Docker Desktop.exe"
+        Start-Sleep -Seconds 15
+    }
+    # 启动 Redis 容器
+    docker start algo-redis 2>$null
+    if (-not $?) { docker run -d --name algo-redis -p 6379:6379 redis:7-alpine 2>$null }
+    if ($?) {
+        Start-Sleep -Seconds 3
         Write-Status "Redis 已启动" Green
-    } catch {
+    } else {
         Write-Status "Redis 启动失败（不影响核心功能）" Yellow
     }
 } else {
@@ -60,11 +71,8 @@ Start-Sleep -Seconds 1
 
 # 4. 启动 Server
 Write-Status "启动 Server (端口 3001)..." Yellow
-$serverJob = Start-Job -Name "AlgoServer" -ScriptBlock {
-    Set-Location "D:\Files\school\project\20260607\server"
-    npm run dev
-}
-Start-Sleep -Seconds 4
+Start-Process -NoNewWindow -FilePath "cmd.exe" -ArgumentList "/c cd /d D:\Files\school\project\20260607\server && npm run dev"
+Start-Sleep -Seconds 5
 
 # 检查 Server 是否成功启动
 $serverRunning = netstat -ano | Select-String ":3001\s" | Select-String "LISTENING"
@@ -76,11 +84,8 @@ if ($serverRunning) {
 
 # 5. 启动 Frontend
 Write-Status "启动 Frontend (端口 5173)..." Yellow
-$frontendJob = Start-Job -Name "AlgoFrontend" -ScriptBlock {
-    Set-Location "D:\Files\school\project\20260607\frontend"
-    npm run dev
-}
-Start-Sleep -Seconds 4
+Start-Process -NoNewWindow -FilePath "cmd.exe" -ArgumentList "/c cd /d D:\Files\school\project\20260607\frontend && npm run dev"
+Start-Sleep -Seconds 5
 
 # 检查 Frontend 是否成功启动
 $frontendPorts = @(5173, 5174, 5175)

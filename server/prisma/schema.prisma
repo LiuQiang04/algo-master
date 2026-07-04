@@ -19,6 +19,7 @@ model User {
   rating           Int      @default(1500)
   experiencePoints Int      @default(0) @map("experience_points")
   level            Int      @default(1)
+  role             String   @default("user") @db.VarChar(20)
   region           String?  @db.VarChar(100)
   title            String?  @db.VarChar(100)
   createdAt        DateTime @default(now()) @map("created_at")

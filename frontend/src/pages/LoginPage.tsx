@@ -24,7 +24,7 @@ export default function LoginPage() {
       await login(loginField, password);
       navigate('/community');
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Login failed');
+      setError(err.response?.data?.error?.message || err.response?.data?.message || 'Login failed');
     } finally {
       setLoading(false);
     }

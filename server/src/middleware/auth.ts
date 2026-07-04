@@ -41,9 +41,9 @@ export async function authenticate(
     next();
   } catch (error) {
     if (error instanceof UnauthorizedError) {
-      throw error;
+      return next(error);
     }
-    throw new UnauthorizedError('无效的认证令牌');
+    return next(new UnauthorizedError('无效的认证令牌'));
   }
 }
 
@@ -79,11 +79,11 @@ export async function optionalAuth(
 export function authorize(...roles: string[]) {
   return (req: AuthRequest, _res: Response, next: NextFunction): void => {
     if (!req.user) {
-      throw new UnauthorizedError('请先登录');
+      return next(new UnauthorizedError('请先登录'));
     }
 
     if (!roles.includes(req.user.role)) {
-      throw new ForbiddenError('没有权限执行此操作');
+      return next(new ForbiddenError('没有权限执行此操作'));
     }
 
     next();

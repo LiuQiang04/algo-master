@@ -154,55 +154,60 @@ export async function refreshToken(token: string) {
 
 // 更新登录连续天数
 async function updateLoginStreak(userId: string) {
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
+  try {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
 
-  const yesterday = new Date(today);
-  yesterday.setDate(yesterday.getDate() - 1);
+    const yesterday = new Date(today);
+    yesterday.setDate(yesterday.getDate() - 1);
 
-  // 检查今天的登录记录
-  const todayStreak = await prisma.loginStreak.findUnique({
-    where: {
-      userId_loginDate: {
+    // 检查今天的登录记录
+    const todayStreak = await prisma.loginStreak.findUnique({
+      where: {
+        userId_loginDate: {
+          userId,
+          loginDate: today,
+        },
+      },
+    });
+
+    if (todayStreak) {
+      return; // 今天已经登录过
+    }
+
+    // 检查昨天的登录记录
+    const yesterdayStreak = await prisma.loginStreak.findUnique({
+      where: {
+        userId_loginDate: {
+          userId,
+          loginDate: yesterday,
+        },
+      },
+    });
+
+    const streakDays = yesterdayStreak ? yesterdayStreak.streakDays + 1 : 1;
+
+    // 创建今天的登录记录
+    await prisma.loginStreak.create({
+      data: {
         userId,
         loginDate: today,
+        streakDays,
       },
-    },
-  });
+    });
 
-  if (todayStreak) {
-    return; // 今天已经登录过
-  }
+    // 如果连续登录7天或30天，给予奖励
+    if (streakDays === 7 || streakDays === 30) {
+      const { addPoints, POINT_RULES } = await import('./gamification/points');
+      const bonusPoints = streakDays === 7
+        ? POINT_RULES.LOGIN_STREAK_7
+        : POINT_RULES.LOGIN_STREAK_30;
 
-  // 检查昨天的登录记录
-  const yesterdayStreak = await prisma.loginStreak.findUnique({
-    where: {
-      userId_loginDate: {
-        userId,
-        loginDate: yesterday,
-      },
-    },
-  });
-
-  const streakDays = yesterdayStreak ? yesterdayStreak.streakDays + 1 : 1;
-
-  // 创建今天的登录记录
-  await prisma.loginStreak.create({
-    data: {
-      userId,
-      loginDate: today,
-      streakDays,
-    },
-  });
-
-  // 如果连续登录7天或30天，给予奖励
-  if (streakDays === 7 || streakDays === 30) {
-    const { addPoints, POINT_RULES } = await import('./gamification/points');
-    const bonusPoints = streakDays === 7
-      ? POINT_RULES.LOGIN_STREAK_7
-      : POINT_RULES.LOGIN_STREAK_30;
-
-    await addPoints(userId, bonusPoints, 'login_streak', `连续登录${streakDays}天奖励`);
+      await addPoints(userId, bonusPoints, 'login_streak', `连续登录${streakDays}天奖励`);
+    }
+  } catch (error) {
+    // 登录连续天数更新失败不应该阻止登录
+    console.error('Failed to update login streak:', error);
   }
 }
 

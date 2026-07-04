@@ -1,0 +1,53 @@
+- generic [ref=e3]:
+  - navigation [ref=e4]:
+    - generic [ref=e5]:
+      - link "AlgoArena" [ref=e6] [cursor=pointer]:
+        - /url: /
+        - img [ref=e7]
+        - generic [ref=e11]: AlgoArena
+      - generic [ref=e12]:
+        - link "Problems" [ref=e13] [cursor=pointer]:
+          - /url: /problems
+          - img [ref=e14]
+          - generic [ref=e16]: Problems
+        - link "Contests" [ref=e17] [cursor=pointer]:
+          - /url: /contests
+          - img [ref=e18]
+          - generic [ref=e24]: Contests
+        - link "Community" [ref=e25] [cursor=pointer]:
+          - /url: /community
+          - img [ref=e26]
+          - generic [ref=e31]: Community
+      - generic [ref=e33]:
+        - img [ref=e34]
+        - textbox "Search community..." [ref=e37]
+      - generic [ref=e38]:
+        - link [ref=e39] [cursor=pointer]:
+          - /url: /notifications
+          - img [ref=e40]
+        - link [ref=e43] [cursor=pointer]:
+          - /url: /messages
+          - img [ref=e44]
+        - button "A alice_wang" [ref=e47] [cursor=pointer]:
+          - generic [ref=e48]: A
+          - generic [ref=e49]: alice_wang
+          - img [ref=e50]
+        - button [ref=e52] [cursor=pointer]:
+          - img [ref=e53]
+  - main [ref=e54]:
+    - generic [ref=e56]:
+      - generic [ref=e57]:
+        - heading "排行榜" [level=1] [ref=e58]
+        - paragraph [ref=e59]: 查看你在全球用户中的排名，与好友一较高下！
+      - generic [ref=e60]:
+        - button "🌍 全球排行" [ref=e61] [cursor=pointer]:
+          - generic [ref=e62]: 🌍
+          - generic [ref=e63]: 全球排行
+        - button "👥 好友排行" [ref=e64] [cursor=pointer]:
+          - generic [ref=e65]: 👥
+          - generic [ref=e66]: 好友排行
+        - button "📍 地区排行" [ref=e67] [cursor=pointer]:
+          - generic [ref=e68]: 📍
+          - generic [ref=e69]: 地区排行
+  - contentinfo [ref=e72]:
+    - paragraph [ref=e74]: AlgoArena - Algorithm Competition Learning Platform

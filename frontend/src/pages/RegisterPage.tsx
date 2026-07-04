@@ -34,7 +34,7 @@ export default function RegisterPage() {
       await register(username, email, password);
       navigate('/community');
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Registration failed');
+      setError(err.response?.data?.error?.message || err.response?.data?.message || 'Registration failed');
     } finally {
       setLoading(false);
     }

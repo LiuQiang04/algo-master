@@ -50,13 +50,15 @@ export function rateLimiter(options: RateLimiterOptions) {
       _res.setHeader('X-RateLimit-Reset', new Date(now + windowMs).toISOString());
 
       if (count > max) {
-        throw new RateLimitError(message);
+        next(new RateLimitError(message));
+        return;
       }
 
       next();
     } catch (error) {
       if (error instanceof RateLimitError) {
-        throw error;
+        next(error);
+        return;
       }
       // Redis错误时放行
       next();
