@@ -1,11 +1,11 @@
 import { Router, Response } from 'express';
-import { authenticate, AuthRequest } from '../middleware/auth';
+import { authenticate, optionalAuth, AuthRequest } from '../middleware/auth';
 import { getLeaderboard, getUserRank, LeaderboardType } from '../services/gamification/leaderboard';
 
 const router = Router();
 
 // 获取排行榜
-router.get('/:type', async (req: AuthRequest, res: Response) => {
+router.get('/:type', optionalAuth, async (req: AuthRequest, res: Response) => {
   try {
     const { type } = req.params;
     const page = parseInt(req.query.page as string) || 1;
