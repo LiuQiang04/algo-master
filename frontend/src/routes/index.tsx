@@ -18,6 +18,19 @@ const Login = lazy(() => import('@/pages/LoginPage'));
 const Register = lazy(() => import('@/pages/RegisterPage'));
 const LearningPaths = lazy(() => import('@/pages/LearningPaths/LearningPaths'));
 const LearningPathDetail = lazy(() => import('@/pages/LearningPaths/LearningPathDetail'));
+const CommunityPage = lazy(() => import('@/pages/CommunityPage'));
+const CreatePostPage = lazy(() => import('@/pages/CreatePostPage'));
+const PostDetailPage = lazy(() => import('@/pages/PostDetailPage'));
+const UserProfilePage = lazy(() => import('@/pages/UserProfilePage'));
+const MessagesPage = lazy(() => import('@/pages/MessagesPage'));
+const NotificationsPage = lazy(() => import('@/pages/NotificationsPage'));
+const FeedPage = lazy(() => import('@/pages/FeedPage'));
+const GamificationHub = lazy(() => import('@/pages/Gamification/GamificationHubPage'));
+const AchievementsPage = lazy(() => import('@/pages/Gamification/AchievementsPage'));
+const LeaderboardPage = lazy(() => import('@/pages/Gamification/LeaderboardPage'));
+const DailyChallengePage = lazy(() => import('@/pages/Gamification/DailyChallengePage'));
+const VirtualItemsPage = lazy(() => import('@/pages/Gamification/VirtualItemsPage'));
+const PointsPage = lazy(() => import('@/pages/Gamification/PointsPage'));
 
 function LazyPage({ children }: { children: ReactNode }) {
   return (
@@ -48,6 +61,21 @@ export const router = createBrowserRouter([
       { path: 'paths/:id', element: <LazyPage><LearningPathDetail /></LazyPage> },
       { path: 'login', element: <LazyPage><Login /></LazyPage> },
       { path: 'register', element: <LazyPage><Register /></LazyPage> },
+      // 社区路由
+      { path: 'community', element: <LazyPage><CommunityPage /></LazyPage> },
+      { path: 'community/new', element: <LazyPage><CreatePostPage /></LazyPage> },
+      { path: 'posts/:id', element: <LazyPage><PostDetailPage /></LazyPage> },
+      { path: 'users/:id', element: <LazyPage><UserProfilePage /></LazyPage> },
+      { path: 'messages', element: <LazyPage><MessagesPage /></LazyPage> },
+      { path: 'notifications', element: <LazyPage><NotificationsPage /></LazyPage> },
+      { path: 'feed', element: <LazyPage><FeedPage /></LazyPage> },
+      // 游戏化路由
+      { path: 'gamification', element: <LazyPage><GamificationHub /></LazyPage> },
+      { path: 'achievements', element: <LazyPage><AchievementsPage /></LazyPage> },
+      { path: 'leaderboard', element: <LazyPage><LeaderboardPage /></LazyPage> },
+      { path: 'daily-challenge', element: <LazyPage><DailyChallengePage /></LazyPage> },
+      { path: 'virtual-items', element: <LazyPage><VirtualItemsPage /></LazyPage> },
+      { path: 'points', element: <LazyPage><PointsPage /></LazyPage> },
       { path: '*', element: <Navigate to="/" replace /> },
     ],
   },
