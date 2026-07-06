@@ -56,10 +56,17 @@ describe("Footer Component", () => {
   it("should have resource links", () => {
     renderWithRouter(<Footer />);
 
-    expect(screen.getByText("教程")).toBeInTheDocument();
-    expect(screen.getByText("算法分类")).toBeInTheDocument();
-    expect(screen.getByText("数据结构")).toBeInTheDocument();
-    expect(screen.getByText("专项练习")).toBeInTheDocument();
+    expect(screen.getByText("学习路径")).toBeInTheDocument();
+    expect(screen.getByText("算法题库")).toBeInTheDocument();
+    expect(screen.getByText("成就系统")).toBeInTheDocument();
+    expect(screen.getByText("每日挑战")).toBeInTheDocument();
+  });
+
+  it("should have gamification link", () => {
+    renderWithRouter(<Footer />);
+
+    expect(screen.getByText("游戏化")).toBeInTheDocument();
+    expect(screen.getByText("游戏化").closest("a")).toHaveAttribute("href", "/gamification");
   });
 
   it("should have the correct grid layout", () => {
