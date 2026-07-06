@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { useGamificationOverview } from '../../hooks/useGamification';
 import {
   Award, BarChart3, CalendarCheck, Coins, Gift,
-  ChevronRight, Trophy, Flame, Sparkles,
+  ChevronRight, Trophy, Flame, Sparkles, AlertCircle,
 } from 'lucide-react';
 
 const hubCards = [
@@ -50,7 +50,7 @@ const hubCards = [
 ];
 
 const GamificationHubPage: React.FC = () => {
-  const { overview, loading } = useGamificationOverview();
+  const { overview, loading, error } = useGamificationOverview();
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-indigo-50/30 to-purple-50/30 px-6 py-10 lg:px-16 lg:py-16">
@@ -106,6 +106,19 @@ const GamificationHubPage: React.FC = () => {
       {loading && (
         <div className="max-w-5xl mx-auto flex justify-center py-20">
           <div className="animate-spin rounded-full w-12 h-12 border-b-2 border-indigo-500" />
+        </div>
+      )}
+
+      {/* 错误状态 */}
+      {error && !loading && (
+        <div className="max-w-5xl mx-auto mb-8">
+          <div className="bg-red-50 border border-red-200/70 rounded-2xl p-5 flex items-start gap-4 shadow-sm">
+            <AlertCircle size={22} className="text-red-500 mt-0.5 shrink-0" />
+            <div>
+              <p className="font-semibold text-red-700 mb-1">加载失败</p>
+              <p className="text-sm text-red-600">{error}</p>
+            </div>
+          </div>
         </div>
       )}
 
