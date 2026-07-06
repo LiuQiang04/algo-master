@@ -41,13 +41,17 @@ const VirtualItemsPage: React.FC = () => {
   const isLoading = itemsLoading || userItemsLoading;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50/80 to-pink-50 w-full px-6 lg:px-12 py-8 lg:py-12">
+    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50/80 to-pink-50 w-full px-8 lg:px-16 py-10 lg:py-16 relative overflow-hidden">
+      {/* 装饰光斑 */}
+      <div className="absolute -top-32 -right-32 w-96 h-96 bg-gradient-to-br from-purple-300/20 to-pink-300/10 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute -bottom-32 -left-32 w-96 h-96 bg-gradient-to-br from-indigo-300/15 to-blue-300/10 rounded-full blur-3xl pointer-events-none" />
+
       {/* 页面标题 */}
-      <div className="mb-8">
-        <h1 className="text-3xl lg:text-4xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+      <div className="mb-12 lg:mb-16">
+        <h1 className="text-5xl font-black bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
           虚拟商店
         </h1>
-        <p className="mt-2 text-gray-500">
+        <p className="mt-2 text-lg text-gray-500">
           使用积分兑换徽章、称号、头像框等虚拟物品，个性化你的主页！
         </p>
       </div>
@@ -55,17 +59,17 @@ const VirtualItemsPage: React.FC = () => {
       {/* 等级和积分信息 */}
       {levelInfo && (
         <div className="mb-8">
-          <LevelProgress levelInfo={levelInfo} />
+          <LevelProgress levelInfo={levelInfo} size="lg" />
         </div>
       )}
 
       {/* 标签页 - 玻璃容器 */}
-      <div className="flex gap-1 backdrop-blur-xl bg-white/60 border border-white/40 rounded-xl p-1.5 mb-8 shadow-lg shadow-purple-500/5">
+      <div className="flex gap-2 backdrop-blur-xl bg-white/60 border border-white/40 rounded-xl p-1.5 mb-8 shadow-lg shadow-purple-500/5">
         {tabs.map((tab) => (
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
-            className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-4 rounded-lg text-sm font-medium transition-all duration-200 ${
+            className={`flex-1 flex items-center justify-center gap-2 py-4 px-4 rounded-lg text-base font-medium transition-all duration-200 ${
               activeTab === tab.id
                 ? 'bg-gradient-to-r from-indigo-500 to-purple-600 text-white shadow-lg shadow-purple-500/20'
                 : 'text-gray-500 hover:text-gray-700 hover:bg-white/40'
@@ -81,12 +85,12 @@ const VirtualItemsPage: React.FC = () => {
       {isLoading ? (
         <div className="flex justify-center py-12">
           <div className="backdrop-blur-xl bg-white/70 border border-white/40 rounded-2xl p-8 shadow-lg shadow-purple-500/5 flex flex-col items-center gap-4">
-            <div className="animate-spin rounded-full h-10 w-10 border-2 border-indigo-400 border-t-transparent"></div>
-            <span className="text-sm text-gray-400">加载中...</span>
+            <div className="animate-spin rounded-full w-16 h-16 border-2 border-indigo-400 border-t-transparent"></div>
+            <span className="text-base text-gray-400">加载中...</span>
           </div>
         </div>
       ) : (
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-5">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
           {items.map((item) => (
             <VirtualItemCard
               key={item.id}
@@ -104,7 +108,7 @@ const VirtualItemsPage: React.FC = () => {
       {items.length === 0 && !isLoading && (
         <div className="text-center py-12">
           <div className="backdrop-blur-xl bg-white/70 border border-white/40 rounded-2xl p-10 shadow-lg shadow-purple-500/5 inline-block">
-            <p className="text-gray-400">暂无可兑换的物品</p>
+            <p className="text-lg text-gray-400">暂无可兑换的物品</p>
           </div>
         </div>
       )}
