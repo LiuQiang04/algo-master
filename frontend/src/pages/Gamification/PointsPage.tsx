@@ -21,7 +21,9 @@ const PointsPage: React.FC = () => {
       {/* 等级进度 */}
       {levelLoading ? (
         <div className="flex justify-center py-8">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-500"></div>
+          <div className="backdrop-blur-xl bg-white/70 border border-white/40 rounded-2xl p-8 shadow-lg">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-500 mx-auto"></div>
+          </div>
         </div>
       ) : levelInfo ? (
         <div className="mb-8">
@@ -54,7 +56,9 @@ const PointsPage: React.FC = () => {
       {/* 积分历史 */}
       {loading && history.length === 0 ? (
         <div className="flex justify-center py-12">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-500"></div>
+          <div className="backdrop-blur-xl bg-white/70 border border-white/40 rounded-2xl p-8 shadow-lg">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-500 mx-auto"></div>
+          </div>
         </div>
       ) : error ? (
         <div className="backdrop-blur-xl bg-red-50/70 border border-red-200/40 rounded-2xl shadow-lg p-4">
