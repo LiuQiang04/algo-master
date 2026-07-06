@@ -38,6 +38,11 @@ const Footer = () => {
                   排行榜
                 </Link>
               </li>
+              <li>
+                <Link to="/gamification" className="text-gray-400 hover:text-white text-sm transition-colors">
+                  游戏化
+                </Link>
+              </li>
             </ul>
           </div>
 
@@ -46,23 +51,23 @@ const Footer = () => {
             <h3 className="text-lg font-semibold mb-4">学习资源</h3>
             <ul className="space-y-2">
               <li>
-                <Link to="/tutorials" className="text-gray-400 hover:text-white text-sm transition-colors">
-                  教程
+                <Link to="/paths" className="text-gray-400 hover:text-white text-sm transition-colors">
+                  学习路径
                 </Link>
               </li>
               <li>
-                <Link to="/algorithms" className="text-gray-400 hover:text-white text-sm transition-colors">
-                  算法分类
+                <Link to="/problems" className="text-gray-400 hover:text-white text-sm transition-colors">
+                  算法题库
                 </Link>
               </li>
               <li>
-                <Link to="/data-structures" className="text-gray-400 hover:text-white text-sm transition-colors">
-                  数据结构
+                <Link to="/achievements" className="text-gray-400 hover:text-white text-sm transition-colors">
+                  成就系统
                 </Link>
               </li>
               <li>
-                <Link to="/practice" className="text-gray-400 hover:text-white text-sm transition-colors">
-                  专项练习
+                <Link to="/daily-challenge" className="text-gray-400 hover:text-white text-sm transition-colors">
+                  每日挑战
                 </Link>
               </li>
             </ul>
