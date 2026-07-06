@@ -57,7 +57,9 @@ const DailyChallengePage: React.FC = () => {
         <div className="lg:col-span-2 space-y-6">
           {challengeLoading ? (
             <div className="flex justify-center py-12">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-500"></div>
+              <div className="backdrop-blur-xl bg-white/70 border border-white/40 rounded-2xl p-8 shadow-lg">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-500 mx-auto"></div>
+              </div>
             </div>
           ) : (
             <DailyChallengeCard
@@ -70,7 +72,9 @@ const DailyChallengePage: React.FC = () => {
           {/* 每日任务列表 */}
           {tasksLoading ? (
             <div className="flex justify-center py-8">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
+              <div className="backdrop-blur-xl bg-white/70 border border-white/40 rounded-2xl p-6 shadow-lg">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-500 mx-auto"></div>
+              </div>
             </div>
           ) : tasksData ? (
             <DailyTaskList tasks={tasksData.tasks} />
@@ -81,7 +85,9 @@ const DailyChallengePage: React.FC = () => {
         <div>
           {calendarLoading ? (
             <div className="flex justify-center py-12">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-500"></div>
+              <div className="backdrop-blur-xl bg-white/70 border border-white/40 rounded-2xl p-8 shadow-lg">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-500 mx-auto"></div>
+              </div>
             </div>
           ) : (
             <LoginStreakCalendar

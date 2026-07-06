@@ -63,7 +63,7 @@ export const DailyChallengeCard: React.FC<DailyChallengeCardProps> = ({
 
       {isCompleted ? (
         <div className="text-center">
-          <div className="w-12 h-12 bg-green-400 rounded-full flex items-center justify-center mx-auto mb-2">
+          <div className="w-12 h-12 bg-gradient-to-br from-emerald-400 to-teal-500 rounded-full flex items-center justify-center mx-auto mb-2 shadow-lg shadow-emerald-500/20">
             <svg
               className="w-6 h-6 text-white"
               fill="none"
