@@ -38,89 +38,72 @@ const AchievementCard: React.FC<AchievementCardProps> = ({
 
   return (
     <div
-      className={`relative bg-white rounded-lg shadow-md p-4 border-2 transition-all hover:shadow-lg ${
+      className={`relative backdrop-blur-xl bg-white/70 border rounded-2xl p-5 transition-all duration-300 hover:shadow-xl hover:-translate-y-0.5 ${
         isUnlocked || isUserAchievement
-          ? rarityBorders[rarity]
-          : 'border-gray-200 opacity-60'
+          ? rarityBorders[rarity] + ' shadow-lg shadow-purple-500/5'
+          : 'border-white/30 opacity-50 grayscale'
       }`}
     >
-      {/* 稀有度标签 */}
+      {/* Rarity tag - glass badge instead of solid gradient */}
       <div
-        className={`absolute top-2 right-2 px-2 py-1 rounded text-xs text-white bg-gradient-to-r ${
-          rarityColors[rarity]
+        className={`absolute top-3 right-3 px-2.5 py-1 rounded-full text-xs font-medium backdrop-blur-sm bg-white/80 text-gray-700 border border-white/60 shadow-sm ${
+          rarity === 'legendary' ? 'text-amber-600' :
+          rarity === 'epic' ? 'text-purple-600' :
+          rarity === 'rare' ? 'text-blue-600' :
+          'text-gray-500'
         }`}
       >
         {rarityLabels[rarity]}
       </div>
 
-      <div className="flex items-start gap-3">
-        {/* 图标 */}
+      <div className="flex items-start gap-4">
+        {/* Icon - larger, gradient, with glass overlay effect */}
         <div
-          className={`w-12 h-12 rounded-lg flex items-center justify-center bg-gradient-to-br ${
+          className={`w-14 h-14 rounded-xl flex items-center justify-center bg-gradient-to-br shadow-inner ${
             isUnlocked || isUserAchievement
               ? rarityColors[rarity]
               : 'from-gray-300 to-gray-400'
           }`}
         >
           {achievement.iconUrl ? (
-            <img
-              src={achievement.iconUrl}
-              alt={achievement.name}
-              className="w-8 h-8"
-            />
+            <img src={achievement.iconUrl} alt={achievement.name} className="w-9 h-9 drop-shadow" />
           ) : (
-            <svg
-              className="w-6 h-6 text-white"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"
-              />
+            <svg className="w-7 h-7 text-white drop-shadow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
             </svg>
           )}
         </div>
 
-        {/* 内容 */}
+        {/* Content */}
         <div className="flex-1">
           <h3 className="font-semibold text-gray-800">{achievement.name}</h3>
           <p className="text-sm text-gray-500 mt-1">{achievement.description}</p>
 
-          {/* 积分奖励 */}
-          <div className="flex items-center gap-1 mt-2">
-            <svg
-              className="w-4 h-4 text-yellow-500"
-              fill="currentColor"
-              viewBox="0 0 20 20"
-            >
+          {/* Points reward */}
+          <div className="flex items-center gap-1.5 mt-2">
+            <svg className="w-4 h-4 text-amber-500" fill="currentColor" viewBox="0 0 20 20">
               <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
             </svg>
-            <span className="text-sm text-gray-600">+{achievement.points} 积分</span>
+            <span className="text-sm font-medium text-gray-600">+{achievement.points} 积分</span>
           </div>
 
-          {/* 解锁时间 */}
+          {/* Unlock time */}
           {isUserAchievement && (
-            <p className="text-xs text-gray-400 mt-1">
+            <p className="text-xs text-gray-400 mt-1.5">
               解锁于: {new Date((achievement as UserAchievement).unlockedAt).toLocaleDateString()}
             </p>
           )}
 
-          {/* 进度条 */}
+          {/* Progress */}
           {showProgress && isUserAchievement && (
-            <div className="mt-2">
-              <div className="w-full bg-gray-200 rounded-full h-2">
+            <div className="mt-3">
+              <div className="w-full bg-white/60 border border-white/40 rounded-full h-2.5 backdrop-blur-sm">
                 <div
-                  className="bg-blue-500 rounded-full h-2"
+                  className="bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full h-2.5 transition-all duration-500 shadow-sm"
                   style={{ width: `${(achievement as UserAchievement).progress}%` }}
                 />
               </div>
-              <p className="text-xs text-gray-500 mt-1">
-                进度: {(achievement as UserAchievement).progress}%
-              </p>
+              <p className="text-xs text-gray-500 mt-1">进度: {(achievement as UserAchievement).progress}%</p>
             </div>
           )}
         </div>
