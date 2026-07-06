@@ -9,6 +9,7 @@ const navItems = [
   { path: '/paths', label: '学习路径' },
   { path: '/community', label: '社区' },
   { path: '/leaderboard', label: '排行榜' },
+  { path: '/gamification', label: '游戏化' },
 ];
 
 interface HeaderProps {
