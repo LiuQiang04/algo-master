@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useAchievements } from '../../hooks/useGamification';
 import AchievementCard from '../../components/gamification/AchievementCard';
+import type { UserAchievement } from '../../types/gamification';
 
 const AchievementsPage: React.FC = () => {
   const { achievements, stats, loading, error } = useAchievements();
@@ -133,7 +134,7 @@ const AchievementsPage: React.FC = () => {
             <AchievementCard
               key={achievement.id}
               achievement={achievement}
-              isUnlocked={true}
+              isUnlocked={!!(achievement as UserAchievement).unlockedAt}
               showProgress={true}
             />
           ))}
