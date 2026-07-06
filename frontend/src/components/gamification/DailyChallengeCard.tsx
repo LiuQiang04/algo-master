@@ -27,7 +27,7 @@ export const DailyChallengeCard: React.FC<DailyChallengeCardProps> = ({
     .map((_, i) => (
       <svg
         key={i}
-        className={`w-4 h-4 ${
+        className={`w-5 h-5 ${
           i < challenge.problem.difficulty ? 'text-yellow-400' : 'text-gray-300'
         }`}
         fill="currentColor"
@@ -38,22 +38,22 @@ export const DailyChallengeCard: React.FC<DailyChallengeCardProps> = ({
     ));
 
   return (
-    <div className="bg-gradient-to-br from-purple-500/90 to-indigo-600/90 backdrop-blur-xl rounded-2xl shadow-lg shadow-purple-500/20 p-6 text-white border border-white/20">
+    <div className="bg-gradient-to-br from-purple-500/90 to-indigo-600/90 backdrop-blur-xl rounded-2xl shadow-lg shadow-purple-500/20 p-8 text-white border border-white/20">
       <div className="flex items-center justify-between mb-4">
-        <h3 className="text-lg font-semibold">每日挑战</h3>
-        <span className="px-3 py-1.5 rounded-full text-sm backdrop-blur-sm bg-white/20 border border-white/20">
+        <h3 className="text-xl font-bold">每日挑战</h3>
+        <span className="px-3 py-1.5 rounded-full text-base backdrop-blur-sm bg-white/20 border border-white/20">
           +{challenge.bonusPoints} 积分
         </span>
       </div>
 
       <div className="backdrop-blur-sm bg-white/10 border border-white/10 rounded-xl p-4 mb-4">
-        <h4 className="font-medium mb-2">{challenge.problem.title}</h4>
+        <h4 className="text-lg font-semibold mb-2">{challenge.problem.title}</h4>
         <div className="flex items-center gap-1 mb-2">{difficultyStars}</div>
         <div className="flex flex-wrap gap-1">
           {challenge.problem.tags.map(({ tag }) => (
             <span
               key={tag.id}
-              className="px-3 py-1 rounded-full text-xs backdrop-blur-sm bg-white/20 border border-white/10"
+              className="px-3 py-1 rounded-full text-base backdrop-blur-sm bg-white/20 border border-white/10"
             >
               {tag.name}
             </span>
@@ -78,12 +78,12 @@ export const DailyChallengeCard: React.FC<DailyChallengeCardProps> = ({
               />
             </svg>
           </div>
-          <p className="font-medium">今日挑战已完成!</p>
+          <p className="text-lg font-medium">今日挑战已完成!</p>
         </div>
       ) : (
         <button
           onClick={onComplete}
-          className="w-full py-3 bg-white text-purple-600 rounded-xl font-semibold hover:bg-white/90 hover:shadow-lg transition-all"
+          className="w-full py-4 text-lg font-semibold bg-white text-purple-600 rounded-xl hover:bg-white/90 hover:shadow-xl transition-all"
         >
           开始挑战
         </button>
@@ -98,13 +98,13 @@ interface DailyTaskListProps {
 
 export const DailyTaskList: React.FC<DailyTaskListProps> = ({ tasks }) => {
   return (
-    <div className="backdrop-blur-xl bg-white/70 border border-white/40 rounded-2xl shadow-lg shadow-purple-500/5 p-5">
-      <h3 className="font-semibold text-gray-800 mb-4">每日任务</h3>
-      <div className="space-y-3">
+    <div className="backdrop-blur-xl bg-white/70 border border-white/40 rounded-2xl shadow-lg shadow-purple-500/5 p-6">
+      <h3 className="text-lg font-bold text-gray-800 mb-4">每日任务</h3>
+      <div className="space-y-4">
         {tasks.map((task) => (
           <div
             key={task.id}
-            className={`flex items-center justify-between p-3 rounded-lg ${
+            className={`flex items-center justify-between p-4 min-h-[60px] rounded-xl ${
               task.completed
                 ? 'bg-gradient-to-r from-emerald-50/80 to-teal-50/80 backdrop-blur-sm border border-emerald-200/50'
                 : 'bg-white/40 backdrop-blur-sm border border-white/30'
@@ -112,7 +112,7 @@ export const DailyTaskList: React.FC<DailyTaskListProps> = ({ tasks }) => {
           >
             <div className="flex items-center gap-3">
               <div
-                className={`w-6 h-6 rounded-full flex items-center justify-center ${
+                className={`w-7 h-7 rounded-full flex items-center justify-center shrink-0 ${
                   task.completed
                     ? 'bg-gradient-to-br from-emerald-400 to-teal-500 shadow-sm'
                     : 'bg-white/60 border border-gray-300'
@@ -135,16 +135,16 @@ export const DailyTaskList: React.FC<DailyTaskListProps> = ({ tasks }) => {
                 )}
               </div>
               <div>
-                <p className="font-medium text-sm text-gray-800">{task.title}</p>
-                <p className="text-xs text-gray-500">{task.description}</p>
+                <p className="text-base font-semibold text-gray-800">{task.title}</p>
+                <p className="text-sm text-gray-500">{task.description}</p>
               </div>
             </div>
-            <div className="text-right">
-              <p className="text-sm text-gray-600">
+            <div className="text-right shrink-0">
+              <p className="text-base text-gray-600">
                 {task.current}/{task.target}
               </p>
               {task.reward > 0 && (
-                <p className="text-xs font-medium text-amber-600">+{task.reward} 积分</p>
+                <p className="text-sm font-medium text-amber-600">+{task.reward} 积分</p>
               )}
             </div>
           </div>
