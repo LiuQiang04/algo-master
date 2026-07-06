@@ -1,4 +1,4 @@
-import { Home, BookOpen, Trophy, Users, User } from 'lucide-react';
+import { Home, BookOpen, Trophy, Users, User, Gamepad2 } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import './BottomNav.css';
 
@@ -7,6 +7,7 @@ const navItems = [
   { path: '/problems', icon: BookOpen, label: '题库' },
   { path: '/contests', icon: Trophy, label: '竞赛' },
   { path: '/community', icon: Users, label: '社区' },
+  { path: '/gamification', icon: Gamepad2, label: '游戏化' },
   { path: '/profile', icon: User, label: '我的' },
 ];
 
