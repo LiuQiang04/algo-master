@@ -53,12 +53,12 @@ const LoginStreakCalendar: React.FC<LoginStreakCalendarProps> = ({
   const calendarDays = getCalendarDays();
 
   return (
-    <div className="bg-white rounded-lg shadow-md p-4">
+    <div className="backdrop-blur-xl bg-white/70 border border-white/40 rounded-2xl shadow-lg shadow-purple-500/5 p-5">
       {/* 月份导航 */}
       <div className="flex items-center justify-between mb-4">
         <button
           onClick={handlePrevMonth}
-          className="p-2 hover:bg-gray-100 rounded-lg"
+          className="p-2 rounded-xl bg-white/60 border border-white/40 hover:bg-white/80 transition-all"
         >
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -69,7 +69,7 @@ const LoginStreakCalendar: React.FC<LoginStreakCalendarProps> = ({
         </h3>
         <button
           onClick={handleNextMonth}
-          className="p-2 hover:bg-gray-100 rounded-lg"
+          className="p-2 rounded-xl bg-white/60 border border-white/40 hover:bg-white/80 transition-all"
         >
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
@@ -98,8 +98,8 @@ const LoginStreakCalendar: React.FC<LoginStreakCalendarProps> = ({
               day === null
                 ? ''
                 : day.isLoggedIn
-                ? 'bg-green-500 text-white font-medium'
-                : 'bg-gray-100 text-gray-600'
+                ? 'bg-gradient-to-br from-emerald-400 to-teal-500 text-white font-medium shadow-sm'
+                : 'bg-white/40 backdrop-blur-sm text-gray-600 border border-white/30'
             }`}
           >
             {day && (
@@ -116,15 +116,15 @@ const LoginStreakCalendar: React.FC<LoginStreakCalendarProps> = ({
 
       {/* 图例 */}
       <div className="flex items-center justify-center gap-4 mt-4 text-xs text-gray-500">
-        <div className="flex items-center gap-1">
-          <div className="w-3 h-3 bg-gray-100 rounded"></div>
+        <div className="flex items-center gap-1.5">
+          <div className="w-3 h-3 rounded bg-white/60 border border-white/30"></div>
           <span>未登录</span>
         </div>
-        <div className="flex items-center gap-1">
-          <div className="w-3 h-3 bg-green-500 rounded"></div>
+        <div className="flex items-center gap-1.5">
+          <div className="w-3 h-3 rounded bg-gradient-to-br from-emerald-400 to-teal-500"></div>
           <span>已登录</span>
         </div>
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-1.5">
           <span>🔥</span>
           <span>连续天数</span>
         </div>
