@@ -6,12 +6,12 @@ export const TEST_USERS = {
   valid: {
     username: "alice",
     email: "alice@example.com",
-    password: "Test123456",
+    password: "password123",
   },
   admin: {
     username: "bob",
     email: "bob@example.com",
-    password: "Test123456",
+    password: "password123",
   },
 };
 

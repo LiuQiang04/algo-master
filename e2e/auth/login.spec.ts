@@ -52,7 +52,7 @@ test.describe("User Login", () => {
   test("should login successfully with valid credentials", async ({ page }) => {
     // 使用种子数据中的测试用户
     await page.getByPlaceholder("Enter your username or email").fill("alice@example.com");
-    await page.getByPlaceholder("Enter your password").fill("Test123456");
+    await page.getByPlaceholder("Enter your password").fill("password123");
 
     // 提交表单
     await page.getByRole("button", { name: "Sign In" }).click();
