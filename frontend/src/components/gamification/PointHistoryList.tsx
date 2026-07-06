@@ -45,18 +45,18 @@ const PointHistoryList: React.FC<PointHistoryListProps> = ({
           const isPositive = record.points > 0;
 
           return (
-            <div key={record.id} className="flex items-center justify-between px-5 py-4 hover:bg-white/40 transition-colors">
-              <div className="flex items-center gap-3">
-                <span className="text-xl">{typeInfo.icon}</span>
+            <div key={record.id} className="flex items-center justify-between px-5 py-5 hover:bg-white/40 transition-colors min-h-[64px]">
+              <div className="flex items-center gap-4">
+                <span className="text-2xl">{typeInfo.icon}</span>
                 <div>
-                  <p className="text-sm font-medium text-gray-800">
+                  <p className="text-base font-medium text-gray-800">
                     {record.description || '积分变动'}
                   </p>
-                  <p className="text-xs text-gray-500">{formatDate(record.createdAt)}</p>
+                  <p className="text-sm text-gray-500">{formatDate(record.createdAt)}</p>
                 </div>
               </div>
               <span
-                className={`font-semibold bg-clip-text text-transparent ${
+                className={`text-lg font-bold bg-clip-text text-transparent ${
                   isPositive ? 'bg-gradient-to-r from-emerald-500 to-teal-400' : 'bg-gradient-to-r from-red-500 to-rose-400'
                 }`}
               >
@@ -69,13 +69,13 @@ const PointHistoryList: React.FC<PointHistoryListProps> = ({
       </div>
 
       {history.length === 0 && (
-        <div className="text-center py-12 text-gray-400 backdrop-blur-sm bg-white/30 rounded-xl">暂无积分记录</div>
+        <div className="text-center py-12 text-lg text-gray-400 backdrop-blur-sm bg-white/30 rounded-xl">暂无积分记录</div>
       )}
 
       {showLoadMore && (
         <button
           onClick={onLoadMore}
-          className="w-full py-3 text-sm font-medium text-indigo-600 hover:text-indigo-700 hover:bg-white/40 transition-all rounded-b-2xl"
+          className="w-full py-4 text-base font-medium text-indigo-600 hover:text-indigo-700 hover:bg-white/40 transition-all rounded-b-2xl"
         >
           加载更多
         </button>
