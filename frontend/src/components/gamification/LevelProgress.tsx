@@ -12,12 +12,6 @@ const LevelProgress: React.FC<LevelProgressProps> = ({
   showDetails = true,
   size = 'md',
 }) => {
-  const sizeClasses = {
-    sm: 'h-2',
-    md: 'h-3',
-    lg: 'h-4',
-  };
-
   const textSizes = {
     sm: 'text-xs',
     md: 'text-sm',
@@ -25,11 +19,11 @@ const LevelProgress: React.FC<LevelProgressProps> = ({
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-md p-4">
+    <div className="backdrop-blur-xl bg-white/70 border border-white/40 rounded-2xl shadow-lg shadow-purple-500/5 p-6">
       <div className="flex items-center justify-between mb-2">
         <div className="flex items-center gap-2">
-          <div className="w-10 h-10 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-full flex items-center justify-center">
-            <span className="text-white font-bold text-lg">{levelInfo.level}</span>
+          <div className="w-14 h-14 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 shadow-lg shadow-purple-500/20 flex items-center justify-center">
+            <span className="text-white font-bold text-xl">{levelInfo.level}</span>
           </div>
           <div>
             <p className="font-semibold text-gray-800">等级 {levelInfo.level}</p>
@@ -39,21 +33,19 @@ const LevelProgress: React.FC<LevelProgressProps> = ({
           </div>
         </div>
         {showDetails && (
-          <span className="text-sm text-gray-500">
-            总经验: {levelInfo.totalExp}
-          </span>
+          <span className="text-sm text-gray-400">总经验: {levelInfo.totalExp}</span>
         )}
       </div>
 
-      <div className={`w-full bg-gray-200 rounded-full ${sizeClasses[size]}`}>
+      <div className="w-full bg-white/60 border border-white/40 rounded-full overflow-hidden backdrop-blur-sm">
         <div
-          className="bg-gradient-to-r from-blue-500 to-purple-500 rounded-full transition-all duration-500"
-          style={{ width: `${levelInfo.progress}%` }}
+          className="bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full transition-all duration-500 shadow-sm"
+          style={{ width: `${levelInfo.progress}%`, height: size === 'lg' ? '16px' : size === 'sm' ? '8px' : '12px' }}
         />
       </div>
 
       {showDetails && (
-        <p className={`${textSizes[size]} text-gray-500 mt-1 text-right`}>
+        <p className={`${textSizes[size]} text-gray-400 mt-1.5 text-right`}>
           {levelInfo.progress}% 升级进度
         </p>
       )}

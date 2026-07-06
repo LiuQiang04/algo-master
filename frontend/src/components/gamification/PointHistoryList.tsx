@@ -34,18 +34,18 @@ const PointHistoryList: React.FC<PointHistoryListProps> = ({
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-md">
-      <div className="p-4 border-b">
+    <div className="backdrop-blur-xl bg-white/70 border border-white/40 rounded-2xl shadow-lg shadow-purple-500/5 overflow-hidden">
+      <div className="px-5 py-4 border-b border-white/30">
         <h3 className="font-semibold text-gray-800">积分历史</h3>
       </div>
 
-      <div className="divide-y divide-gray-100">
+      <div className="divide-y divide-white/20">
         {history.map((record) => {
           const typeInfo = typeIcons[record.type] || { icon: '📌', color: 'text-gray-500' };
           const isPositive = record.points > 0;
 
           return (
-            <div key={record.id} className="flex items-center justify-between p-4 hover:bg-gray-50">
+            <div key={record.id} className="flex items-center justify-between px-5 py-4 hover:bg-white/40 transition-colors">
               <div className="flex items-center gap-3">
                 <span className="text-xl">{typeInfo.icon}</span>
                 <div>
@@ -56,8 +56,8 @@ const PointHistoryList: React.FC<PointHistoryListProps> = ({
                 </div>
               </div>
               <span
-                className={`font-semibold ${
-                  isPositive ? 'text-green-600' : 'text-red-600'
+                className={`font-semibold bg-clip-text text-transparent ${
+                  isPositive ? 'bg-gradient-to-r from-emerald-500 to-teal-400' : 'bg-gradient-to-r from-red-500 to-rose-400'
                 }`}
               >
                 {isPositive ? '+' : ''}
@@ -69,18 +69,16 @@ const PointHistoryList: React.FC<PointHistoryListProps> = ({
       </div>
 
       {history.length === 0 && (
-        <div className="text-center py-8 text-gray-500">暂无积分记录</div>
+        <div className="text-center py-12 text-gray-400 backdrop-blur-sm bg-white/30 rounded-xl">暂无积分记录</div>
       )}
 
       {showLoadMore && (
-        <div className="p-4 border-t">
-          <button
-            onClick={onLoadMore}
-            className="w-full py-2 text-sm text-blue-600 hover:text-blue-700 font-medium"
-          >
-            加载更多
-          </button>
-        </div>
+        <button
+          onClick={onLoadMore}
+          className="w-full py-3 text-sm font-medium text-indigo-600 hover:text-indigo-700 hover:bg-white/40 transition-all rounded-b-2xl"
+        >
+          加载更多
+        </button>
       )}
     </div>
   );

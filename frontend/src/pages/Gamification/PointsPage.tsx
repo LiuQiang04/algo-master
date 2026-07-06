@@ -9,66 +9,64 @@ const PointsPage: React.FC = () => {
   const { overview } = useGamificationOverview();
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* 页面标题 */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">积分中心</h1>
-          <p className="mt-2 text-gray-600">
-            查看你的积分详情、等级进度和积分历史记录
-          </p>
-        </div>
-
-        {/* 等级进度 */}
-        {levelLoading ? (
-          <div className="flex justify-center py-8">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
-          </div>
-        ) : levelInfo ? (
-          <div className="mb-8">
-            <LevelProgress levelInfo={levelInfo} size="lg" />
-          </div>
-        ) : null}
-
-        {/* 统计卡片 */}
-        {overview && (
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-            <div className="bg-white rounded-lg shadow-md p-4 text-center">
-              <p className="text-sm text-gray-500">总经验值</p>
-              <p className="text-2xl font-bold text-blue-600">{overview.totalExp.toLocaleString()}</p>
-            </div>
-            <div className="bg-white rounded-lg shadow-md p-4 text-center">
-              <p className="text-sm text-gray-500">成就数</p>
-              <p className="text-2xl font-bold text-purple-600">{overview.achievementCount}</p>
-            </div>
-            <div className="bg-white rounded-lg shadow-md p-4 text-center">
-              <p className="text-sm text-gray-500">每日挑战</p>
-              <p className="text-2xl font-bold text-green-600">{overview.completedDailyChallenges}</p>
-            </div>
-            <div className="bg-white rounded-lg shadow-md p-4 text-center">
-              <p className="text-sm text-gray-500">全球排名</p>
-              <p className="text-2xl font-bold text-yellow-600">#{overview.globalRank}</p>
-            </div>
-          </div>
-        )}
-
-        {/* 积分历史 */}
-        {loading && history.length === 0 ? (
-          <div className="flex justify-center py-12">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
-          </div>
-        ) : error ? (
-          <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-            <p className="text-red-600">{error}</p>
-          </div>
-        ) : (
-          <PointHistoryList
-            history={history}
-            showLoadMore={hasMore}
-            onLoadMore={loadMore}
-          />
-        )}
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-indigo-50/30 to-purple-50/30 w-full px-6 lg:px-12 py-8 lg:py-12">
+      {/* 页面标题 */}
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">积分中心</h1>
+        <p className="mt-2 text-gray-600">
+          查看你的积分详情、等级进度和积分历史记录
+        </p>
       </div>
+
+      {/* 等级进度 */}
+      {levelLoading ? (
+        <div className="flex justify-center py-8">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-500"></div>
+        </div>
+      ) : levelInfo ? (
+        <div className="mb-8">
+          <LevelProgress levelInfo={levelInfo} size="lg" />
+        </div>
+      ) : null}
+
+      {/* 统计卡片 */}
+      {overview && (
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-5 mb-8">
+          <div className="backdrop-blur-xl bg-white/70 border border-white/40 rounded-2xl shadow-lg shadow-purple-500/5 p-5 text-center">
+            <p className="text-sm text-gray-500 mb-1">总经验值</p>
+            <p className="text-3xl font-bold bg-gradient-to-r from-blue-500 to-cyan-400 bg-clip-text text-transparent">{overview.totalExp.toLocaleString()}</p>
+          </div>
+          <div className="backdrop-blur-xl bg-white/70 border border-white/40 rounded-2xl shadow-lg shadow-purple-500/5 p-5 text-center">
+            <p className="text-sm text-gray-500 mb-1">成就数</p>
+            <p className="text-3xl font-bold bg-gradient-to-r from-purple-500 to-pink-400 bg-clip-text text-transparent">{overview.achievementCount}</p>
+          </div>
+          <div className="backdrop-blur-xl bg-white/70 border border-white/40 rounded-2xl shadow-lg shadow-purple-500/5 p-5 text-center">
+            <p className="text-sm text-gray-500 mb-1">每日挑战</p>
+            <p className="text-3xl font-bold bg-gradient-to-r from-emerald-500 to-teal-400 bg-clip-text text-transparent">{overview.completedDailyChallenges}</p>
+          </div>
+          <div className="backdrop-blur-xl bg-white/70 border border-white/40 rounded-2xl shadow-lg shadow-purple-500/5 p-5 text-center">
+            <p className="text-sm text-gray-500 mb-1">全球排名</p>
+            <p className="text-3xl font-bold bg-gradient-to-r from-amber-500 to-orange-400 bg-clip-text text-transparent">#{overview.globalRank}</p>
+          </div>
+        </div>
+      )}
+
+      {/* 积分历史 */}
+      {loading && history.length === 0 ? (
+        <div className="flex justify-center py-12">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-500"></div>
+        </div>
+      ) : error ? (
+        <div className="backdrop-blur-xl bg-red-50/70 border border-red-200/40 rounded-2xl shadow-lg p-4">
+          <p className="text-red-600">{error}</p>
+        </div>
+      ) : (
+        <PointHistoryList
+          history={history}
+          showLoadMore={hasMore}
+          onLoadMore={loadMore}
+        />
+      )}
     </div>
   );
 };
