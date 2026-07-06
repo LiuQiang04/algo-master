@@ -12,7 +12,6 @@ const hubCards = [
     icon: Award,
     title: '成就',
     color: 'from-amber-400 to-orange-500',
-    bgLight: 'bg-amber-50',
     getDesc: (data: any) => `${data.achievementCount ?? '--'} 个已解锁`,
   },
   {
@@ -20,7 +19,6 @@ const hubCards = [
     icon: BarChart3,
     title: '排行榜',
     color: 'from-blue-400 to-indigo-500',
-    bgLight: 'bg-blue-50',
     getDesc: (data: any) => data.globalRank ? `全球排名 #${data.globalRank}` : '暂无排名',
   },
   {
@@ -28,7 +26,6 @@ const hubCards = [
     icon: CalendarCheck,
     title: '每日挑战',
     color: 'from-emerald-400 to-teal-500',
-    bgLight: 'bg-emerald-50',
     getDesc: (data: any) => `已完成 ${data.completedDailyChallenges ?? 0} 次`,
   },
   {
@@ -36,7 +33,6 @@ const hubCards = [
     icon: Coins,
     title: '积分',
     color: 'from-purple-400 to-violet-500',
-    bgLight: 'bg-purple-50',
     getDesc: (data: any) => `${data.totalExp ?? '--'} 总经验`,
   },
   {
@@ -44,7 +40,6 @@ const hubCards = [
     icon: Gift,
     title: '虚拟道具',
     color: 'from-pink-400 to-rose-500',
-    bgLight: 'bg-pink-50',
     getDesc: () => '徽章 / 称号 / 头像框',
   },
 ];
@@ -123,7 +118,7 @@ const GamificationHubPage: React.FC = () => {
       )}
 
       {/* 5 个模块卡片 */}
-      {!loading && (
+      {!loading && overview && (
         <div className="max-w-5xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {hubCards.map((card) => (
             <Link
