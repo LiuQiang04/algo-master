@@ -467,12 +467,6 @@ export async function getAchievementStats(userId: string) {
     _count: true,
   });
 
-  const userByCategory = await prisma.userAchievement.groupBy({
-    by: ['achievement'],
-    where: { userId },
-    _count: true,
-  });
-
   return {
     total,
     unlocked,

@@ -58,8 +58,8 @@ export function useAchievements() {
     try {
       setLoading(true);
       const response = await achievementApi.getMy();
-      setAchievements(response.data.data.achievements);
-      setStats(response.data.data.stats);
+      setAchievements(response.data.achievements);
+      setStats(response.data.stats);
       setError(null);
     } catch (err: any) {
       setError(err.message || 'Failed to fetch achievements');
@@ -221,7 +221,7 @@ export function useVirtualItems(type?: string) {
     try {
       setLoading(true);
       const response = await virtualItemApi.getAll(type);
-      setItems(response.data);
+      setItems(response.data.data);
       setError(null);
     } catch (err: any) {
       setError(err.message || 'Failed to fetch items');
@@ -247,7 +247,7 @@ export function useUserVirtualItems(type?: string) {
     try {
       setLoading(true);
       const response = await virtualItemApi.getMy(type);
-      setUserItems(response.data);
+      setUserItems(response.data.data);
       setError(null);
     } catch (err: any) {
       setError(err.message || 'Failed to fetch user items');

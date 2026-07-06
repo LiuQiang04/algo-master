@@ -6,12 +6,12 @@ export const TEST_USERS = {
   valid: {
     username: "alice",
     email: "alice@example.com",
-    password: "password123",
+    password: "Test123456",
   },
   admin: {
     username: "bob",
     email: "bob@example.com",
-    password: "password123",
+    password: "Test123456",
   },
 };
 
@@ -24,6 +24,10 @@ export const URLS = {
   community: "/community",
   profile: "/profile",
   leaderboard: "/leaderboard",
+  achievements: '/achievements',
+  'daily-challenge': '/daily-challenge',
+  'virtual-items': '/virtual-items',
+  points: '/points',
 };
 
 export const TIMEOUTS = {
