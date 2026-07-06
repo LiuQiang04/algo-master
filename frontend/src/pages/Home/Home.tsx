@@ -139,7 +139,7 @@ export default function Home() {
               <Play size={18} />
               开始练习
             </Link>
-            <Link to="/learn" className="hero__btn hero__btn--secondary">
+            <Link to="/paths" className="hero__btn hero__btn--secondary">
               学习路径
               <ChevronRight size={18} />
             </Link>
