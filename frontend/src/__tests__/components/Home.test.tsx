@@ -49,9 +49,9 @@ describe("Home Page", () => {
       expect(startButton).toHaveAttribute("href", "/problems");
 
       // 找到 hero section 中的学习路径按钮
-      const learnPathButton = screen.getByText("开始练习").closest("a")?.parentElement?.querySelector('a[href="/learn"]');
+      const learnPathButton = screen.getByText("开始练习").closest("a")?.parentElement?.querySelector('a[href="/paths"]');
       expect(learnPathButton).toBeInTheDocument();
-      expect(learnPathButton).toHaveAttribute("href", "/learn");
+      expect(learnPathButton).toHaveAttribute("href", "/paths");
     });
   });
 
