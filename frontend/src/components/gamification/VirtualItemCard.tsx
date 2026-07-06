@@ -10,28 +10,28 @@ interface VirtualItemCardProps {
   userPoints?: number;
 }
 
-const rarityColors = {
+const rarityColors: Record<string, string> = {
   common: 'from-gray-400 to-gray-500',
   rare: 'from-blue-400 to-blue-600',
   epic: 'from-purple-400 to-purple-600',
   legendary: 'from-yellow-400 to-orange-500',
 };
 
-const rarityBorders = {
+const rarityBorders: Record<string, string> = {
   common: 'border-gray-300',
   rare: 'border-blue-400',
   epic: 'border-purple-400',
   legendary: 'border-yellow-400',
 };
 
-const rarityLabels = {
+const rarityLabels: Record<string, string> = {
   common: '普通',
   rare: '稀有',
   epic: '史诗',
   legendary: '传说',
 };
 
-const typeLabels = {
+const typeLabels: Record<string, string> = {
   badge: '徽章',
   title: '称号',
   frame: '头像框',
@@ -53,90 +53,71 @@ const VirtualItemCard: React.FC<VirtualItemCardProps> = ({
 
   return (
     <div
-      className={`bg-white rounded-lg shadow-md p-4 border-2 transition-all hover:shadow-lg ${
-        isOwned || isUserItem ? rarityBorders[rarity] : 'border-gray-200'
+      className={`backdrop-blur-xl bg-white/70 border rounded-2xl p-5 transition-all duration-300 hover:shadow-xl hover:-translate-y-0.5 ${
+        isOwned || isUserItem
+          ? rarityBorders[rarity] + ' shadow-lg shadow-purple-500/5'
+          : 'border-white/30'
       }`}
     >
-      {/* 稀有度和类型标签 */}
-      <div className="flex justify-between items-start mb-3">
-        <span className="text-xs text-gray-500">{typeLabels[virtualItem.type]}</span>
-        <span
-          className={`px-2 py-1 rounded text-xs text-white bg-gradient-to-r ${rarityColors[rarity]}`}
-        >
+      {/* 类型 + 稀有度标签行 */}
+      <div className="flex justify-between items-start mb-4">
+        <span className="px-2.5 py-1 rounded-full text-xs font-medium bg-white/60 backdrop-blur-sm text-gray-500 border border-white/40">
+          {typeLabels[virtualItem.type]}
+        </span>
+        <span className={`px-2.5 py-1 rounded-full text-xs font-medium backdrop-blur-sm bg-white/80 border border-white/60 shadow-sm ${
+          rarity === 'legendary' ? 'text-amber-600' :
+          rarity === 'epic' ? 'text-purple-600' :
+          rarity === 'rare' ? 'text-blue-600' :
+          'text-gray-500'
+        }`}>
           {rarityLabels[rarity]}
         </span>
       </div>
 
-      {/* 图标 */}
-      <div className="flex justify-center mb-3">
-        <div
-          className={`w-16 h-16 rounded-lg flex items-center justify-center bg-gradient-to-br ${rarityColors[rarity]}`}
-        >
+      {/* 图标 - 更大尺寸，渐变 + 光泽 */}
+      <div className="flex justify-center mb-4">
+        <div className={`w-20 h-20 rounded-xl flex items-center justify-center bg-gradient-to-br shadow-lg ${rarityColors[rarity]}`}>
           {virtualItem.iconUrl ? (
-            <img
-              src={virtualItem.iconUrl}
-              alt={virtualItem.name}
-              className="w-12 h-12"
-            />
+            <img src={virtualItem.iconUrl} alt={virtualItem.name} className="w-14 h-14 drop-shadow" />
           ) : (
-            <svg
-              className="w-8 h-8 text-white"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"
-              />
+            <svg className="w-10 h-10 text-white drop-shadow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
             </svg>
           )}
         </div>
       </div>
 
-      {/* 名称和描述 */}
+      {/* 名称 + 描述 */}
       <h3 className="font-semibold text-gray-800 text-center">{virtualItem.name}</h3>
-      <p className="text-xs text-gray-500 text-center mt-1">{virtualItem.description}</p>
+      <p className="text-xs text-gray-500 text-center mt-1 leading-relaxed">{virtualItem.description}</p>
 
-      {/* 操作按钮 */}
-      <div className="mt-4">
+      {/* 操作按钮 - 玻璃风格 */}
+      <div className="mt-5">
         {isOwned || isUserItem ? (
           isEquipped ? (
-            <button
-              onClick={() => onEquip?.(virtualItem.id, false)}
-              className="w-full py-2 bg-gray-200 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-300 transition-colors"
-            >
+            <button onClick={() => onEquip?.(virtualItem.id, false)}
+              className="w-full py-2.5 bg-white/60 backdrop-blur-sm text-gray-600 rounded-xl text-sm font-medium border border-white/40 hover:bg-white/80 transition-all">
               卸下
             </button>
           ) : (
-            <button
-              onClick={() => onEquip?.(virtualItem.id, true)}
-              className="w-full py-2 bg-blue-500 text-white rounded-lg text-sm font-medium hover:bg-blue-600 transition-colors"
-            >
+            <button onClick={() => onEquip?.(virtualItem.id, true)}
+              className="w-full py-2.5 bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-xl text-sm font-medium shadow-lg shadow-purple-500/20 hover:shadow-xl transition-all">
               装备
             </button>
           )
         ) : virtualItem.price === 0 ? (
-          <button
-            onClick={() => onPurchase?.(virtualItem.id)}
-            className="w-full py-2 bg-green-500 text-white rounded-lg text-sm font-medium hover:bg-green-600 transition-colors"
-          >
+          <button onClick={() => onPurchase?.(virtualItem.id)}
+            className="w-full py-2.5 bg-gradient-to-r from-emerald-500 to-teal-500 text-white rounded-xl text-sm font-medium shadow-lg shadow-emerald-500/20 hover:shadow-xl transition-all">
             免费领取
           </button>
         ) : (
-          <button
-            onClick={() => onPurchase?.(virtualItem.id)}
-            disabled={!canAfford}
-            className={`w-full py-2 rounded-lg text-sm font-medium transition-colors ${
+          <button onClick={() => onPurchase?.(virtualItem.id)} disabled={!canAfford}
+            className={`w-full py-2.5 rounded-xl text-sm font-medium transition-all ${
               canAfford
-                ? 'bg-yellow-500 text-white hover:bg-yellow-600'
-                : 'bg-gray-200 text-gray-400 cursor-not-allowed'
-            }`}
-          >
-            {virtualItem.price} 积分
-            {!canAfford && ' (不足)'}
+                ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-lg shadow-amber-500/20 hover:shadow-xl'
+                : 'bg-white/30 backdrop-blur-sm text-gray-400 border border-white/30 cursor-not-allowed'
+            }`}>
+            {virtualItem.price} 积分{!canAfford && ' (不足)'}
           </button>
         )}
       </div>
