@@ -144,7 +144,9 @@ const AchievementsPage: React.FC = () => {
 
         {filteredAchievements.length === 0 && (
           <div className="text-center py-12">
-            <p className="text-gray-500">暂无成就数据</p>
+            <div className="backdrop-blur-xl bg-white/70 border border-white/40 rounded-2xl p-10 shadow-lg inline-block">
+              <p className="text-gray-400">暂无成就数据</p>
+            </div>
           </div>
         )}
       </div>
