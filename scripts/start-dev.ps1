@@ -88,7 +88,7 @@ if ($serverRunning) {
 
 # 5. 启动 Frontend
 Write-Status "启动 Frontend (端口 5173)..." Yellow
-Start-Process -NoNewWindow -FilePath "cmd.exe" -ArgumentList "/c cd /d D:\Files\school\project\20260607\frontend && npm run dev"
+Start-Process -NoNewWindow -FilePath "cmd.exe" -ArgumentList "/c cd /d D:\Files\school\project\20260607\frontend && npx vite --host"
 Start-Sleep -Seconds 5
 
 # 检查 Frontend 是否成功启动
