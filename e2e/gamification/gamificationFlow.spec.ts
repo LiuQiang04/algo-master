@@ -7,7 +7,7 @@ test.describe('Gamification Pages', () => {
   test('成就页面加载并显示标题', async ({ page }) => {
     await page.goto(URLS.achievements);
     await page.waitForLoadState('networkidle');
-    await expect(page.getByText('成就系统')).toBeVisible({ timeout: 10000 });
+    await expect(page.getByRole('heading', { name: '成就系统' })).toBeVisible({ timeout: 10000 });
   });
 
   test('成就页面分类筛选可点击', async ({ page }) => {
@@ -23,7 +23,7 @@ test.describe('Gamification Pages', () => {
   test('排行榜页面加载并显示标签页', async ({ page }) => {
     await page.goto(URLS.leaderboard);
     await page.waitForLoadState('networkidle');
-    await expect(page.getByText('排行榜')).toBeVisible({ timeout: 10000 });
+    await expect(page.getByRole('heading', { name: '排行榜' })).toBeVisible({ timeout: 10000 });
     const friendTab = page.getByText('好友排行');
     if (await friendTab.isVisible().catch(() => false)) {
       await friendTab.click();
@@ -37,7 +37,7 @@ test.describe('Gamification Pages', () => {
   test('每日挑战页面加载', async ({ page }) => {
     await page.goto(URLS['daily-challenge']);
     await page.waitForLoadState('networkidle');
-    await expect(page.getByText('每日挑战')).toBeVisible({ timeout: 10000 });
+    await expect(page.getByRole('heading', { name: '每日挑战' }).first()).toBeVisible({ timeout: 10000 });
   });
 
   test('虚拟商店页面加载并切换标签页', async ({ page }) => {

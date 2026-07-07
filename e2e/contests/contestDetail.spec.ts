@@ -14,7 +14,9 @@ test.describe("Contest Detail", () => {
   test.beforeEach(async ({ page }) => {
     // Navigate to contests page (already authenticated via storageState)
     await page.goto(URLS.contests);
-    await page.waitForLoadState("domcontentloaded");
+    await page.waitForLoadState("networkidle");
+    // 等待竞赛卡片加载
+    await page.waitForSelector(".contest-card", { timeout: 15000 }).catch(() => {});
   });
 
   test("should display contest list", async ({ page }) => {

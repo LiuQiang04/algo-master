@@ -8,6 +8,14 @@ import { URLS } from "../fixtures/test-data";
 
 test.describe("User Login", () => {
   test.beforeEach(async ({ page }) => {
+    // 清除认证状态，使登录测试不受 setup 影响
+    await page.goto(URLS.login);
+    await page.evaluate(() => {
+      localStorage.clear();
+      document.cookie.split(";").forEach(c => {
+        document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
+      });
+    });
     await page.goto(URLS.login);
   });
 
@@ -52,7 +60,7 @@ test.describe("User Login", () => {
   test("should login successfully with valid credentials", async ({ page }) => {
     // 使用种子数据中的测试用户
     await page.getByPlaceholder("Enter your username or email").fill("alice@example.com");
-    await page.getByPlaceholder("Enter your password").fill("password123");
+    await page.getByPlaceholder("Enter your password").fill("Test123456");
 
     // 提交表单
     await page.getByRole("button", { name: "Sign In" }).click();

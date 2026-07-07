@@ -104,6 +104,22 @@ systematic-debugging → test-driven-development → 修复 → verification-bef
 | React 组件      | `vercel-react-best-practices`    |
 | 代码审查        | `requesting-code-review`         |
 
+### 前端设计重构
+
+**核心三件套**: `ui-ux-pro-max`（设计指导）+ `vercel-react-best-practices`（代码质量）+ `webapp-testing`（视觉验证）
+
+| 规模 | 适用场景 | 流程 |
+|------|---------|------|
+| 🔹 小 | 1-2 组件调整 | `ui-ux-pro-max` → 实现 → `webapp-testing` 截图 → 测试 → `verification-before-completion` |
+| 🔸 中 | 单页面/3-5 组件 | `brainstorming` → `ui-ux-pro-max` 设计 → 设计规格(存 `docs/superpowers/specs/`) → `planning-with-files` → 逐步实现 → 全量测试 |
+| 🔶 大 | 多页面/全局样式 | 中流程 + `frontend-design` 多方案 + 按层实施(全局→共享组件→页面) → 更新 PROJECT.md |
+
+**关键规则**:
+- 每次改动后必须 `webapp-testing` 截图确认，不能只靠自动化测试
+- 设计规格文档存 `docs/superpowers/specs/YYYY-MM-DD-xxx.md`
+- 实施计划存 `docs/superpowers/plans/YYYY-MM-DD-xxx.md`
+- 检查多尺寸（375/768/1920）+ 加载/空/错误状态
+
 ---
 
 ## 架构
