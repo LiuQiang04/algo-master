@@ -58,8 +58,8 @@ describe('PointsPage', () => {
     mockUseGamificationOverview.mockReturnValue({ overview: null });
 
     renderPage();
-    const spinners = document.querySelectorAll('.animate-spin');
-    expect(spinners.length).toBeGreaterThanOrEqual(1);
+    const spinner = document.querySelector('[style*="animation: spin"]');
+    expect(spinner).not.toBeNull();
   });
 
   it('renders level progress', () => {
