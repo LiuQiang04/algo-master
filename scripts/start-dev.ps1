@@ -12,13 +12,17 @@ function Write-Status {
 
 function Kill-ProcessOnPort {
     param([int]$Port)
-    $conn = netstat -ano | Select-String ":$Port\s"
-    if ($conn) {
-        $procId = ($conn -split '\s+')[-1]
-        $process = Get-Process -Id $procId -ErrorAction SilentlyContinue
-        if ($process -and $process.Name -ne "System") {
-            Stop-Process -Id $procId -Force -ErrorAction SilentlyContinue
-            Write-Status "  → 已关闭端口 $Port (PID: $procId)" Yellow
+    $connections = netstat -ano | Select-String ":$Port\s"
+    foreach ($conn in $connections) {
+        $line = $conn.Line
+        $parts = ($line -split '\s+') | Where-Object { $_ -ne '' }
+        $procId = $parts[-1]
+        if ($procId -match '^\d+$') {
+            $process = Get-Process -Id $procId -ErrorAction SilentlyContinue
+            if ($process -and $process.Name -ne "System") {
+                Stop-Process -Id $procId -Force -ErrorAction SilentlyContinue
+                Write-Status "  → 已关闭端口 $Port (PID: $procId)" Yellow
+            }
         }
     }
 }

@@ -60,8 +60,8 @@ export default function PostDetailPage() {
 
   const fetchComments = useCallback(async () => {
     try {
-      const { data } = await api.get(`/comments/post/${id}`);
-      setComments(data.data || []);
+      const { data } = await api.get(`/posts/${id}/comments`);
+      setComments(data.data?.comments || []);
     } catch {}
   }, [id]);
 
@@ -87,7 +87,7 @@ export default function PostDetailPage() {
     if (!newComment.trim() || !user) return;
     setSubmitting(true);
     try {
-      await api.post(`/comments/post/${id}`, { content: newComment });
+      await api.post(`/posts/${id}/comments`, { content: newComment });
       setNewComment('');
       fetchComments();
       fetchPost();
@@ -101,7 +101,7 @@ export default function PostDetailPage() {
     if (!replyContent.trim() || !user) return;
     setSubmitting(true);
     try {
-      await api.post(`/comments/post/${id}`, { content: replyContent, parentCommentId: parentId });
+      await api.post(`/posts/${id}/comments`, { content: replyContent, parentCommentId: parentId });
       setReplyContent('');
       setReplyTo(null);
       fetchComments();

@@ -38,6 +38,7 @@ model User {
   loginStreaks              LoginStreak[]
   friends                   Friendship[]               @relation("User")
   friendOf                  Friendship[]               @relation("Friend")
+  votes                     Vote[]
   notifications             Notification[]
   learningProgress          LearningProgress[]
 
@@ -245,6 +246,7 @@ model Post {
   user     User      @relation(fields: [userId], references: [id])
   problem  Problem?  @relation(fields: [problemId], references: [id])
   comments Comment[]
+  votes    Vote[]
 
   @@map("posts")
 }
@@ -263,6 +265,20 @@ model Comment {
   replies Comment[] @relation("CommentReplies")
 
   @@map("comments")
+}
+
+model Vote {
+  id        String   @id @default(uuid()) @db.Uuid
+  userId    String   @map("user_id") @db.Uuid
+  postId    String   @map("post_id") @db.Uuid
+  value     Int
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id])
+  post Post @relation(fields: [postId], references: [id])
+
+  @@unique([userId, postId])
+  @@map("votes")
 }
 
 // ==================== 每日挑战系统 ====================
