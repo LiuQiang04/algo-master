@@ -21,111 +21,93 @@ const AchievementsPage: React.FC = () => {
     ? achievements
     : achievements.filter((a) => a.category === filter);
 
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 flex items-center justify-center">
-        <div className="backdrop-blur-xl bg-white/70 border border-white/40 rounded-2xl p-8 shadow-lg">
-          <div className="animate-spin rounded-full w-16 h-16 border-b-2 border-indigo-500 mx-auto"></div>
-        </div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 flex items-center justify-center">
-        <div className="backdrop-blur-xl bg-white/70 border border-white/40 rounded-2xl p-8 shadow-lg text-center max-w-md">
-          <p className="text-red-500 mb-4">{error}</p>
-          <button
-            onClick={() => window.location.reload()}
-            className="px-6 py-2 bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-xl font-medium hover:shadow-lg transition-all"
-          >
-            重试
-          </button>
-        </div>
-      </div>
-    );
-  }
-
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 w-full px-8 lg:px-16 py-10 lg:py-16 relative overflow-hidden">
-      {/* 装饰光斑 */}
-      <div className="absolute -top-32 -right-32 w-96 h-96 bg-gradient-to-br from-purple-300/20 to-pink-300/10 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute -bottom-32 -left-32 w-96 h-96 bg-gradient-to-br from-indigo-300/15 to-blue-300/10 rounded-full blur-3xl pointer-events-none" />
+    <div style={{ minHeight: '100vh', background: 'var(--bg-secondary)', padding: '32px 0' }}>
+      <div style={{ maxWidth: 1000, margin: '0 auto', padding: '0 24px' }}>
+        <div style={{ marginBottom: 32 }}>
+          <h1 style={{ fontSize: 28, fontWeight: 700, color: 'var(--text-primary)', margin: 0 }}>
+            成就系统
+          </h1>
+          <p style={{ margin: '8px 0 0', fontSize: 14, color: 'var(--text-secondary)' }}>
+            完成各种挑战，解锁成就徽章，展示你的实力！
+          </p>
+        </div>
 
-      {/* 页面标题 */}
-      <div className="mb-12 lg:mb-16 text-center lg:text-left">
-        <h1 className="text-5xl font-black bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
-          成就系统
-        </h1>
-        <p className="mt-2 text-lg text-gray-500">完成各种挑战，解锁成就徽章，展示你的实力！</p>
-      </div>
-
-      {/* Hero Banner - 合并统计卡片 */}
-      {stats && (
-        <div className="backdrop-blur-xl bg-white/70 border border-white/40 rounded-2xl shadow-lg shadow-purple-500/5 p-10 mb-12 relative overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-r from-indigo-500/5 via-purple-500/5 to-pink-500/5 rounded-2xl pointer-events-none" />
-          <div className="relative flex flex-col md:flex-row items-center gap-8">
-            <div className="flex-1 text-center md:text-left">
-              <p className="text-base font-medium text-gray-500 mb-1">已解锁</p>
-              <p className="text-5xl font-black bg-gradient-to-r from-blue-600 to-blue-400 bg-clip-text text-transparent">{stats.unlocked}</p>
+        {stats && (
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 16, marginBottom: 32 }}>
+            <div style={{ background: 'linear-gradient(135deg, #2563EB, #1D4ED8)', borderRadius: 'var(--radius-lg)', padding: 24, boxShadow: 'var(--shadow-md)', color: 'white' }}>
+              <p style={{ fontSize: 13, opacity: 0.8, margin: 0 }}>已解锁</p>
+              <p style={{ fontSize: 36, fontWeight: 700, margin: '8px 0 0' }}>{stats.unlocked}</p>
             </div>
-            <div className="flex-1 text-center md:text-left">
-              <p className="text-base font-medium text-gray-500 mb-1">总成就数</p>
-              <p className="text-5xl font-black bg-gradient-to-r from-purple-600 to-pink-500 bg-clip-text text-transparent">{stats.total}</p>
+            <div style={{ background: 'linear-gradient(135deg, #7C3AED, #6D28D9)', borderRadius: 'var(--radius-lg)', padding: 24, boxShadow: 'var(--shadow-md)', color: 'white' }}>
+              <p style={{ fontSize: 13, opacity: 0.8, margin: 0 }}>总成就数</p>
+              <p style={{ fontSize: 36, fontWeight: 700, margin: '8px 0 0' }}>{stats.total}</p>
             </div>
-            <div className="flex-1 text-center md:text-left">
-              <p className="text-base font-medium text-gray-500 mb-1">完成度</p>
-              <p className="text-5xl font-black bg-gradient-to-r from-emerald-600 to-teal-400 bg-clip-text text-transparent">{stats.percentage}%</p>
-              <div className="mt-4">
-                <div className="w-full bg-white/60 border border-white/40 rounded-full h-4 backdrop-blur-sm">
-                  <div
-                    className="bg-gradient-to-r from-emerald-400 to-teal-500 rounded-full h-4 transition-all"
-                    style={{ width: `${stats.percentage}%` }}
-                  />
-                </div>
+            <div style={{ background: 'linear-gradient(135deg, #059669, #047857)', borderRadius: 'var(--radius-lg)', padding: 24, boxShadow: 'var(--shadow-md)', color: 'white' }}>
+              <p style={{ fontSize: 13, opacity: 0.8, margin: 0 }}>完成度</p>
+              <p style={{ fontSize: 36, fontWeight: 700, margin: '8px 0' }}>{stats.percentage}%</p>
+              <div style={{ width: '100%', background: 'rgba(255,255,255,0.3)', borderRadius: 'var(--radius-full)', height: 8, overflow: 'hidden' }}>
+                <div style={{ height: '100%', background: 'white', borderRadius: 'var(--radius-full)', transition: 'width 0.5s', width: `${stats.percentage}%` }} />
               </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
 
-      {/* 分类筛选 */}
-      <div className="flex flex-wrap gap-3 mb-8">
-        {categories.map((category) => (
-          <button
-            key={category.id}
-            onClick={() => setFilter(category.id)}
-            className={`px-6 py-3 rounded-full text-base font-medium transition-all duration-200 backdrop-blur-sm border ${
-              filter === category.id
-                ? 'bg-gradient-to-r from-indigo-500 to-purple-600 text-white border-transparent shadow-lg shadow-purple-500/20'
-                : 'bg-white/60 text-gray-600 border-white/40 hover:bg-white/80 hover:shadow-md'
-            }`}
-          >
-            {category.label}
-          </button>
-        ))}
-      </div>
-
-      {/* 成就列表 */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-        {filteredAchievements.map((achievement) => (
-          <AchievementCard
-            key={achievement.id}
-            achievement={achievement}
-            isUnlocked={!!(achievement as UserAchievement).unlockedAt}
-            showProgress={true}
-          />
-        ))}
-      </div>
-
-      {filteredAchievements.length === 0 && (
-        <div className="text-center py-12">
-          <div className="backdrop-blur-xl bg-white/70 border border-white/40 rounded-2xl p-10 shadow-lg inline-block">
-            <p className="text-lg text-gray-400">暂无成就数据</p>
+        {loading && (
+          <div style={{ display: 'flex', justifyContent: 'center', padding: 48 }}>
+            <div style={{ width: 40, height: 40, borderRadius: '50%', border: '3px solid var(--border-light)', borderTopColor: 'var(--primary-600)', animation: 'spin 0.8s linear infinite' }} />
           </div>
-        </div>
-      )}
+        )}
+
+        {error && !loading && (
+          <div style={{ padding: '12px 16px', borderRadius: 'var(--radius-md)', background: 'var(--danger-50)', color: 'var(--danger-700)', border: '1px solid var(--danger-200)', marginBottom: 24, fontSize: 14 }}>
+            {error}
+          </div>
+        )}
+
+        {!loading && !error && (
+          <>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginBottom: 24 }}>
+              {categories.map((category) => (
+                <button
+                  key={category.id}
+                  onClick={() => setFilter(category.id)}
+                  style={{
+                    padding: '8px 20px',
+                    borderRadius: 'var(--radius-full)',
+                    fontSize: 14,
+                    fontWeight: 500,
+                    border: filter === category.id ? 'none' : '1px solid var(--border-light)',
+                    background: filter === category.id ? 'linear-gradient(135deg, var(--primary-500), var(--primary-700))' : 'rgba(255,255,255,0.6)',
+                    color: filter === category.id ? 'white' : 'var(--text-secondary)',
+                    cursor: 'pointer',
+                    transition: 'all 0.15s',
+                  }}
+                >
+                  {category.label}
+                </button>
+              ))}
+            </div>
+
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 16 }}>
+              {filteredAchievements.map((achievement) => (
+                <AchievementCard
+                  key={achievement.id}
+                  achievement={achievement}
+                  isUnlocked={!!(achievement as UserAchievement).unlockedAt}
+                  showProgress={true}
+                />
+              ))}
+            </div>
+
+            {filteredAchievements.length === 0 && (
+              <div style={{ textAlign: 'center', padding: 48 }}>
+                <p style={{ fontSize: 14, color: 'var(--text-muted)' }}>暂无成就数据</p>
+              </div>
+            )}
+          </>
+        )}
+      </div>
     </div>
   );
 };
