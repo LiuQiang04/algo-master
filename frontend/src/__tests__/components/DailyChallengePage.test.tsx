@@ -71,7 +71,7 @@ describe('DailyChallengePage', () => {
     mockUseLoginCalendar.mockReturnValue({ calendar: [], loading: false });
 
     renderPage();
-    const spinners = document.querySelectorAll('.animate-spin');
+    const spinners = document.querySelectorAll('[style*="animation"]');
     expect(spinners.length).toBeGreaterThanOrEqual(1);
   });
 
