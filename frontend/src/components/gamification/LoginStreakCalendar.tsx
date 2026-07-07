@@ -8,125 +8,51 @@ interface LoginStreakCalendarProps {
   onMonthChange?: (month: number, year: number) => void;
 }
 
-const LoginStreakCalendar: React.FC<LoginStreakCalendarProps> = ({
-  calendar,
-  month,
-  year,
-  onMonthChange,
-}) => {
+const LoginStreakCalendar: React.FC<LoginStreakCalendarProps> = ({ calendar, month, year, onMonthChange }) => {
   const firstDayOfWeek = new Date(year, month - 1, 1).getDay();
-
   const weekDays = ['日', '一', '二', '三', '四', '五', '六'];
-
-  const handlePrevMonth = () => {
-    if (month === 1) {
-      onMonthChange?.(12, year - 1);
-    } else {
-      onMonthChange?.(month - 1, year);
-    }
-  };
-
-  const handleNextMonth = () => {
-    if (month === 12) {
-      onMonthChange?.(1, year + 1);
-    } else {
-      onMonthChange?.(month + 1, year);
-    }
-  };
-
-  const getCalendarDays = () => {
-    const days: (LoginCalendarDay | null)[] = [];
-
-    // 添加空白天数
-    for (let i = 0; i < firstDayOfWeek; i++) {
-      days.push(null);
-    }
-
-    // 添加日历天数
-    calendar.forEach((day) => {
-      days.push(day);
-    });
-
-    return days;
-  };
-
-  const calendarDays = getCalendarDays();
+  const handlePrevMonth = () => { if (month === 1) onMonthChange?.(12, year - 1); else onMonthChange?.(month - 1, year); };
+  const handleNextMonth = () => { if (month === 12) onMonthChange?.(1, year + 1); else onMonthChange?.(month + 1, year); };
+  const calendarDays: (LoginCalendarDay | null)[] = [];
+  for (let i = 0; i < firstDayOfWeek; i++) calendarDays.push(null);
+  calendar.forEach((day) => calendarDays.push(day));
 
   return (
-    <div className="backdrop-blur-xl bg-white/70 border border-white/40 rounded-2xl shadow-lg shadow-purple-500/5 p-6">
-      {/* 月份导航 */}
-      <div className="flex items-center justify-between mb-4">
-        <button
-          onClick={handlePrevMonth}
-          className="p-3 rounded-xl bg-white/60 border border-white/40 hover:bg-white/80 transition-all"
-        >
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-          </svg>
+    <div style={{ background: 'rgba(255,255,255,0.7)', backdropFilter: 'blur(12px)', border: '1px solid rgba(255,255,255,0.4)', borderRadius: 'var(--radius-lg)', padding: 20, boxShadow: 'var(--shadow-sm)' }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
+        <button onClick={handlePrevMonth} style={{ padding: 8, borderRadius: 'var(--radius-md)', background: 'rgba(255,255,255,0.6)', border: '1px solid rgba(255,255,255,0.4)', cursor: 'pointer', display: 'flex' }}>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" /></svg>
         </button>
-        <h3 className="text-lg font-bold text-gray-800">
-          {year}年{month}月
-        </h3>
-        <button
-          onClick={handleNextMonth}
-          className="p-3 rounded-xl bg-white/60 border border-white/40 hover:bg-white/80 transition-all"
-        >
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-          </svg>
+        <h3 style={{ fontSize: 16, fontWeight: 600, color: 'var(--text-primary)', margin: 0 }}>{year}年{month}月</h3>
+        <button onClick={handleNextMonth} style={{ padding: 8, borderRadius: 'var(--radius-md)', background: 'rgba(255,255,255,0.6)', border: '1px solid rgba(255,255,255,0.4)', cursor: 'pointer', display: 'flex' }}>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" /></svg>
         </button>
       </div>
-
-      {/* 星期头部 */}
-      <div className="grid grid-cols-7 gap-1 mb-2">
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: 2, marginBottom: 4 }}>
         {weekDays.map((day) => (
-          <div
-            key={day}
-            className="text-center text-sm font-bold text-gray-500 py-2"
-          >
-            {day}
-          </div>
+          <div key={day} style={{ textAlign: 'center', fontSize: 13, fontWeight: 600, color: 'var(--text-muted)', padding: '4px 0' }}>{day}</div>
         ))}
       </div>
-
-      {/* 日历网格 */}
-      <div className="grid grid-cols-7 gap-1">
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: 2 }}>
         {calendarDays.map((day, index) => (
-          <div
-            key={index}
-            className={`aspect-square min-h-[40px] flex items-center justify-center rounded-lg text-sm ${
-              day === null
-                ? ''
-                : day.isLoggedIn
-                ? 'bg-gradient-to-br from-emerald-400 to-teal-500 text-white font-medium shadow-sm'
-                : 'bg-white/40 backdrop-blur-sm text-gray-600 border border-white/30'
-            }`}
-          >
+          <div key={index} style={{ aspectRatio: '1', minHeight: 36, display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: 'var(--radius-sm)', fontSize: 13, ...(day === null ? {} : day.isLoggedIn ? { background: 'linear-gradient(135deg, #34D399, #10B981)', color: 'white', fontWeight: 500 } : { background: 'rgba(255,255,255,0.4)', color: 'var(--text-secondary)', border: '1px solid rgba(255,255,255,0.3)' }) }}>
             {day && (
-              <div className="text-center">
-                <div className="text-sm font-medium">{new Date(day.date).getDate()}</div>
-                {day.isLoggedIn && day.streakDays > 1 && (
-                  <div className="text-xs">🔥{day.streakDays}</div>
-                )}
+              <div style={{ textAlign: 'center' }}>
+                <div style={{ fontSize: 13, fontWeight: 500 }}>{new Date(day.date).getDate()}</div>
+                {day.isLoggedIn && day.streakDays > 1 && <div style={{ fontSize: 10 }}>🔥{day.streakDays}</div>}
               </div>
             )}
           </div>
         ))}
       </div>
-
-      {/* 图例 */}
-      <div className="flex items-center justify-center gap-4 mt-4 text-sm text-gray-500">
-        <div className="flex items-center gap-1.5">
-          <div className="w-3 h-3 rounded bg-white/60 border border-white/30"></div>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 12, marginTop: 12, fontSize: 13, color: 'var(--text-muted)' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+          <div style={{ width: 10, height: 10, borderRadius: 2, background: 'rgba(255,255,255,0.4)', border: '1px solid rgba(255,255,255,0.3)' }} />
           <span>未登录</span>
         </div>
-        <div className="flex items-center gap-1.5">
-          <div className="w-3 h-3 rounded bg-gradient-to-br from-emerald-400 to-teal-500"></div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+          <div style={{ width: 10, height: 10, borderRadius: 2, background: 'linear-gradient(135deg, #34D399, #10B981)' }} />
           <span>已登录</span>
-        </div>
-        <div className="flex items-center gap-1.5">
-          <span>🔥</span>
-          <span>连续天数</span>
         </div>
       </div>
     </div>

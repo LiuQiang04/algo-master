@@ -14,77 +14,48 @@ export const DailyChallengeCard: React.FC<DailyChallengeCardProps> = ({
 }) => {
   if (!challenge) {
     return (
-      <div className="backdrop-blur-xl bg-white/70 border border-white/40 rounded-2xl p-6 shadow-lg">
-        <div className="text-center text-gray-500 py-4">
-          <p className="text-lg">今日暂无挑战</p>
-        </div>
+      <div style={{ background: 'rgba(255,255,255,0.7)', backdropFilter: 'blur(12px)', border: '1px solid rgba(255,255,255,0.4)', borderRadius: 'var(--radius-lg)', padding: 24, boxShadow: 'var(--shadow-sm)', textAlign: 'center' }}>
+        <p style={{ fontSize: 14, color: 'var(--text-muted)' }}>今日暂无挑战</p>
       </div>
     );
   }
 
-  const difficultyStars = Array(5)
-    .fill(0)
-    .map((_, i) => (
-      <svg
-        key={i}
-        className={`w-5 h-5 ${
-          i < challenge.problem.difficulty ? 'text-yellow-400' : 'text-gray-300'
-        }`}
-        fill="currentColor"
-        viewBox="0 0 20 20"
-      >
-        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-      </svg>
-    ));
+  const difficultyStars = Array(5).fill(0).map((_, i) => (
+    <svg key={i} width="16" height="16" viewBox="0 0 20 20" fill={i < challenge.problem.difficulty ? '#FBBF24' : '#D1D5DB'}>
+      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+    </svg>
+  ));
 
   return (
-    <div className="bg-gradient-to-br from-purple-500/90 to-indigo-600/90 backdrop-blur-xl rounded-2xl shadow-lg shadow-purple-500/20 p-8 text-white border border-white/20">
-      <div className="flex items-center justify-between mb-4">
-        <h3 className="text-xl font-bold">每日挑战</h3>
-        <span className="px-3 py-1.5 rounded-full text-base backdrop-blur-sm bg-white/20 border border-white/20">
+    <div style={{ background: 'linear-gradient(135deg, rgba(124,58,237,0.9), rgba(79,70,229,0.9))', backdropFilter: 'blur(12px)', borderRadius: 'var(--radius-lg)', padding: 24, boxShadow: 'var(--shadow-md)', color: 'white', border: '1px solid rgba(255,255,255,0.2)' }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
+        <h3 style={{ fontSize: 18, fontWeight: 700, margin: 0 }}>每日挑战</h3>
+        <span style={{ padding: '4px 12px', borderRadius: 'var(--radius-full)', fontSize: 14, background: 'rgba(255,255,255,0.2)', border: '1px solid rgba(255,255,255,0.2)' }}>
           +{challenge.bonusPoints} 积分
         </span>
       </div>
-
-      <div className="backdrop-blur-sm bg-white/10 border border-white/10 rounded-xl p-4 mb-4">
-        <h4 className="text-lg font-semibold mb-2">{challenge.problem.title}</h4>
-        <div className="flex items-center gap-1 mb-2">{difficultyStars}</div>
-        <div className="flex flex-wrap gap-1">
+      <div style={{ background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 'var(--radius-md)', padding: 16, marginBottom: 16 }}>
+        <h4 style={{ fontSize: 16, fontWeight: 600, margin: '0 0 8px' }}>{challenge.problem.title}</h4>
+        <div style={{ display: 'flex', gap: 2, marginBottom: 8 }}>{difficultyStars}</div>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4 }}>
           {challenge.problem.tags.map(({ tag }) => (
-            <span
-              key={tag.id}
-              className="px-3 py-1 rounded-full text-base backdrop-blur-sm bg-white/20 border border-white/10"
-            >
+            <span key={tag.id} style={{ padding: '2px 10px', borderRadius: 'var(--radius-full)', fontSize: 13, background: 'rgba(255,255,255,0.2)', border: '1px solid rgba(255,255,255,0.1)' }}>
               {tag.name}
             </span>
           ))}
         </div>
       </div>
-
       {isCompleted ? (
-        <div className="text-center">
-          <div className="w-12 h-12 bg-gradient-to-br from-emerald-400 to-teal-500 rounded-full flex items-center justify-center mx-auto mb-2 shadow-lg shadow-emerald-500/20">
-            <svg
-              className="w-6 h-6 text-white"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M5 13l4 4L19 7"
-              />
+        <div style={{ textAlign: 'center' }}>
+          <div style={{ width: 44, height: 44, borderRadius: '50%', background: 'linear-gradient(135deg, #34D399, #10B981)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 8px' }}>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
             </svg>
           </div>
-          <p className="text-lg font-medium">今日挑战已完成!</p>
+          <p style={{ fontSize: 16, fontWeight: 500, margin: 0 }}>今日挑战已完成!</p>
         </div>
       ) : (
-        <button
-          onClick={onComplete}
-          className="w-full py-4 text-lg font-semibold bg-white text-purple-600 rounded-xl hover:bg-white/90 hover:shadow-xl transition-all"
-        >
+        <button onClick={onComplete} style={{ width: '100%', padding: '12px 0', fontSize: 16, fontWeight: 600, background: 'white', color: '#7C3AED', border: 'none', borderRadius: 'var(--radius-md)', cursor: 'pointer' }}>
           开始挑战
         </button>
       )}
@@ -98,54 +69,27 @@ interface DailyTaskListProps {
 
 export const DailyTaskList: React.FC<DailyTaskListProps> = ({ tasks }) => {
   return (
-    <div className="backdrop-blur-xl bg-white/70 border border-white/40 rounded-2xl shadow-lg shadow-purple-500/5 p-6">
-      <h3 className="text-lg font-bold text-gray-800 mb-4">每日任务</h3>
-      <div className="space-y-4">
+    <div style={{ background: 'rgba(255,255,255,0.7)', backdropFilter: 'blur(12px)', border: '1px solid rgba(255,255,255,0.4)', borderRadius: 'var(--radius-lg)', padding: 20, boxShadow: 'var(--shadow-sm)' }}>
+      <h3 style={{ fontSize: 16, fontWeight: 600, color: 'var(--text-primary)', margin: '0 0 16px' }}>每日任务</h3>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
         {tasks.map((task) => (
-          <div
-            key={task.id}
-            className={`flex items-center justify-between p-4 min-h-[60px] rounded-xl ${
-              task.completed
-                ? 'bg-gradient-to-r from-emerald-50/80 to-teal-50/80 backdrop-blur-sm border border-emerald-200/50'
-                : 'bg-white/40 backdrop-blur-sm border border-white/30'
-            }`}
-          >
-            <div className="flex items-center gap-3">
-              <div
-                className={`w-7 h-7 rounded-full flex items-center justify-center shrink-0 ${
-                  task.completed
-                    ? 'bg-gradient-to-br from-emerald-400 to-teal-500 shadow-sm'
-                    : 'bg-white/60 border border-gray-300'
-                }`}
-              >
+          <div key={task.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 16px', minHeight: 52, borderRadius: 'var(--radius-md)', background: task.completed ? 'linear-gradient(to right, rgba(16,185,129,0.1), rgba(20,184,166,0.1))' : 'rgba(255,255,255,0.4)', border: task.completed ? '1px solid rgba(16,185,129,0.2)' : '1px solid rgba(255,255,255,0.3)' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+              <div style={{ width: 24, height: 24, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, background: task.completed ? 'linear-gradient(135deg, #34D399, #10B981)' : 'rgba(255,255,255,0.6)', border: task.completed ? 'none' : '1px solid var(--border-light)' }}>
                 {task.completed && (
-                  <svg
-                    className="w-4 h-4 text-white"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M5 13l4 4L19 7"
-                    />
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                   </svg>
                 )}
               </div>
               <div>
-                <p className="text-base font-semibold text-gray-800">{task.title}</p>
-                <p className="text-sm text-gray-500">{task.description}</p>
+                <p style={{ fontSize: 14, fontWeight: 600, color: 'var(--text-primary)', margin: 0 }}>{task.title}</p>
+                <p style={{ fontSize: 13, color: 'var(--text-secondary)', margin: '2px 0 0' }}>{task.description}</p>
               </div>
             </div>
-            <div className="text-right shrink-0">
-              <p className="text-base text-gray-600">
-                {task.current}/{task.target}
-              </p>
-              {task.reward > 0 && (
-                <p className="text-sm font-medium text-amber-600">+{task.reward} 积分</p>
-              )}
+            <div style={{ textAlign: 'right', flexShrink: 0 }}>
+              <p style={{ fontSize: 14, color: 'var(--text-secondary)', margin: 0 }}>{task.current}/{task.target}</p>
+              {task.reward > 0 && <p style={{ fontSize: 13, fontWeight: 500, color: '#D97706', margin: '2px 0 0' }}>+{task.reward} 积分</p>}
             </div>
           </div>
         ))}
