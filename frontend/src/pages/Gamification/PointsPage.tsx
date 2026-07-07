@@ -31,7 +31,7 @@ const PointsPage: React.FC = () => {
         </div>
       ) : levelInfo ? (
         <div className="mb-8">
-          <LevelProgress levelInfo={levelInfo} size="xl" />
+          <LevelProgress levelInfo={levelInfo} size="lg" />
         </div>
       ) : null}
 
