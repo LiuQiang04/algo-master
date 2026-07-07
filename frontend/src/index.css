@@ -654,3 +654,8 @@ input, select, textarea {
   background: var(--primary-50);
   color: var(--primary-700);
 }
+
+/* Navbar Header */
+.navbar-header {
+  font-family: var(--font-sans);
+}
