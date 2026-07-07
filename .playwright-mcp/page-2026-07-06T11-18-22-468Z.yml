@@ -1,0 +1,211 @@
+- generic [ref=e3]:
+  - navigation [ref=e4]:
+    - generic [ref=e5]:
+      - link "AlgoArena" [ref=e6] [cursor=pointer]:
+        - /url: /
+        - img [ref=e7]
+        - generic [ref=e11]: AlgoArena
+      - generic [ref=e12]:
+        - link "Problems" [ref=e13] [cursor=pointer]:
+          - /url: /problems
+          - img [ref=e14]
+          - generic [ref=e16]: Problems
+        - link "Contests" [ref=e17] [cursor=pointer]:
+          - /url: /contests
+          - img [ref=e18]
+          - generic [ref=e24]: Contests
+        - link "Community" [ref=e25] [cursor=pointer]:
+          - /url: /community
+          - img [ref=e26]
+          - generic [ref=e31]: Community
+      - generic [ref=e33]:
+        - img [ref=e34]
+        - textbox "Search community..." [ref=e37]
+      - generic [ref=e38]:
+        - link [ref=e39] [cursor=pointer]:
+          - /url: /notifications
+          - img [ref=e40]
+        - link [ref=e43] [cursor=pointer]:
+          - /url: /messages
+          - img [ref=e44]
+        - button "A alice" [ref=e47] [cursor=pointer]:
+          - generic [ref=e48]: A
+          - generic [ref=e49]: alice
+          - img [ref=e50]
+        - button [ref=e52] [cursor=pointer]:
+          - img [ref=e53]
+  - main [ref=e54]:
+    - generic [ref=e55]:
+      - generic [ref=e60]:
+        - generic [ref=e61]:
+          - img [ref=e62]
+          - generic [ref=e64]: 算法竞赛学习平台
+        - heading "掌握算法 成就竞赛梦想" [level=1] [ref=e65]:
+          - text: 掌握算法
+          - text: 成就竞赛梦想
+        - paragraph [ref=e66]: 从基础数据结构到高级算法，系统化的学习路径帮助你全面提升编程能力。 与全球开发者同台竞技，在实战中成长。
+        - generic [ref=e67]:
+          - link "开始练习" [ref=e68] [cursor=pointer]:
+            - /url: /problems
+            - img [ref=e69]
+            - text: 开始练习
+          - link "学习路径" [ref=e71] [cursor=pointer]:
+            - /url: /paths
+            - text: 学习路径
+            - img [ref=e72]
+        - generic [ref=e74]:
+          - generic [ref=e75]:
+            - img [ref=e76]
+            - generic [ref=e80]: 1,200+
+            - generic [ref=e81]: 精选题目
+          - generic [ref=e82]:
+            - img [ref=e83]
+            - generic [ref=e88]: 50,000+
+            - generic [ref=e89]: 活跃用户
+          - generic [ref=e90]:
+            - img [ref=e91]
+            - generic [ref=e95]: 2,000,000+
+            - generic [ref=e96]: 代码提交
+          - generic [ref=e97]:
+            - img [ref=e98]
+            - generic [ref=e104]: 300+
+            - generic [ref=e105]: 竞赛举办
+      - generic [ref=e107]:
+        - generic [ref=e108]:
+          - heading "为什么选择 Algorithm Arena" [level=2] [ref=e109]
+          - paragraph [ref=e110]: 我们提供全方位的算法学习体验，帮助你在竞赛中脱颖而出
+        - generic [ref=e111]:
+          - generic [ref=e112]:
+            - img [ref=e114]
+            - heading "丰富的题库" [level=3] [ref=e118]
+            - paragraph [ref=e119]: 涵盖数据结构、算法、数学等多个领域的 1000+ 精选题目，从入门到进阶全覆盖。
+          - generic [ref=e120]:
+            - img [ref=e122]
+            - heading "即时评测" [level=3] [ref=e124]
+            - paragraph [ref=e125]: 支持 C++、Java、Python 等多语言在线评测，毫秒级返回结果，实时反馈。
+          - generic [ref=e126]:
+            - img [ref=e128]
+            - heading "竞赛系统" [level=3] [ref=e134]
+            - paragraph [ref=e135]: 定期举办算法竞赛，实时排行榜，与全球选手同台竞技，提升实战能力。
+          - generic [ref=e136]:
+            - img [ref=e138]
+            - heading "学习路径" [level=3] [ref=e140]
+            - paragraph [ref=e141]: 系统化的学习路径规划，从基础算法到高级数据结构，循序渐进掌握核心知识。
+          - generic [ref=e142]:
+            - img [ref=e144]
+            - heading "进度追踪" [level=3] [ref=e147]
+            - paragraph [ref=e148]: 详细的学习数据分析，可视化你的成长轨迹，精准定位薄弱环节。
+          - generic [ref=e149]:
+            - img [ref=e151]
+            - heading "社区交流" [level=3] [ref=e156]
+            - paragraph [ref=e157]: 活跃的开发者社区，题解分享、讨论交流，与志同道合的伙伴共同进步。
+      - generic [ref=e159]:
+        - generic [ref=e160]:
+          - generic [ref=e161]:
+            - heading "热门题目" [level=2] [ref=e162]
+            - paragraph [ref=e163]: 最近大家都在练习的题目
+          - link "查看全部" [ref=e164] [cursor=pointer]:
+            - /url: /problems
+            - text: 查看全部
+            - img [ref=e165]
+        - generic [ref=e167]:
+          - link "#1 两数之和 数组 哈希表 简单 645" [ref=e168] [cursor=pointer]:
+            - /url: /problems/1
+            - generic [ref=e169]:
+              - generic [ref=e170]: "#1"
+              - generic [ref=e171]: 两数之和
+            - generic [ref=e172]:
+              - generic [ref=e173]:
+                - generic [ref=e174]: 数组
+                - generic [ref=e175]: 哈希表
+              - generic [ref=e176]: 简单
+              - generic [ref=e177]:
+                - img [ref=e178]
+                - text: "645"
+          - link "#2 反转链表 链表 简单 703" [ref=e181] [cursor=pointer]:
+            - /url: /problems/2
+            - generic [ref=e182]:
+              - generic [ref=e183]: "#2"
+              - generic [ref=e184]: 反转链表
+            - generic [ref=e185]:
+              - generic [ref=e187]: 链表
+              - generic [ref=e188]: 简单
+              - generic [ref=e189]:
+                - img [ref=e190]
+                - text: "703"
+          - link "#3 二叉树的中序遍历 树 栈 简单 649" [ref=e193] [cursor=pointer]:
+            - /url: /problems/3
+            - generic [ref=e194]:
+              - generic [ref=e195]: "#3"
+              - generic [ref=e196]: 二叉树的中序遍历
+            - generic [ref=e197]:
+              - generic [ref=e198]:
+                - generic [ref=e199]: 树
+                - generic [ref=e200]: 栈
+              - generic [ref=e201]: 简单
+              - generic [ref=e202]:
+                - img [ref=e203]
+                - text: "649"
+          - link "#4 最大子序和 数组 分治 动态规划 中等 1,175" [ref=e206] [cursor=pointer]:
+            - /url: /problems/4
+            - generic [ref=e207]:
+              - generic [ref=e208]: "#4"
+              - generic [ref=e209]: 最大子序和
+            - generic [ref=e210]:
+              - generic [ref=e211]:
+                - generic [ref=e212]: 数组
+                - generic [ref=e213]: 分治
+                - generic [ref=e214]: 动态规划
+              - generic [ref=e215]: 中等
+              - generic [ref=e216]:
+                - img [ref=e217]
+                - text: 1,175
+      - generic [ref=e221]:
+        - generic [ref=e222]:
+          - generic [ref=e223]:
+            - heading "即将开始的竞赛" [level=2] [ref=e224]
+            - paragraph [ref=e225]: 报名参加竞赛，检验你的实力
+          - link "查看全部" [ref=e226] [cursor=pointer]:
+            - /url: /contests
+            - text: 查看全部
+            - img [ref=e227]
+        - generic [ref=e229]:
+          - generic [ref=e230]:
+            - generic [ref=e231]:
+              - img [ref=e232]
+              - 'heading "周赛 #128" [level=3] [ref=e238]'
+            - generic [ref=e239]:
+              - generic [ref=e240]:
+                - img [ref=e241]
+                - generic [ref=e244]: 2 天后
+              - generic [ref=e245]:
+                - img [ref=e246]
+                - generic [ref=e250]: 时长 2小时
+              - generic [ref=e251]:
+                - img [ref=e252]
+                - generic [ref=e257]: 234 人已报名
+            - button "立即报名" [ref=e258] [cursor=pointer]
+          - generic [ref=e259]:
+            - generic [ref=e260]:
+              - img [ref=e261]
+              - 'heading "双周赛 #45" [level=3] [ref=e267]'
+            - generic [ref=e268]:
+              - generic [ref=e269]:
+                - img [ref=e270]
+                - generic [ref=e273]: 5 天后
+              - generic [ref=e274]:
+                - img [ref=e275]
+                - generic [ref=e279]: 时长 3小时
+              - generic [ref=e280]:
+                - img [ref=e281]
+                - generic [ref=e286]: 156 人已报名
+            - button "立即报名" [ref=e287] [cursor=pointer]
+      - generic [ref=e290]:
+        - heading "准备好开始了吗？" [level=2] [ref=e291]
+        - paragraph [ref=e292]: 加入 Algorithm Arena，开启你的算法学习之旅。免费注册，立即开始练习。
+        - link "免费注册" [ref=e293] [cursor=pointer]:
+          - /url: /register
+          - text: 免费注册
+          - img [ref=e294]
+  - contentinfo [ref=e296]:
+    - paragraph [ref=e298]: AlgoArena - Algorithm Competition Learning Platform

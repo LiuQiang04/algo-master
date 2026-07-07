@@ -1,0 +1,60 @@
+- generic [ref=f6e3]:
+  - navigation [ref=f6e4]:
+    - generic [ref=f6e5]:
+      - link "AlgoArena" [ref=f6e6] [cursor=pointer]:
+        - /url: /
+        - img [ref=f6e7]
+        - generic [ref=f6e11]: AlgoArena
+      - generic [ref=f6e12]:
+        - link "Problems" [ref=f6e13] [cursor=pointer]:
+          - /url: /problems
+          - img [ref=f6e14]
+          - generic [ref=f6e16]: Problems
+        - link "Contests" [ref=f6e17] [cursor=pointer]:
+          - /url: /contests
+          - img [ref=f6e18]
+          - generic [ref=f6e24]: Contests
+        - link "Community" [ref=f6e25] [cursor=pointer]:
+          - /url: /community
+          - img [ref=f6e26]
+          - generic [ref=f6e31]: Community
+      - generic [ref=f6e33]:
+        - img [ref=f6e34]
+        - textbox "Search community..." [ref=f6e37]
+      - generic [ref=f6e38]:
+        - link [ref=f6e39] [cursor=pointer]:
+          - /url: /notifications
+          - img [ref=f6e40]
+        - link [ref=f6e43] [cursor=pointer]:
+          - /url: /messages
+          - img [ref=f6e44]
+        - button "A alice" [ref=f6e47] [cursor=pointer]:
+          - generic [ref=f6e48]: A
+          - generic [ref=f6e49]: alice
+          - img [ref=f6e50]
+        - button [ref=f6e52] [cursor=pointer]:
+          - img [ref=f6e53]
+  - main [ref=f6e54]:
+    - generic [ref=f6e56]:
+      - generic [ref=f6e57]:
+        - generic [ref=f6e58]:
+          - img [ref=f6e59]
+          - generic [ref=f6e63]: AlgoArena
+        - paragraph [ref=f6e64]: Sign in to your account
+      - generic [ref=f6e65]:
+        - generic [ref=f6e66]:
+          - generic [ref=f6e67]: Username or Email
+          - textbox "Enter your username or email" [ref=f6e68]
+        - generic [ref=f6e69]:
+          - generic [ref=f6e70]: Password
+          - generic [ref=f6e71]:
+            - textbox "Enter your password" [ref=f6e72]
+            - button [ref=f6e73] [cursor=pointer]:
+              - img [ref=f6e74]
+        - button "Sign In" [ref=f6e77] [cursor=pointer]
+      - paragraph [ref=f6e78]:
+        - text: Don't have an account?
+        - link "Sign up" [ref=f6e79] [cursor=pointer]:
+          - /url: /register
+  - contentinfo [ref=f6e80]:
+    - paragraph [ref=f6e82]: AlgoArena - Algorithm Competition Learning Platform

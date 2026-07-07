@@ -1,0 +1,300 @@
+- generic [ref=f5e3]:
+  - banner [ref=f5e4]:
+    - generic [ref=f5e5]:
+      - button "打开侧边栏" [active] [ref=f5e6] [cursor=pointer]:
+        - img [ref=f5e7]
+      - link "AlgoArena" [ref=f5e8] [cursor=pointer]:
+        - /url: /
+        - img [ref=f5e10]
+        - generic [ref=f5e14]: AlgoArena
+      - navigation [ref=f5e15]:
+        - link "首页" [ref=f5e16] [cursor=pointer]:
+          - /url: /
+        - link "题库" [ref=f5e17] [cursor=pointer]:
+          - /url: /problems
+          - img [ref=f5e18]
+          - text: 题库
+        - link "竞赛" [ref=f5e20] [cursor=pointer]:
+          - /url: /contests
+          - img [ref=f5e21]
+          - text: 竞赛
+        - link "学习路径" [ref=f5e27] [cursor=pointer]:
+          - /url: /paths
+          - img [ref=f5e28]
+          - text: 学习路径
+        - link "社区" [ref=f5e30] [cursor=pointer]:
+          - /url: /community
+          - img [ref=f5e31]
+          - text: 社区
+        - link "排行榜" [ref=f5e36] [cursor=pointer]:
+          - /url: /leaderboard
+          - img [ref=f5e37]
+          - text: 排行榜
+        - link "游戏化" [ref=f5e39] [cursor=pointer]:
+          - /url: /gamification
+          - img [ref=f5e40]
+          - text: 游戏化
+      - generic [ref=f5e42]:
+        - link [ref=f5e43] [cursor=pointer]:
+          - /url: /notifications
+          - img [ref=f5e44]
+        - link [ref=f5e47] [cursor=pointer]:
+          - /url: /messages
+          - img [ref=f5e48]
+        - button "A" [ref=f5e373] [cursor=pointer]:
+          - generic [ref=f5e52]: A
+        - button "切换移动端菜单" [ref=f5e56] [cursor=pointer]:
+          - img [ref=f5e57]
+  - generic [ref=f5e58]:
+    - complementary [ref=f5e59]:
+      - button "关闭侧边栏" [ref=f5e375] [cursor=pointer]:
+        - img [ref=f5e376]
+      - generic [ref=f5e60]:
+        - generic [ref=f5e62]: A
+        - generic [ref=f5e63]:
+          - generic [ref=f5e64]: alice
+          - generic [ref=f5e65]: Lv.19
+      - navigation [ref=f5e66]:
+        - generic [ref=f5e67]:
+          - generic [ref=f5e68]: 核心功能
+          - link "首页" [ref=f5e69] [cursor=pointer]:
+            - /url: /
+            - img [ref=f5e71]
+            - generic [ref=f5e74]: 首页
+          - link "题库" [ref=f5e75] [cursor=pointer]:
+            - /url: /problems
+            - img [ref=f5e77]
+            - generic [ref=f5e79]: 题库
+            - img [ref=f5e80]
+          - link "竞赛" [ref=f5e82] [cursor=pointer]:
+            - /url: /contests
+            - img [ref=f5e84]
+            - generic [ref=f5e90]: 竞赛
+          - link "学习路径" [ref=f5e91] [cursor=pointer]:
+            - /url: /paths
+            - img [ref=f5e93]
+            - generic [ref=f5e95]: 学习路径
+        - generic [ref=f5e96]:
+          - generic [ref=f5e97]: 社区
+          - link "社区" [ref=f5e98] [cursor=pointer]:
+            - /url: /community
+            - img [ref=f5e100]
+            - generic [ref=f5e105]: 社区
+          - link "动态" [ref=f5e106] [cursor=pointer]:
+            - /url: /feed
+            - img [ref=f5e108]
+            - generic [ref=f5e112]: 动态
+        - generic [ref=f5e113]:
+          - generic [ref=f5e114]: 游戏化
+          - link "游戏化中心" [ref=f5e115] [cursor=pointer]:
+            - /url: /gamification
+            - img [ref=f5e117]
+            - generic [ref=f5e119]: 游戏化中心
+          - link "成就" [ref=f5e120] [cursor=pointer]:
+            - /url: /achievements
+            - img [ref=f5e122]
+            - generic [ref=f5e125]: 成就
+          - link "排行榜" [ref=f5e126] [cursor=pointer]:
+            - /url: /leaderboard
+            - img [ref=f5e128]
+            - generic [ref=f5e130]: 排行榜
+          - link "每日挑战" [ref=f5e131] [cursor=pointer]:
+            - /url: /daily-challenge
+            - img [ref=f5e133]
+            - generic [ref=f5e136]: 每日挑战
+          - link "积分" [ref=f5e137] [cursor=pointer]:
+            - /url: /points
+            - img [ref=f5e139]
+            - generic [ref=f5e144]: 积分
+          - link "虚拟道具" [ref=f5e145] [cursor=pointer]:
+            - /url: /virtual-items
+            - img [ref=f5e147]
+            - generic [ref=f5e151]: 虚拟道具
+      - link "个人中心" [ref=f5e153] [cursor=pointer]:
+        - /url: /profile
+        - img [ref=f5e155]
+        - generic [ref=f5e158]: 个人中心
+    - main [ref=f5e159]:
+      - generic [ref=f5e203]:
+        - generic [ref=f5e205]:
+          - heading "题库" [level=1] [ref=f5e206]
+          - paragraph [ref=f5e207]: 共 20 道题目，持续更新中
+        - generic [ref=f5e208]:
+          - generic [ref=f5e209]:
+            - img
+            - textbox "搜索题目编号或标题..." [ref=f5e210]
+          - generic [ref=f5e211]:
+            - generic [ref=f5e212]:
+              - generic [ref=f5e213]: 难度
+              - generic [ref=f5e214]:
+                - button "全部" [ref=f5e215] [cursor=pointer]
+                - button "简单" [ref=f5e216] [cursor=pointer]
+                - button "中等" [ref=f5e217] [cursor=pointer]
+                - button "困难" [ref=f5e218] [cursor=pointer]
+            - generic [ref=f5e219]:
+              - generic [ref=f5e220]: 状态
+              - generic [ref=f5e221]:
+                - button "全部" [ref=f5e222] [cursor=pointer]
+                - button "已通过" [ref=f5e223] [cursor=pointer]
+                - button "已尝试" [ref=f5e224] [cursor=pointer]
+                - button "未开始" [ref=f5e225] [cursor=pointer]
+            - button "标签筛选" [ref=f5e226] [cursor=pointer]:
+              - img [ref=f5e227]
+              - text: 标签筛选
+        - generic [ref=f5e231]: 共 20 道题目
+        - table [ref=f5e233]:
+          - rowgroup [ref=f5e234]:
+            - row "状态 编号 题目 难度" [ref=f5e379]:
+              - columnheader "状态" [ref=f5e236]
+              - columnheader "编号" [ref=f5e237]
+              - columnheader "题目" [ref=f5e238]
+              - columnheader "难度" [ref=f5e240]
+          - rowgroup [ref=f5e243]:
+            - row "1 两数之和 简单" [ref=f5e380]:
+              - cell [ref=f5e245]
+              - cell "1" [ref=f5e246]
+              - cell "两数之和" [ref=f5e247]:
+                - link "两数之和" [ref=f5e248] [cursor=pointer]:
+                  - /url: /problems/1
+              - cell "简单" [ref=f5e253]
+            - row "2 反转链表 简单" [ref=f5e381]:
+              - cell [ref=f5e257]
+              - cell "2" [ref=f5e258]
+              - cell "反转链表" [ref=f5e259]:
+                - link "反转链表" [ref=f5e260] [cursor=pointer]:
+                  - /url: /problems/2
+              - cell "简单" [ref=f5e264]
+            - row "3 二叉树的中序遍历 简单" [ref=f5e382]:
+              - cell [ref=f5e268]
+              - cell "3" [ref=f5e269]
+              - cell "二叉树的中序遍历" [ref=f5e270]:
+                - link "二叉树的中序遍历" [ref=f5e271] [cursor=pointer]:
+                  - /url: /problems/3
+              - cell "简单" [ref=f5e276]
+            - row "4 最大子序和 中等" [ref=f5e383]:
+              - cell [ref=f5e280]
+              - cell "4" [ref=f5e281]
+              - cell "最大子序和" [ref=f5e282]:
+                - link "最大子序和" [ref=f5e283] [cursor=pointer]:
+                  - /url: /problems/4
+              - cell "中等" [ref=f5e289]
+            - row "5 合并两个有序链表 简单" [ref=f5e384]:
+              - cell [ref=f5e293]
+              - cell "5" [ref=f5e294]
+              - cell "合并两个有序链表" [ref=f5e295]:
+                - link "合并两个有序链表" [ref=f5e296] [cursor=pointer]:
+                  - /url: /problems/5
+              - cell "简单" [ref=f5e301]
+            - row "6 有效的括号 简单" [ref=f5e385]:
+              - cell [ref=f5e305]
+              - cell "6" [ref=f5e306]
+              - cell "有效的括号" [ref=f5e307]:
+                - link "有效的括号" [ref=f5e308] [cursor=pointer]:
+                  - /url: /problems/6
+              - cell "简单" [ref=f5e313]
+            - row "7 爬楼梯 简单" [ref=f5e386]:
+              - cell [ref=f5e317]
+              - cell "7" [ref=f5e318]
+              - cell "爬楼梯" [ref=f5e319]:
+                - link "爬楼梯" [ref=f5e320] [cursor=pointer]:
+                  - /url: /problems/7
+              - cell "简单" [ref=f5e324]
+            - row "8 二分查找 简单" [ref=f5e387]:
+              - cell [ref=f5e328]
+              - cell "8" [ref=f5e329]
+              - cell "二分查找" [ref=f5e330]:
+                - link "二分查找" [ref=f5e331] [cursor=pointer]:
+                  - /url: /problems/8
+              - cell "简单" [ref=f5e336]
+            - row "9 无重复字符的最长子串 中等" [ref=f5e388]:
+              - cell [ref=f5e340]
+              - cell "9" [ref=f5e341]
+              - cell "无重复字符的最长子串" [ref=f5e342]:
+                - link "无重复字符的最长子串" [ref=f5e343] [cursor=pointer]:
+                  - /url: /problems/9
+              - cell "中等" [ref=f5e349]
+            - row "10 最长回文子串 中等" [ref=f5e389]:
+              - cell [ref=f5e353]
+              - cell "10" [ref=f5e354]
+              - cell "最长回文子串" [ref=f5e355]:
+                - link "最长回文子串" [ref=f5e356] [cursor=pointer]:
+                  - /url: /problems/10
+              - cell "中等" [ref=f5e361]
+        - generic [ref=f5e364]:
+          - button [disabled] [ref=f5e365]:
+            - img [ref=f5e366]
+          - button "1" [ref=f5e368] [cursor=pointer]
+          - button "2" [ref=f5e369] [cursor=pointer]
+          - button [ref=f5e370] [cursor=pointer]:
+            - img [ref=f5e371]
+  - contentinfo [ref=f5e163]:
+    - generic [ref=f5e164]:
+      - generic [ref=f5e165]:
+        - generic [ref=f5e166]:
+          - heading "关于 AlgoMaster" [level=3] [ref=f5e167]
+          - paragraph [ref=f5e168]: AlgoMaster 是一个专业的算法竞赛学习平台，帮助你系统学习算法， 提升编程能力，在竞赛中取得好成绩。
+        - generic [ref=f5e169]:
+          - heading "快速链接" [level=3] [ref=f5e170]
+          - list [ref=f5e171]:
+            - listitem [ref=f5e172]:
+              - link "题库" [ref=f5e173] [cursor=pointer]:
+                - /url: /problems
+            - listitem [ref=f5e174]:
+              - link "竞赛" [ref=f5e175] [cursor=pointer]:
+                - /url: /contests
+            - listitem [ref=f5e176]:
+              - link "社区" [ref=f5e177] [cursor=pointer]:
+                - /url: /community
+            - listitem [ref=f5e178]:
+              - link "排行榜" [ref=f5e179] [cursor=pointer]:
+                - /url: /leaderboard
+            - listitem [ref=f5e180]:
+              - link "游戏化" [ref=f5e181] [cursor=pointer]:
+                - /url: /gamification
+        - generic [ref=f5e182]:
+          - heading "学习资源" [level=3] [ref=f5e183]
+          - list [ref=f5e184]:
+            - listitem [ref=f5e185]:
+              - link "学习路径" [ref=f5e186] [cursor=pointer]:
+                - /url: /paths
+            - listitem [ref=f5e187]:
+              - link "算法题库" [ref=f5e188] [cursor=pointer]:
+                - /url: /problems
+            - listitem [ref=f5e189]:
+              - link "成就系统" [ref=f5e190] [cursor=pointer]:
+                - /url: /achievements
+            - listitem [ref=f5e191]:
+              - link "每日挑战" [ref=f5e192] [cursor=pointer]:
+                - /url: /daily-challenge
+        - generic [ref=f5e193]:
+          - heading "联系我们" [level=3] [ref=f5e194]
+          - list [ref=f5e195]:
+            - listitem [ref=f5e196]: "邮箱: support@algomaster.com"
+            - listitem [ref=f5e197]: "GitHub: github.com/algomaster"
+            - listitem [ref=f5e198]: "微信公众号: AlgoMaster"
+      - paragraph [ref=f5e200]: © 2026 AlgoMaster. All rights reserved.
+  - navigation [ref=f5e390]:
+    - link "首页" [ref=f5e391] [cursor=pointer]:
+      - /url: /
+      - img [ref=f5e392]
+      - generic [ref=f5e395]: 首页
+    - link "题库" [ref=f5e396] [cursor=pointer]:
+      - /url: /problems
+      - img [ref=f5e397]
+      - generic [ref=f5e399]: 题库
+    - link "竞赛" [ref=f5e400] [cursor=pointer]:
+      - /url: /contests
+      - img [ref=f5e401]
+      - generic [ref=f5e407]: 竞赛
+    - link "社区" [ref=f5e408] [cursor=pointer]:
+      - /url: /community
+      - img [ref=f5e409]
+      - generic [ref=f5e414]: 社区
+    - link "游戏化" [ref=f5e415] [cursor=pointer]:
+      - /url: /gamification
+      - img [ref=f5e416]
+      - generic [ref=f5e418]: 游戏化
+    - link "我的" [ref=f5e419] [cursor=pointer]:
+      - /url: /profile
+      - img [ref=f5e420]
+      - generic [ref=f5e423]: 我的

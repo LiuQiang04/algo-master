@@ -1,0 +1,42 @@
+- generic [ref=f5e3]:
+  - navigation [ref=f5e4]:
+    - generic [ref=f5e5]:
+      - link "AlgoArena" [ref=f5e6] [cursor=pointer]:
+        - /url: /
+        - img [ref=f5e7]
+        - generic [ref=f5e11]: AlgoArena
+      - generic [ref=f5e12]:
+        - link "Problems" [ref=f5e13] [cursor=pointer]:
+          - /url: /problems
+          - img [ref=f5e14]
+          - generic [ref=f5e16]: Problems
+        - link "Contests" [ref=f5e17] [cursor=pointer]:
+          - /url: /contests
+          - img [ref=f5e18]
+          - generic [ref=f5e24]: Contests
+        - link "Community" [ref=f5e25] [cursor=pointer]:
+          - /url: /community
+          - img [ref=f5e26]
+          - generic [ref=f5e31]: Community
+      - generic [ref=f5e33]:
+        - img [ref=f5e34]
+        - textbox "Search community..." [ref=f5e37]
+      - generic [ref=f5e38]:
+        - link [ref=f5e39] [cursor=pointer]:
+          - /url: /notifications
+          - img [ref=f5e40]
+        - link [ref=f5e43] [cursor=pointer]:
+          - /url: /messages
+          - img [ref=f5e44]
+        - button "A alice" [ref=f5e47] [cursor=pointer]:
+          - generic [ref=f5e48]: A
+          - generic [ref=f5e49]: alice
+          - img [ref=f5e50]
+        - button [ref=f5e52] [cursor=pointer]:
+          - img [ref=f5e53]
+  - main [ref=f5e54]:
+    - generic [ref=f5e57]:
+      - heading "积分中心" [level=1] [ref=f5e58]
+      - paragraph [ref=f5e59]: 查看你的积分详情、等级进度和积分历史记录
+  - contentinfo [ref=f5e64]:
+    - paragraph [ref=f5e66]: AlgoArena - Algorithm Competition Learning Platform

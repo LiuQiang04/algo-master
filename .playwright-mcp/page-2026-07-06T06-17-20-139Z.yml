@@ -1,0 +1,39 @@
+- generic [ref=f1e3]:
+  - navigation [ref=f1e4]:
+    - generic [ref=f1e5]:
+      - link "AlgoArena" [ref=f1e6] [cursor=pointer]:
+        - /url: /
+        - img [ref=f1e7]
+        - generic [ref=f1e11]: AlgoArena
+      - generic [ref=f1e12]:
+        - link "Problems" [ref=f1e13] [cursor=pointer]:
+          - /url: /problems
+          - img [ref=f1e14]
+          - generic [ref=f1e16]: Problems
+        - link "Contests" [ref=f1e17] [cursor=pointer]:
+          - /url: /contests
+          - img [ref=f1e18]
+          - generic [ref=f1e24]: Contests
+        - link "Community" [ref=f1e25] [cursor=pointer]:
+          - /url: /community
+          - img [ref=f1e26]
+          - generic [ref=f1e31]: Community
+      - generic [ref=f1e33]:
+        - img [ref=f1e34]
+        - textbox "Search community..." [ref=f1e37]
+      - generic [ref=f1e38]:
+        - link [ref=f1e39] [cursor=pointer]:
+          - /url: /notifications
+          - img [ref=f1e40]
+        - link [ref=f1e43] [cursor=pointer]:
+          - /url: /messages
+          - img [ref=f1e44]
+        - button "A alice" [ref=f1e47] [cursor=pointer]:
+          - generic [ref=f1e48]: A
+          - generic [ref=f1e49]: alice
+          - img [ref=f1e50]
+        - button [ref=f1e52] [cursor=pointer]:
+          - img [ref=f1e53]
+  - main [ref=f1e54]
+  - contentinfo [ref=f1e58]:
+    - paragraph [ref=f1e60]: AlgoArena - Algorithm Competition Learning Platform

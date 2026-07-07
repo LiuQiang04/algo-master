@@ -1,0 +1,141 @@
+- generic [ref=e3]:
+  - banner [ref=e4]:
+    - generic [ref=e6]:
+      - link "A AlgoMaster" [ref=e7] [cursor=pointer]:
+        - /url: /
+        - generic [ref=e9]: A
+        - generic [ref=e10]: AlgoMaster
+      - navigation [ref=e11]:
+        - link "首页" [ref=e12] [cursor=pointer]:
+          - /url: /
+        - link "题库" [ref=e13] [cursor=pointer]:
+          - /url: /problems
+        - link "竞赛" [ref=e14] [cursor=pointer]:
+          - /url: /contests
+        - link "学习路径" [ref=e15] [cursor=pointer]:
+          - /url: /paths
+        - link "社区" [ref=e16] [cursor=pointer]:
+          - /url: /community
+        - link "排行榜" [ref=e17] [cursor=pointer]:
+          - /url: /leaderboard
+        - link "游戏化" [ref=e18] [cursor=pointer]:
+          - /url: /gamification
+      - generic [ref=e19]:
+        - link "登录" [ref=e20] [cursor=pointer]:
+          - /url: /login
+        - link "注册" [ref=e21] [cursor=pointer]:
+          - /url: /register
+  - generic [ref=e22]:
+    - complementary [ref=e23]:
+      - generic [ref=e24]:
+        - generic [ref=e26]: A
+        - generic [ref=e27]:
+          - generic [ref=e28]: alice
+          - generic [ref=e29]: Lv.19
+      - navigation [ref=e30]:
+        - generic [ref=e31]:
+          - generic [ref=e32]: 核心功能
+          - link "首页" [ref=e33] [cursor=pointer]:
+            - /url: /
+            - img [ref=e35]
+            - generic [ref=e38]: 首页
+            - img [ref=e39]
+          - link "题库" [ref=e41] [cursor=pointer]:
+            - /url: /problems
+            - img [ref=e43]
+            - generic [ref=e45]: 题库
+          - link "竞赛" [ref=e46] [cursor=pointer]:
+            - /url: /contests
+            - img [ref=e48]
+            - generic [ref=e54]: 竞赛
+          - link "学习路径" [ref=e55] [cursor=pointer]:
+            - /url: /paths
+            - img [ref=e57]
+            - generic [ref=e59]: 学习路径
+        - generic [ref=e60]:
+          - generic [ref=e61]: 社区
+          - link "社区" [ref=e62] [cursor=pointer]:
+            - /url: /community
+            - img [ref=e64]
+            - generic [ref=e69]: 社区
+          - link "动态" [ref=e70] [cursor=pointer]:
+            - /url: /feed
+            - img [ref=e72]
+            - generic [ref=e76]: 动态
+        - generic [ref=e77]:
+          - generic [ref=e78]: 游戏化
+          - link "游戏化中心" [ref=e79] [cursor=pointer]:
+            - /url: /gamification
+            - img [ref=e81]
+            - generic [ref=e83]: 游戏化中心
+          - link "成就" [ref=e84] [cursor=pointer]:
+            - /url: /achievements
+            - img [ref=e86]
+            - generic [ref=e89]: 成就
+          - link "排行榜" [ref=e90] [cursor=pointer]:
+            - /url: /leaderboard
+            - img [ref=e92]
+            - generic [ref=e94]: 排行榜
+          - link "每日挑战" [ref=e95] [cursor=pointer]:
+            - /url: /daily-challenge
+            - img [ref=e97]
+            - generic [ref=e100]: 每日挑战
+          - link "积分" [ref=e101] [cursor=pointer]:
+            - /url: /points
+            - img [ref=e103]
+            - generic [ref=e108]: 积分
+          - link "虚拟道具" [ref=e109] [cursor=pointer]:
+            - /url: /virtual-items
+            - img [ref=e111]
+            - generic [ref=e115]: 虚拟道具
+      - link "个人中心" [ref=e117] [cursor=pointer]:
+        - /url: /profile
+        - img [ref=e119]
+        - generic [ref=e122]: 个人中心
+    - main [ref=e123]
+  - contentinfo [ref=e128]:
+    - generic [ref=e129]:
+      - generic [ref=e130]:
+        - generic [ref=e131]:
+          - heading "关于 AlgoMaster" [level=3] [ref=e132]
+          - paragraph [ref=e133]: AlgoMaster 是一个专业的算法竞赛学习平台，帮助你系统学习算法， 提升编程能力，在竞赛中取得好成绩。
+        - generic [ref=e134]:
+          - heading "快速链接" [level=3] [ref=e135]
+          - list [ref=e136]:
+            - listitem [ref=e137]:
+              - link "题库" [ref=e138] [cursor=pointer]:
+                - /url: /problems
+            - listitem [ref=e139]:
+              - link "竞赛" [ref=e140] [cursor=pointer]:
+                - /url: /contests
+            - listitem [ref=e141]:
+              - link "社区" [ref=e142] [cursor=pointer]:
+                - /url: /community
+            - listitem [ref=e143]:
+              - link "排行榜" [ref=e144] [cursor=pointer]:
+                - /url: /leaderboard
+            - listitem [ref=e145]:
+              - link "游戏化" [ref=e146] [cursor=pointer]:
+                - /url: /gamification
+        - generic [ref=e147]:
+          - heading "学习资源" [level=3] [ref=e148]
+          - list [ref=e149]:
+            - listitem [ref=e150]:
+              - link "学习路径" [ref=e151] [cursor=pointer]:
+                - /url: /paths
+            - listitem [ref=e152]:
+              - link "算法题库" [ref=e153] [cursor=pointer]:
+                - /url: /problems
+            - listitem [ref=e154]:
+              - link "成就系统" [ref=e155] [cursor=pointer]:
+                - /url: /achievements
+            - listitem [ref=e156]:
+              - link "每日挑战" [ref=e157] [cursor=pointer]:
+                - /url: /daily-challenge
+        - generic [ref=e158]:
+          - heading "联系我们" [level=3] [ref=e159]
+          - list [ref=e160]:
+            - listitem [ref=e161]: "邮箱: support@algomaster.com"
+            - listitem [ref=e162]: "GitHub: github.com/algomaster"
+            - listitem [ref=e163]: "微信公众号: AlgoMaster"
+      - paragraph [ref=e165]: © 2026 AlgoMaster. All rights reserved.

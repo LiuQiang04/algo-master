@@ -1,0 +1,211 @@
+- generic [ref=f5e3]:
+  - navigation [ref=f5e4]:
+    - generic [ref=f5e5]:
+      - link "AlgoArena" [ref=f5e6] [cursor=pointer]:
+        - /url: /
+        - img [ref=f5e7]
+        - generic [ref=f5e11]: AlgoArena
+      - generic [ref=f5e12]:
+        - link "Problems" [ref=f5e13] [cursor=pointer]:
+          - /url: /problems
+          - img [ref=f5e14]
+          - generic [ref=f5e16]: Problems
+        - link "Contests" [ref=f5e17] [cursor=pointer]:
+          - /url: /contests
+          - img [ref=f5e18]
+          - generic [ref=f5e24]: Contests
+        - link "Community" [ref=f5e25] [cursor=pointer]:
+          - /url: /community
+          - img [ref=f5e26]
+          - generic [ref=f5e31]: Community
+      - generic [ref=f5e33]:
+        - img [ref=f5e34]
+        - textbox "Search community..." [ref=f5e37]
+      - generic [ref=f5e38]:
+        - link [ref=f5e39] [cursor=pointer]:
+          - /url: /notifications
+          - img [ref=f5e40]
+        - link [ref=f5e43] [cursor=pointer]:
+          - /url: /messages
+          - img [ref=f5e44]
+        - button "A alice" [ref=f5e47] [cursor=pointer]:
+          - generic [ref=f5e48]: A
+          - generic [ref=f5e49]: alice
+          - img [ref=f5e50]
+        - button [ref=f5e52] [cursor=pointer]:
+          - img [ref=f5e53]
+  - main [ref=f5e54]:
+    - generic [ref=f5e55]:
+      - generic [ref=f5e60]:
+        - generic [ref=f5e61]:
+          - img [ref=f5e62]
+          - generic [ref=f5e64]: 算法竞赛学习平台
+        - heading "掌握算法 成就竞赛梦想" [level=1] [ref=f5e65]:
+          - text: 掌握算法
+          - text: 成就竞赛梦想
+        - paragraph [ref=f5e66]: 从基础数据结构到高级算法，系统化的学习路径帮助你全面提升编程能力。 与全球开发者同台竞技，在实战中成长。
+        - generic [ref=f5e67]:
+          - link "开始练习" [ref=f5e68] [cursor=pointer]:
+            - /url: /problems
+            - img [ref=f5e69]
+            - text: 开始练习
+          - link "学习路径" [ref=f5e71] [cursor=pointer]:
+            - /url: /learn
+            - text: 学习路径
+            - img [ref=f5e72]
+        - generic [ref=f5e74]:
+          - generic [ref=f5e75]:
+            - img [ref=f5e76]
+            - generic [ref=f5e80]: 1,200+
+            - generic [ref=f5e81]: 精选题目
+          - generic [ref=f5e82]:
+            - img [ref=f5e83]
+            - generic [ref=f5e88]: 50,000+
+            - generic [ref=f5e89]: 活跃用户
+          - generic [ref=f5e90]:
+            - img [ref=f5e91]
+            - generic [ref=f5e95]: 2,000,000+
+            - generic [ref=f5e96]: 代码提交
+          - generic [ref=f5e97]:
+            - img [ref=f5e98]
+            - generic [ref=f5e104]: 300+
+            - generic [ref=f5e105]: 竞赛举办
+      - generic [ref=f5e107]:
+        - generic [ref=f5e108]:
+          - heading "为什么选择 Algorithm Arena" [level=2] [ref=f5e109]
+          - paragraph [ref=f5e110]: 我们提供全方位的算法学习体验，帮助你在竞赛中脱颖而出
+        - generic [ref=f5e111]:
+          - generic [ref=f5e112]:
+            - img [ref=f5e114]
+            - heading "丰富的题库" [level=3] [ref=f5e118]
+            - paragraph [ref=f5e119]: 涵盖数据结构、算法、数学等多个领域的 1000+ 精选题目，从入门到进阶全覆盖。
+          - generic [ref=f5e120]:
+            - img [ref=f5e122]
+            - heading "即时评测" [level=3] [ref=f5e124]
+            - paragraph [ref=f5e125]: 支持 C++、Java、Python 等多语言在线评测，毫秒级返回结果，实时反馈。
+          - generic [ref=f5e126]:
+            - img [ref=f5e128]
+            - heading "竞赛系统" [level=3] [ref=f5e134]
+            - paragraph [ref=f5e135]: 定期举办算法竞赛，实时排行榜，与全球选手同台竞技，提升实战能力。
+          - generic [ref=f5e136]:
+            - img [ref=f5e138]
+            - heading "学习路径" [level=3] [ref=f5e140]
+            - paragraph [ref=f5e141]: 系统化的学习路径规划，从基础算法到高级数据结构，循序渐进掌握核心知识。
+          - generic [ref=f5e142]:
+            - img [ref=f5e144]
+            - heading "进度追踪" [level=3] [ref=f5e147]
+            - paragraph [ref=f5e148]: 详细的学习数据分析，可视化你的成长轨迹，精准定位薄弱环节。
+          - generic [ref=f5e149]:
+            - img [ref=f5e151]
+            - heading "社区交流" [level=3] [ref=f5e156]
+            - paragraph [ref=f5e157]: 活跃的开发者社区，题解分享、讨论交流，与志同道合的伙伴共同进步。
+      - generic [ref=f5e159]:
+        - generic [ref=f5e160]:
+          - generic [ref=f5e161]:
+            - heading "热门题目" [level=2] [ref=f5e162]
+            - paragraph [ref=f5e163]: 最近大家都在练习的题目
+          - link "查看全部" [ref=f5e164] [cursor=pointer]:
+            - /url: /problems
+            - text: 查看全部
+            - img [ref=f5e165]
+        - generic [ref=f5e167]:
+          - link "#1 两数之和 数组 哈希表 简单 645" [ref=f5e168] [cursor=pointer]:
+            - /url: /problems/1
+            - generic [ref=f5e169]:
+              - generic [ref=f5e170]: "#1"
+              - generic [ref=f5e171]: 两数之和
+            - generic [ref=f5e172]:
+              - generic [ref=f5e173]:
+                - generic [ref=f5e174]: 数组
+                - generic [ref=f5e175]: 哈希表
+              - generic [ref=f5e176]: 简单
+              - generic [ref=f5e177]:
+                - img [ref=f5e178]
+                - text: "645"
+          - link "#2 反转链表 链表 简单 703" [ref=f5e181] [cursor=pointer]:
+            - /url: /problems/2
+            - generic [ref=f5e182]:
+              - generic [ref=f5e183]: "#2"
+              - generic [ref=f5e184]: 反转链表
+            - generic [ref=f5e185]:
+              - generic [ref=f5e187]: 链表
+              - generic [ref=f5e188]: 简单
+              - generic [ref=f5e189]:
+                - img [ref=f5e190]
+                - text: "703"
+          - link "#3 二叉树的中序遍历 树 栈 简单 649" [ref=f5e193] [cursor=pointer]:
+            - /url: /problems/3
+            - generic [ref=f5e194]:
+              - generic [ref=f5e195]: "#3"
+              - generic [ref=f5e196]: 二叉树的中序遍历
+            - generic [ref=f5e197]:
+              - generic [ref=f5e198]:
+                - generic [ref=f5e199]: 树
+                - generic [ref=f5e200]: 栈
+              - generic [ref=f5e201]: 简单
+              - generic [ref=f5e202]:
+                - img [ref=f5e203]
+                - text: "649"
+          - link "#4 最大子序和 数组 分治 动态规划 中等 1,175" [ref=f5e206] [cursor=pointer]:
+            - /url: /problems/4
+            - generic [ref=f5e207]:
+              - generic [ref=f5e208]: "#4"
+              - generic [ref=f5e209]: 最大子序和
+            - generic [ref=f5e210]:
+              - generic [ref=f5e211]:
+                - generic [ref=f5e212]: 数组
+                - generic [ref=f5e213]: 分治
+                - generic [ref=f5e214]: 动态规划
+              - generic [ref=f5e215]: 中等
+              - generic [ref=f5e216]:
+                - img [ref=f5e217]
+                - text: 1,175
+      - generic [ref=f5e221]:
+        - generic [ref=f5e222]:
+          - generic [ref=f5e223]:
+            - heading "即将开始的竞赛" [level=2] [ref=f5e224]
+            - paragraph [ref=f5e225]: 报名参加竞赛，检验你的实力
+          - link "查看全部" [ref=f5e226] [cursor=pointer]:
+            - /url: /contests
+            - text: 查看全部
+            - img [ref=f5e227]
+        - generic [ref=f5e229]:
+          - generic [ref=f5e230]:
+            - generic [ref=f5e231]:
+              - img [ref=f5e232]
+              - 'heading "周赛 #128" [level=3] [ref=f5e238]'
+            - generic [ref=f5e239]:
+              - generic [ref=f5e240]:
+                - img [ref=f5e241]
+                - generic [ref=f5e244]: 2 天后
+              - generic [ref=f5e245]:
+                - img [ref=f5e246]
+                - generic [ref=f5e250]: 时长 2小时
+              - generic [ref=f5e251]:
+                - img [ref=f5e252]
+                - generic [ref=f5e257]: 234 人已报名
+            - button "立即报名" [ref=f5e258] [cursor=pointer]
+          - generic [ref=f5e259]:
+            - generic [ref=f5e260]:
+              - img [ref=f5e261]
+              - 'heading "双周赛 #45" [level=3] [ref=f5e267]'
+            - generic [ref=f5e268]:
+              - generic [ref=f5e269]:
+                - img [ref=f5e270]
+                - generic [ref=f5e273]: 5 天后
+              - generic [ref=f5e274]:
+                - img [ref=f5e275]
+                - generic [ref=f5e279]: 时长 3小时
+              - generic [ref=f5e280]:
+                - img [ref=f5e281]
+                - generic [ref=f5e286]: 156 人已报名
+            - button "立即报名" [ref=f5e287] [cursor=pointer]
+      - generic [ref=f5e290]:
+        - heading "准备好开始了吗？" [level=2] [ref=f5e291]
+        - paragraph [ref=f5e292]: 加入 Algorithm Arena，开启你的算法学习之旅。免费注册，立即开始练习。
+        - link "免费注册" [ref=f5e293] [cursor=pointer]:
+          - /url: /register
+          - text: 免费注册
+          - img [ref=f5e294]
+  - contentinfo [ref=f5e296]:
+    - paragraph [ref=f5e298]: AlgoArena - Algorithm Competition Learning Platform

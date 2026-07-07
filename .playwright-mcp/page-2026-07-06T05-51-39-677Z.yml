@@ -1,0 +1,42 @@
+- generic [ref=f3e3]:
+  - navigation [ref=f3e4]:
+    - generic [ref=f3e5]:
+      - link "AlgoArena" [ref=f3e6] [cursor=pointer]:
+        - /url: /
+        - img [ref=f3e7]
+        - generic [ref=f3e11]: AlgoArena
+      - generic [ref=f3e12]:
+        - link "Problems" [ref=f3e13] [cursor=pointer]:
+          - /url: /problems
+          - img [ref=f3e14]
+          - generic [ref=f3e16]: Problems
+        - link "Contests" [ref=f3e17] [cursor=pointer]:
+          - /url: /contests
+          - img [ref=f3e18]
+          - generic [ref=f3e24]: Contests
+        - link "Community" [ref=f3e25] [cursor=pointer]:
+          - /url: /community
+          - img [ref=f3e26]
+          - generic [ref=f3e31]: Community
+      - generic [ref=f3e33]:
+        - img [ref=f3e34]
+        - textbox "Search community..." [ref=f3e37]
+      - generic [ref=f3e38]:
+        - link [ref=f3e39] [cursor=pointer]:
+          - /url: /notifications
+          - img [ref=f3e40]
+        - link [ref=f3e43] [cursor=pointer]:
+          - /url: /messages
+          - img [ref=f3e44]
+        - button "A alice" [ref=f3e47] [cursor=pointer]:
+          - generic [ref=f3e48]: A
+          - generic [ref=f3e49]: alice
+          - img [ref=f3e50]
+        - button [ref=f3e52] [cursor=pointer]:
+          - img [ref=f3e53]
+  - main [ref=f3e54]:
+    - generic [ref=f3e57]:
+      - heading "每日挑战" [level=1] [ref=f3e58]
+      - paragraph [ref=f3e59]: 每天完成挑战任务，获取额外积分奖励！
+  - contentinfo [ref=f3e69]:
+    - paragraph [ref=f3e71]: AlgoArena - Algorithm Competition Learning Platform

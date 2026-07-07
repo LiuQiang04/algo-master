@@ -1,0 +1,57 @@
+- generic [ref=f3e3]:
+  - navigation [ref=f3e4]:
+    - generic [ref=f3e5]:
+      - link "AlgoArena" [ref=f3e6] [cursor=pointer]:
+        - /url: /
+        - img [ref=f3e7]
+        - generic [ref=f3e11]: AlgoArena
+      - generic [ref=f3e12]:
+        - link "Problems" [ref=f3e13] [cursor=pointer]:
+          - /url: /problems
+          - img [ref=f3e14]
+          - generic [ref=f3e16]: Problems
+        - link "Contests" [ref=f3e17] [cursor=pointer]:
+          - /url: /contests
+          - img [ref=f3e18]
+          - generic [ref=f3e24]: Contests
+        - link "Community" [ref=f3e25] [cursor=pointer]:
+          - /url: /community
+          - img [ref=f3e26]
+          - generic [ref=f3e31]: Community
+      - generic [ref=f3e33]:
+        - img [ref=f3e34]
+        - textbox "Search community..." [ref=f3e37]
+      - generic [ref=f3e38]:
+        - link [ref=f3e39] [cursor=pointer]:
+          - /url: /notifications
+          - img [ref=f3e40]
+        - link [ref=f3e43] [cursor=pointer]:
+          - /url: /messages
+          - img [ref=f3e44]
+        - button "A alice" [ref=f3e47] [cursor=pointer]:
+          - generic [ref=f3e48]: A
+          - generic [ref=f3e49]: alice
+          - img [ref=f3e50]
+        - button [ref=f3e52] [cursor=pointer]:
+          - img [ref=f3e53]
+  - main [ref=f3e54]:
+    - generic [ref=f3e55]:
+      - generic [ref=f3e56]:
+        - heading "虚拟商店" [level=1] [ref=f3e57]
+        - paragraph [ref=f3e58]: 使用积分兑换徽章、称号、头像框等虚拟物品，个性化你的主页！
+      - generic [ref=f3e59]:
+        - button "🏅 徽章" [ref=f3e60] [cursor=pointer]:
+          - generic [ref=f3e61]: 🏅
+          - generic [ref=f3e62]: 徽章
+        - button "👑 称号" [ref=f3e63] [cursor=pointer]:
+          - generic [ref=f3e64]: 👑
+          - generic [ref=f3e65]: 称号
+        - button "🖼️ 头像框" [ref=f3e66] [cursor=pointer]:
+          - generic [ref=f3e67]: 🖼️
+          - generic [ref=f3e68]: 头像框
+        - button "✨ 装饰" [ref=f3e69] [cursor=pointer]:
+          - generic [ref=f3e70]: ✨
+          - generic [ref=f3e71]: 装饰
+      - generic [ref=f3e75]: 加载中...
+  - contentinfo [ref=f3e76]:
+    - paragraph [ref=f3e78]: AlgoArena - Algorithm Competition Learning Platform

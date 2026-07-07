@@ -1,0 +1,163 @@
+- generic [ref=f5e3]:
+  - banner [ref=f5e4]:
+    - generic [ref=f5e5]:
+      - button "打开侧边栏" [ref=f5e6] [cursor=pointer]:
+        - img [ref=f5e7]
+      - link "AlgoArena" [ref=f5e8] [cursor=pointer]:
+        - /url: /
+        - img [ref=f5e10]
+        - generic [ref=f5e14]: AlgoArena
+      - navigation [ref=f5e15]:
+        - link "首页" [ref=f5e16] [cursor=pointer]:
+          - /url: /
+        - link "题库" [ref=f5e17] [cursor=pointer]:
+          - /url: /problems
+          - img [ref=f5e18]
+          - text: 题库
+        - link "竞赛" [ref=f5e20] [cursor=pointer]:
+          - /url: /contests
+          - img [ref=f5e21]
+          - text: 竞赛
+        - link "学习路径" [ref=f5e27] [cursor=pointer]:
+          - /url: /paths
+          - img [ref=f5e28]
+          - text: 学习路径
+        - link "社区" [ref=f5e30] [cursor=pointer]:
+          - /url: /community
+          - img [ref=f5e31]
+          - text: 社区
+        - link "排行榜" [ref=f5e36] [cursor=pointer]:
+          - /url: /leaderboard
+          - img [ref=f5e37]
+          - text: 排行榜
+        - link "游戏化" [ref=f5e39] [cursor=pointer]:
+          - /url: /gamification
+          - img [ref=f5e40]
+          - text: 游戏化
+      - generic [ref=f5e42]:
+        - link [ref=f5e43] [cursor=pointer]:
+          - /url: /notifications
+          - img [ref=f5e44]
+        - link [ref=f5e47] [cursor=pointer]:
+          - /url: /messages
+          - img [ref=f5e48]
+        - button "A alice" [ref=f5e51] [cursor=pointer]:
+          - generic [ref=f5e52]: A
+          - generic [ref=f5e53]: alice
+          - img [ref=f5e54]
+        - button "切换移动端菜单" [ref=f5e56] [cursor=pointer]:
+          - img [ref=f5e57]
+  - generic [ref=f5e58]:
+    - complementary [ref=f5e59]:
+      - generic [ref=f5e60]:
+        - generic [ref=f5e62]: A
+        - generic [ref=f5e63]:
+          - generic [ref=f5e64]: alice
+          - generic [ref=f5e65]: Lv.19
+      - navigation [ref=f5e66]:
+        - generic [ref=f5e67]:
+          - generic [ref=f5e68]: 核心功能
+          - link "首页" [ref=f5e69] [cursor=pointer]:
+            - /url: /
+            - img [ref=f5e71]
+            - generic [ref=f5e74]: 首页
+          - link "题库" [ref=f5e75] [cursor=pointer]:
+            - /url: /problems
+            - img [ref=f5e77]
+            - generic [ref=f5e79]: 题库
+            - img [ref=f5e80]
+          - link "竞赛" [ref=f5e82] [cursor=pointer]:
+            - /url: /contests
+            - img [ref=f5e84]
+            - generic [ref=f5e90]: 竞赛
+          - link "学习路径" [ref=f5e91] [cursor=pointer]:
+            - /url: /paths
+            - img [ref=f5e93]
+            - generic [ref=f5e95]: 学习路径
+        - generic [ref=f5e96]:
+          - generic [ref=f5e97]: 社区
+          - link "社区" [ref=f5e98] [cursor=pointer]:
+            - /url: /community
+            - img [ref=f5e100]
+            - generic [ref=f5e105]: 社区
+          - link "动态" [ref=f5e106] [cursor=pointer]:
+            - /url: /feed
+            - img [ref=f5e108]
+            - generic [ref=f5e112]: 动态
+        - generic [ref=f5e113]:
+          - generic [ref=f5e114]: 游戏化
+          - link "游戏化中心" [ref=f5e115] [cursor=pointer]:
+            - /url: /gamification
+            - img [ref=f5e117]
+            - generic [ref=f5e119]: 游戏化中心
+          - link "成就" [ref=f5e120] [cursor=pointer]:
+            - /url: /achievements
+            - img [ref=f5e122]
+            - generic [ref=f5e125]: 成就
+          - link "排行榜" [ref=f5e126] [cursor=pointer]:
+            - /url: /leaderboard
+            - img [ref=f5e128]
+            - generic [ref=f5e130]: 排行榜
+          - link "每日挑战" [ref=f5e131] [cursor=pointer]:
+            - /url: /daily-challenge
+            - img [ref=f5e133]
+            - generic [ref=f5e136]: 每日挑战
+          - link "积分" [ref=f5e137] [cursor=pointer]:
+            - /url: /points
+            - img [ref=f5e139]
+            - generic [ref=f5e144]: 积分
+          - link "虚拟道具" [ref=f5e145] [cursor=pointer]:
+            - /url: /virtual-items
+            - img [ref=f5e147]
+            - generic [ref=f5e151]: 虚拟道具
+      - link "个人中心" [ref=f5e153] [cursor=pointer]:
+        - /url: /profile
+        - img [ref=f5e155]
+        - generic [ref=f5e158]: 个人中心
+    - main [ref=f5e159]
+  - contentinfo [ref=f5e163]:
+    - generic [ref=f5e164]:
+      - generic [ref=f5e165]:
+        - generic [ref=f5e166]:
+          - heading "关于 AlgoMaster" [level=3] [ref=f5e167]
+          - paragraph [ref=f5e168]: AlgoMaster 是一个专业的算法竞赛学习平台，帮助你系统学习算法， 提升编程能力，在竞赛中取得好成绩。
+        - generic [ref=f5e169]:
+          - heading "快速链接" [level=3] [ref=f5e170]
+          - list [ref=f5e171]:
+            - listitem [ref=f5e172]:
+              - link "题库" [ref=f5e173] [cursor=pointer]:
+                - /url: /problems
+            - listitem [ref=f5e174]:
+              - link "竞赛" [ref=f5e175] [cursor=pointer]:
+                - /url: /contests
+            - listitem [ref=f5e176]:
+              - link "社区" [ref=f5e177] [cursor=pointer]:
+                - /url: /community
+            - listitem [ref=f5e178]:
+              - link "排行榜" [ref=f5e179] [cursor=pointer]:
+                - /url: /leaderboard
+            - listitem [ref=f5e180]:
+              - link "游戏化" [ref=f5e181] [cursor=pointer]:
+                - /url: /gamification
+        - generic [ref=f5e182]:
+          - heading "学习资源" [level=3] [ref=f5e183]
+          - list [ref=f5e184]:
+            - listitem [ref=f5e185]:
+              - link "学习路径" [ref=f5e186] [cursor=pointer]:
+                - /url: /paths
+            - listitem [ref=f5e187]:
+              - link "算法题库" [ref=f5e188] [cursor=pointer]:
+                - /url: /problems
+            - listitem [ref=f5e189]:
+              - link "成就系统" [ref=f5e190] [cursor=pointer]:
+                - /url: /achievements
+            - listitem [ref=f5e191]:
+              - link "每日挑战" [ref=f5e192] [cursor=pointer]:
+                - /url: /daily-challenge
+        - generic [ref=f5e193]:
+          - heading "联系我们" [level=3] [ref=f5e194]
+          - list [ref=f5e195]:
+            - listitem [ref=f5e196]: "邮箱: support@algomaster.com"
+            - listitem [ref=f5e197]: "GitHub: github.com/algomaster"
+            - listitem [ref=f5e198]: "微信公众号: AlgoMaster"
+      - paragraph [ref=f5e200]: © 2026 AlgoMaster. All rights reserved.

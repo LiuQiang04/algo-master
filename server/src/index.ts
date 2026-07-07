@@ -1,5 +1,6 @@
 import express from 'express';
 import cors from 'cors';
+import 'express-async-errors';
 import { config } from './config';
 import { logger } from './utils/logger';
 import { prisma, connectDatabase } from './utils/prisma';
