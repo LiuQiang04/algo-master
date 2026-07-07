@@ -7,6 +7,7 @@
 - **接到任务 → 先调用 `/brainstorming`**（新功能）或 `/systematic-debugging`（bug）
 - **复杂任务（3+步骤）→ 调用 `/planning-with-files`** 创建持久化计划
 - 图片识别一律用 Zai MCP，不要直接分析
+- **跑 `seed` 前必须经用户确认** — 禁用 `npx prisma db seed` 或直接调用 seed 脚本，必须先问用户"确认要清空数据库？"
 
 ### 2. 开发中（每完成一个子任务）
 

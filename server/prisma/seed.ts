@@ -1,5 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcrypt';
+import readline from 'readline';
 
 const prisma = new PrismaClient();
 
@@ -366,7 +367,23 @@ const VIRTUAL_ITEMS = [
   },
 ];
 
+async function confirmSeed(): Promise<boolean> {
+  if (process.env.CI || process.env.NODE_ENV === 'production') return false;
+  const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
+  return new Promise((resolve) => {
+    rl.question('\n⚠️  seed 将清空数据库所有数据！输入 YES 确认: ', (answer) => {
+      rl.close();
+      resolve(answer.trim() === 'YES');
+    });
+  });
+}
+
 async function main() {
+  const confirmed = await confirmSeed();
+  if (!confirmed) {
+    console.log('❌ seed 已取消');
+    process.exit(0);
+  }
   console.log('Seeding database...');
 
   // 清空现有数据（按外键依赖顺序）
