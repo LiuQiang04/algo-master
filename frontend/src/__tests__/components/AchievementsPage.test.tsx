@@ -60,12 +60,13 @@ describe('AchievementsPage', () => {
     expect(spinners.length).toBeGreaterThanOrEqual(1);
   });
 
-  it('displays error message', () => {
+  it('displays error message and retry button', () => {
     mockUseAchievements.mockReturnValue({
       achievements: [], stats: null, loading: false, error: 'Network Error',
     });
     renderPage();
     expect(screen.getByText('Network Error')).toBeInTheDocument();
+    expect(screen.getByText('重试')).toBeInTheDocument();
   });
 
   it('renders stats cards when stats are available', () => {

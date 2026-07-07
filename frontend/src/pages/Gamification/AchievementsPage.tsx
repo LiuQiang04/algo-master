@@ -60,8 +60,25 @@ const AchievementsPage: React.FC = () => {
         )}
 
         {error && !loading && (
-          <div style={{ padding: '12px 16px', borderRadius: 'var(--radius-md)', background: 'var(--danger-50)', color: 'var(--danger-700)', border: '1px solid var(--danger-200)', marginBottom: 24, fontSize: 14 }}>
-            {error}
+          <div style={{ marginBottom: 24 }}>
+            <div style={{ padding: '12px 16px', borderRadius: 'var(--radius-md)', background: 'var(--danger-50)', color: 'var(--danger-700)', border: '1px solid var(--danger-200)', fontSize: 14, marginBottom: 12 }}>
+              {error}
+            </div>
+            <button
+              onClick={() => window.location.reload()}
+              style={{
+                padding: '8px 20px',
+                borderRadius: 'var(--radius-md)',
+                fontSize: 14,
+                fontWeight: 500,
+                background: 'var(--primary-600)',
+                color: 'white',
+                border: 'none',
+                cursor: 'pointer',
+              }}
+            >
+              重试
+            </button>
           </div>
         )}
 
