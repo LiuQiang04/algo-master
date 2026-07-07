@@ -4,7 +4,7 @@ import type { LevelInfo } from '../../types/gamification';
 interface LevelProgressProps {
   levelInfo: LevelInfo;
   showDetails?: boolean;
-  size?: 'sm' | 'md' | 'lg' | 'xl';
+  size?: 'sm' | 'md' | 'lg';
 }
 
 const LevelProgress: React.FC<LevelProgressProps> = ({
@@ -13,42 +13,80 @@ const LevelProgress: React.FC<LevelProgressProps> = ({
   size = 'md',
 }) => {
   const config = {
-    sm: { text: 'text-xs', circle: 'w-10 h-10', circleText: 'text-base', bar: 'h-2', pad: 'p-4' },
-    md: { text: 'text-sm', circle: 'w-14 h-14', circleText: 'text-xl', bar: 'h-3', pad: 'p-6' },
-    lg: { text: 'text-base', circle: 'w-16 h-16', circleText: 'text-xl', bar: 'h-3.5', pad: 'p-8' },
-    xl: { text: 'text-base', circle: 'w-20 h-20', circleText: 'text-2xl', bar: 'h-4', pad: 'p-10' },
+    sm: { text: 12, circle: '40px', circleText: 16, bar: 'h-2', pad: 16 },
+    md: { text: 14, circle: '56px', circleText: 20, bar: 'h-3', pad: 24 },
+    lg: { text: 14, circle: '64px', circleText: 20, bar: 'h-3', pad: 24 },
   };
 
   const c = config[size];
 
   return (
-    <div className={`backdrop-blur-xl bg-white/70 border border-white/40 rounded-2xl shadow-lg shadow-purple-500/5 ${c.pad}`}>
-      <div className="flex items-center justify-between mb-2">
-        <div className="flex items-center gap-2">
-          <div className={`${c.circle} rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 shadow-lg shadow-purple-500/20 flex items-center justify-center`}>
-            <span className={`text-white font-bold ${c.circleText}`}>{levelInfo.level}</span>
+    <div
+      style={{
+        background: 'rgba(255,255,255,0.7)',
+        backdropFilter: 'blur(12px)',
+        border: '1px solid rgba(255,255,255,0.4)',
+        borderRadius: 'var(--radius-lg)',
+        boxShadow: 'var(--shadow-md)',
+        padding: c.pad,
+      }}
+    >
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+          <div
+            style={{
+              width: c.circle,
+              height: c.circle,
+              borderRadius: '50%',
+              background: 'linear-gradient(135deg, #4F46E5, #7C3AED)',
+              boxShadow: '0 4px 12px rgba(124,58,237,0.2)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            <span style={{ color: 'white', fontWeight: 700, fontSize: c.circleText }}>
+              {levelInfo.level}
+            </span>
           </div>
           <div>
-            <p className="font-semibold text-gray-800">等级 {levelInfo.level}</p>
-            <p className={`${c.text} text-gray-500`}>
+            <p style={{ fontWeight: 600, color: 'var(--text-primary)', fontSize: 16, margin: 0 }}>
+              等级 {levelInfo.level}
+            </p>
+            <p style={{ fontSize: c.text, color: 'var(--text-secondary)', margin: '2px 0 0' }}>
               {levelInfo.currentExp} / {levelInfo.nextLevelExp} EXP
             </p>
           </div>
         </div>
         {showDetails && (
-          <span className="text-sm text-gray-400">总经验: {levelInfo.totalExp}</span>
+          <span style={{ fontSize: 13, color: 'var(--text-muted)' }}>
+            总经验: {levelInfo.totalExp}
+          </span>
         )}
       </div>
 
-      <div className="w-full bg-white/60 border border-white/40 rounded-full overflow-hidden backdrop-blur-sm">
+      <div
+        style={{
+          width: '100%',
+          background: 'rgba(255,255,255,0.6)',
+          border: '1px solid rgba(255,255,255,0.4)',
+          borderRadius: 'var(--radius-full)',
+          overflow: 'hidden',
+        }}
+      >
         <div
-          className={`bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full transition-all duration-500 shadow-sm ${c.bar}`}
-          style={{ width: `${levelInfo.progress}%` }}
+          className={c.bar}
+          style={{
+            background: 'linear-gradient(to right, #4F46E5, #7C3AED)',
+            borderRadius: 'var(--radius-full)',
+            transition: 'width 0.5s',
+            width: `${levelInfo.progress}%`,
+          }}
         />
       </div>
 
       {showDetails && (
-        <p className={`${c.text} text-gray-400 mt-1.5 text-right`}>
+        <p style={{ fontSize: c.text, color: 'var(--text-muted)', margin: '6px 0 0', textAlign: 'right' }}>
           {levelInfo.progress}% 升级进度
         </p>
       )}
