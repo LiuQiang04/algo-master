@@ -74,8 +74,7 @@ describe('VirtualItemsPage', () => {
     mockUseLevelInfo.mockReturnValue({ levelInfo: null });
 
     renderPage();
-    const spinners = document.querySelectorAll('.animate-spin');
-    expect(spinners.length).toBeGreaterThanOrEqual(1);
+    expect(screen.getByTestId('loading-spinner')).toBeInTheDocument();
   });
 
   it('renders level info when available', () => {

@@ -17,101 +17,65 @@ const VirtualItemsPage: React.FC = () => {
   ];
 
   const ownedItemIds = new Set(userItems.map((ui) => ui.itemId));
-  const equippedItemIds = new Set(
-    userItems.filter((ui) => ui.isEquipped).map((ui) => ui.itemId)
-  );
+  const equippedItemIds = new Set(userItems.filter((ui) => ui.isEquipped).map((ui) => ui.itemId));
 
   const handlePurchase = async (itemId: string) => {
-    try {
-      await purchaseItem(itemId);
-      alert('购买成功！');
-    } catch (err: any) {
-      alert(err.message || '购买失败');
-    }
+    try { await purchaseItem(itemId); alert('购买成功！'); }
+    catch (err: any) { alert(err.message || '购买失败'); }
   };
 
   const handleEquip = async (itemId: string, equip: boolean) => {
-    try {
-      await equipItem(itemId, equip);
-    } catch (err: any) {
-      alert(err.message || '操作失败');
-    }
+    try { await equipItem(itemId, equip); }
+    catch (err: any) { alert(err.message || '操作失败'); }
   };
 
   const isLoading = itemsLoading || userItemsLoading;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50/80 to-pink-50 w-full px-8 lg:px-16 py-10 lg:py-16 relative overflow-hidden">
-      {/* 装饰光斑 */}
-      <div className="absolute -top-32 -right-32 w-96 h-96 bg-gradient-to-br from-purple-300/20 to-pink-300/10 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute -bottom-32 -left-32 w-96 h-96 bg-gradient-to-br from-indigo-300/15 to-blue-300/10 rounded-full blur-3xl pointer-events-none" />
-
-      {/* 页面标题 */}
-      <div className="mb-12 lg:mb-16">
-        <h1 className="text-5xl font-black bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
-          虚拟商店
-        </h1>
-        <p className="mt-2 text-lg text-gray-500">
-          使用积分兑换徽章、称号、头像框等虚拟物品，个性化你的主页！
-        </p>
-      </div>
-
-      {/* 等级和积分信息 */}
-      {levelInfo && (
-        <div className="mb-8">
-          <LevelProgress levelInfo={levelInfo} size="lg" />
+    <div style={{ minHeight: '100vh', background: 'var(--bg-secondary)', padding: '32px 0' }}>
+      <div style={{ maxWidth: 1000, margin: '0 auto', padding: '0 24px' }}>
+        <div style={{ marginBottom: 32 }}>
+          <h1 style={{ fontSize: 28, fontWeight: 700, color: 'var(--text-primary)', margin: 0 }}>虚拟商店</h1>
+          <p style={{ margin: '8px 0 0', fontSize: 14, color: 'var(--text-secondary)' }}>使用积分兑换徽章、称号、头像框等虚拟物品，个性化你的主页！</p>
         </div>
-      )}
 
-      {/* 标签页 - 玻璃容器 */}
-      <div className="flex gap-2 backdrop-blur-xl bg-white/60 border border-white/40 rounded-xl p-1.5 mb-8 shadow-lg shadow-purple-500/5">
-        {tabs.map((tab) => (
-          <button
-            key={tab.id}
-            onClick={() => setActiveTab(tab.id)}
-            className={`flex-1 flex items-center justify-center gap-2 py-4 px-4 rounded-lg text-base font-medium transition-all duration-200 ${
-              activeTab === tab.id
-                ? 'bg-gradient-to-r from-indigo-500 to-purple-600 text-white shadow-lg shadow-purple-500/20'
-                : 'text-gray-500 hover:text-gray-700 hover:bg-white/40'
-            }`}
-          >
-            <span>{tab.icon}</span>
-            <span>{tab.label}</span>
-          </button>
-        ))}
-      </div>
+        {levelInfo && (
+          <div style={{ marginBottom: 24 }}><LevelProgress levelInfo={levelInfo} size="lg" /></div>
+        )}
 
-      {/* 物品列表 */}
-      {isLoading ? (
-        <div className="flex justify-center py-12">
-          <div className="backdrop-blur-xl bg-white/70 border border-white/40 rounded-2xl p-8 shadow-lg shadow-purple-500/5 flex flex-col items-center gap-4">
-            <div className="animate-spin rounded-full w-16 h-16 border-2 border-indigo-400 border-t-transparent"></div>
-            <span className="text-base text-gray-400">加载中...</span>
-          </div>
-        </div>
-      ) : (
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
-          {items.map((item) => (
-            <VirtualItemCard
-              key={item.id}
-              item={item}
-              isOwned={ownedItemIds.has(item.id)}
-              isEquipped={equippedItemIds.has(item.id)}
-              onPurchase={handlePurchase}
-              onEquip={handleEquip}
-              userPoints={levelInfo?.totalExp || 0}
-            />
+        <div style={{ display: 'flex', gap: 4, marginBottom: 24 }}>
+          {tabs.map((tab) => (
+            <button key={tab.id} onClick={() => setActiveTab(tab.id)} style={{
+              flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
+              padding: '12px 16px', border: 'none', borderRadius: 'var(--radius-md)', fontSize: 14,
+              fontWeight: 500, cursor: 'pointer',
+              background: activeTab === tab.id ? '#4F46E5' : 'rgba(255,255,255,0.6)',
+              color: activeTab === tab.id ? 'white' : 'var(--text-secondary)',
+              boxShadow: activeTab === tab.id ? '0 4px 12px rgba(124,58,237,0.2)' : 'none',
+            }}>
+              <span>{tab.icon}</span><span>{tab.label}</span>
+            </button>
           ))}
         </div>
-      )}
 
-      {items.length === 0 && !isLoading && (
-        <div className="text-center py-12">
-          <div className="backdrop-blur-xl bg-white/70 border border-white/40 rounded-2xl p-10 shadow-lg shadow-purple-500/5 inline-block">
-            <p className="text-lg text-gray-400">暂无可兑换的物品</p>
+        {isLoading ? (
+          <div style={{ display: 'flex', justifyContent: 'center', padding: 48 }}>
+            <div data-testid="loading-spinner" style={{ width: 40, height: 40, borderRadius: '50%', border: '3px solid var(--border-light)', borderTopColor: 'var(--primary-600)', animation: 'spin 0.8s linear infinite' }} />
           </div>
-        </div>
-      )}
+        ) : (
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))', gap: 16 }}>
+            {items.map((item) => (
+              <VirtualItemCard key={item.id} item={item} isOwned={ownedItemIds.has(item.id)} isEquipped={equippedItemIds.has(item.id)} onPurchase={handlePurchase} onEquip={handleEquip} userPoints={levelInfo?.totalExp || 0} />
+            ))}
+          </div>
+        )}
+
+        {items.length === 0 && !isLoading && (
+          <div style={{ textAlign: 'center', padding: 48 }}>
+            <p style={{ fontSize: 14, color: 'var(--text-muted)' }}>暂无可兑换的物品</p>
+          </div>
+        )}
+      </div>
     </div>
   );
 };
