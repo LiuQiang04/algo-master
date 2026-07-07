@@ -3,9 +3,9 @@ import { useAuthStore } from '../../store/authStore';
 import { useNotificationStore } from '../../store/notificationStore';
 import { useEffect, useState, useRef } from 'react';
 import {
-  Bell, MessageCircle, User, LogOut, Search, Menu, X,
+  Bell, MessageCircle, User, LogOut, Menu, X,
   ChevronDown, BookOpen, Trophy, Code2, Users, Map,
-  Gamepad2, Award, BarChart3,
+  Gamepad2, BarChart3,
 } from 'lucide-react';
 
 const navLinks = [
@@ -25,7 +25,6 @@ export default function Header({ onSidebarToggle }: { onSidebarToggle?: () => vo
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
   const userMenuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -59,14 +58,6 @@ export default function Header({ onSidebarToggle }: { onSidebarToggle?: () => vo
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
-
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (searchQuery.trim()) {
-      navigate(`/community?search=${encodeURIComponent(searchQuery.trim())}`);
-      setSearchQuery('');
-    }
-  };
 
   const handleLogout = () => {
     logout();
