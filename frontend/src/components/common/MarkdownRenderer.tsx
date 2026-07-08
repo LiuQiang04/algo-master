@@ -64,7 +64,7 @@ export default function MarkdownRenderer({ content }: Props) {
           return <hr style={{ margin: '20px 0', border: 'none', borderTop: '1px solid var(--border-light)' }} />;
         },
         img({ src, alt, title }) {
-          return <img src={src} alt={alt} title={title} style={{ maxWidth: '100%', borderRadius: 'var(--radius-md)', margin: '12px 0' }} />;
+          return <img src={src} alt={alt} title={title} style={{ maxWidth: '100%', height: 'auto', display: 'block', borderRadius: 'var(--radius-md)', margin: '12px 0' }} />;
         },
         table({ children }) {
           return (
@@ -89,7 +89,7 @@ export default function MarkdownRenderer({ content }: Props) {
           );
         },
         a({ href, children }) {
-          return <a href={href} target="_blank" rel="noopener noreferrer">{children}</a>;
+          return <a href={href} target="_blank" rel="noopener noreferrer" style={{ color: 'var(--primary-500)', textDecoration: 'underline', textUnderlineOffset: 2 }}>{children}</a>;
         },
         blockquote({ children }) {
           return (
