@@ -20,6 +20,10 @@ export default function MarkdownRenderer({ content }: Props) {
           if (match) {
             return <CodeBlock language={match[1]} code={codeString} />;
           }
+          // Block-style code (fenced ``` without language) — treat as code block
+          if (codeString.includes('\n')) {
+            return <CodeBlock language="" code={codeString} />;
+          }
           return (
             <code style={{
               background: 'var(--bg-tertiary)', padding: '2px 6px',
@@ -90,6 +94,9 @@ export default function MarkdownRenderer({ content }: Props) {
         },
         a({ href, children }) {
           return <a href={href} target="_blank" rel="noopener noreferrer" style={{ color: 'var(--primary-500)', textDecoration: 'underline', textUnderlineOffset: 2 }}>{children}</a>;
+        },
+        pre({ children }) {
+          return <>{children}</>;
         },
         blockquote({ children }) {
           return (
