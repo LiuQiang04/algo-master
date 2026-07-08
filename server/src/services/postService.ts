@@ -323,6 +323,39 @@ export async function createComment(data: {
   return comment;
 }
 
+// 更新评论
+export async function updateComment(commentId: string, userId: string, content: string) {
+  const comment = await prisma.comment.findUnique({
+    where: { id: commentId },
+  });
+
+  if (!comment) {
+    throw new NotFoundError('评论不存在');
+  }
+
+  if (comment.userId !== userId) {
+    throw new ForbiddenError('只能编辑自己的评论');
+  }
+
+  if (!content || content.trim().length === 0) {
+    throw new BadRequestError('评论内容不能为空');
+  }
+
+  if (content.length > 10000) {
+    throw new BadRequestError('评论内容不能超过 10000 个字符');
+  }
+
+  return prisma.comment.update({
+    where: { id: commentId },
+    data: { content },
+    include: {
+      user: {
+        select: { id: true, username: true, avatarUrl: true },
+      },
+    },
+  });
+}
+
 // 获取帖子评论
 export async function getComments(postId: string, page: number = 1, limit: number = 20) {
   const skip = (page - 1) * limit;

@@ -37,5 +37,6 @@ router.delete('/:id', authenticate, postController.deletePost);
 router.post('/:id/vote', authenticate, validate(voteSchema), postController.votePost);
 router.get('/:id/comments', postController.getComments);
 router.post('/:id/comments', authenticate, validate(createCommentSchema), postController.createComment);
+router.put('/comments/:id', authenticate, postController.updateComment);
 
 export default router;

@@ -107,6 +107,19 @@ export async function createComment(req: AuthRequest, res: Response) {
   });
 }
 
+// 更新评论
+export async function updateComment(req: AuthRequest, res: Response) {
+  const userId = req.user!.id;
+  const { id } = req.params;
+  const { content } = req.body;
+
+  const comment = await postService.updateComment(id, userId, content);
+  res.json({
+    success: true,
+    data: comment,
+  });
+}
+
 // 获取评论
 export async function getComments(req: Request, res: Response) {
   const { id } = req.params;
