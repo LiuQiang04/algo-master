@@ -1,0 +1,21 @@
+FROM alpine:3.21
+
+RUN apk add --no-cache \
+    g++ \
+    make \
+    python3 \
+    py3-pip \
+    nodejs \
+    npm \
+    openjdk21 \
+    bash \
+    coreutils \
+    diffutils
+
+# Create non-root user for execution
+RUN adduser -D -s /bin/bash judge
+
+# Create working directory
+RUN mkdir -p /judge && chown judge:judge /judge
+
+WORKDIR /judge
