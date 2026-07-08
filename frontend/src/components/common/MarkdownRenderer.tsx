@@ -30,6 +30,42 @@ export default function MarkdownRenderer({ content }: Props) {
             </code>
           );
         },
+        h1({ children }) {
+          return <h1 style={{ fontSize: 26, fontWeight: 700, margin: '24px 0 12px', lineHeight: 1.3 }}>{children}</h1>;
+        },
+        h2({ children }) {
+          return <h2 style={{ fontSize: 22, fontWeight: 600, margin: '20px 0 10px', lineHeight: 1.35 }}>{children}</h2>;
+        },
+        h3({ children }) {
+          return <h3 style={{ fontSize: 18, fontWeight: 600, margin: '16px 0 8px', lineHeight: 1.4 }}>{children}</h3>;
+        },
+        h4({ children }) {
+          return <h4 style={{ fontSize: 16, fontWeight: 600, margin: '14px 0 6px', lineHeight: 1.4 }}>{children}</h4>;
+        },
+        h5({ children }) {
+          return <h5 style={{ fontSize: 15, fontWeight: 500, margin: '12px 0 6px', lineHeight: 1.4 }}>{children}</h5>;
+        },
+        h6({ children }) {
+          return <h6 style={{ fontSize: 14, fontWeight: 500, margin: '10px 0 6px', lineHeight: 1.4 }}>{children}</h6>;
+        },
+        ul({ children }) {
+          return <ul style={{ listStyleType: 'disc', paddingInlineStart: 24, margin: '8px 0', lineHeight: 1.7 }}>{children}</ul>;
+        },
+        ol({ children }) {
+          return <ol style={{ listStyleType: 'decimal', paddingInlineStart: 24, margin: '8px 0', lineHeight: 1.7 }}>{children}</ol>;
+        },
+        li({ children }) {
+          return <li style={{ margin: '2px 0' }}>{children}</li>;
+        },
+        p({ children }) {
+          return <p style={{ margin: '8px 0', lineHeight: 1.7 }}>{children}</p>;
+        },
+        hr() {
+          return <hr style={{ margin: '20px 0', border: 'none', borderTop: '1px solid var(--border-light)' }} />;
+        },
+        img({ src, alt, title }) {
+          return <img src={src} alt={alt} title={title} style={{ maxWidth: '100%', borderRadius: 'var(--radius-md)', margin: '12px 0' }} />;
+        },
         table({ children }) {
           return (
             <div style={{ overflowX: 'auto', margin: '16px 0' }}>
