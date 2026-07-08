@@ -18,7 +18,14 @@ export default function CreatePostPage() {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
   const [loadingPost, setLoadingPost] = useState(false);
-  const [showPreview, setShowPreview] = useState(false);
+  const [showNarrowPreview, setShowNarrowPreview] = useState(false);
+  const [isWide, setIsWide] = useState(window.innerWidth > 900);
+
+  useEffect(() => {
+    const checkWidth = () => setIsWide(window.innerWidth > 900);
+    window.addEventListener('resize', checkWidth);
+    return () => window.removeEventListener('resize', checkWidth);
+  }, []);
 
   useEffect(() => {
     if (!isEditMode || !id) return;
@@ -89,7 +96,7 @@ export default function CreatePostPage() {
   };
 
   return (
-    <div className="container" style={{ padding: '24px 24px', maxWidth: 800 }}>
+    <div className="container" style={{ padding: '24px 24px', maxWidth: isWide ? 1200 : 800 }}>
       <button onClick={() => navigate(-1)} style={{
         display: 'flex', alignItems: 'center', gap: 6, color: 'var(--text-secondary)',
         fontSize: 14, marginBottom: 16,
@@ -175,61 +182,97 @@ export default function CreatePostPage() {
           <label style={{ display: 'block', fontSize: 14, fontWeight: 600, color: 'var(--text-secondary)', marginBottom: 8 }}>
             Content (Markdown supported)
           </label>
-          <div style={{ display: 'flex', gap: 0, marginBottom: 0, border: '1px solid var(--border-light)', borderRadius: 'var(--radius-md) var(--radius-md) 0 0', overflow: 'hidden' }}>
-            <button
-              type="button"
-              onClick={() => setShowPreview(false)}
-              style={{
-                flex: 1, padding: '8px 16px', fontSize: 13, fontWeight: 500,
-                background: !showPreview ? 'var(--bg-card)' : 'var(--bg-secondary)',
-                color: !showPreview ? 'var(--text-primary)' : 'var(--text-muted)',
-                borderBottom: !showPreview ? '2px solid var(--primary-500)' : '2px solid transparent',
-                transition: 'var(--transition-fast)',
-              }}
-            >
-              Write
-            </button>
-            <button
-              type="button"
-              onClick={() => setShowPreview(true)}
-              style={{
-                flex: 1, padding: '8px 16px', fontSize: 13, fontWeight: 500,
-                background: showPreview ? 'var(--bg-card)' : 'var(--bg-secondary)',
-                color: showPreview ? 'var(--text-primary)' : 'var(--text-muted)',
-                borderBottom: showPreview ? '2px solid var(--primary-500)' : '2px solid transparent',
-                transition: 'var(--transition-fast)',
-              }}
-            >
-              Preview
-            </button>
-          </div>
-          {showPreview ? (
-            <div style={{
-              padding: '16px', minHeight: 320, borderRadius: '0 0 var(--radius-md) var(--radius-md)',
-              border: '1px solid var(--border-light)', borderTop: 'none',
-              background: 'var(--bg-card)', color: 'var(--text-primary)',
-              overflow: 'auto', lineHeight: 1.8, fontSize: 15,
-            }}>
-              {content.trim() ? (
-                <MarkdownRenderer content={content} />
-              ) : (
-                <p style={{ color: 'var(--text-muted)', fontStyle: 'italic' }}>Nothing to preview</p>
-              )}
+          {isWide ? (
+            /* 宽屏：左右并排 */
+            <div style={{ display: 'flex', gap: 16 }}>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <textarea
+                  value={content}
+                  onChange={(e) => setContent(e.target.value)}
+                  placeholder="Write your post content here... You can use Markdown syntax."
+                  rows={16}
+                  style={{
+                    width: '100%', padding: '16px', borderRadius: 'var(--radius-md)',
+                    border: '1px solid var(--border-light)',
+                    background: 'var(--bg-card)', color: 'var(--text-primary)', fontSize: 14,
+                    outline: 'none', fontFamily: 'var(--font-mono)', lineHeight: 1.6,
+                    resize: 'vertical',
+                  }}
+                />
+              </div>
+              <div style={{
+                flex: 1, minWidth: 0, padding: '16px', borderRadius: 'var(--radius-md)',
+                border: '1px solid var(--border-light)',
+                background: 'var(--bg-card)', color: 'var(--text-primary)',
+                overflow: 'auto', lineHeight: 1.8, fontSize: 15, minHeight: 400,
+              }}>
+                {content.trim() ? (
+                  <MarkdownRenderer content={content} />
+                ) : (
+                  <p style={{ color: 'var(--text-muted)', fontStyle: 'italic' }}>Nothing to preview</p>
+                )}
+              </div>
             </div>
           ) : (
-            <textarea
-              value={content}
-              onChange={(e) => setContent(e.target.value)}
-              placeholder="Write your post content here... You can use Markdown syntax."
-              rows={16}
-              style={{
-                width: '100%', padding: '16px', borderRadius: '0 0 var(--radius-md) var(--radius-md)',
-                border: '1px solid var(--border-light)', borderTop: 'none',
-                background: 'var(--bg-card)', color: 'var(--text-primary)', fontSize: 14,
-                outline: 'none', fontFamily: 'var(--font-mono)', lineHeight: 1.6,
-                resize: 'vertical',
-              }}
-            />
+            /* 窄屏：标签切换 */
+            <>
+              <div style={{ display: 'flex', gap: 0, marginBottom: 0, border: '1px solid var(--border-light)', borderRadius: 'var(--radius-md) var(--radius-md) 0 0', overflow: 'hidden' }}>
+                <button
+                  type="button"
+                  onClick={() => setShowNarrowPreview(false)}
+                  style={{
+                    flex: 1, padding: '8px 16px', fontSize: 13, fontWeight: 500,
+                    background: !showNarrowPreview ? 'var(--bg-card)' : 'var(--bg-secondary)',
+                    color: !showNarrowPreview ? 'var(--text-primary)' : 'var(--text-muted)',
+                    borderBottom: !showNarrowPreview ? '2px solid var(--primary-500)' : '2px solid transparent',
+                    transition: 'var(--transition-fast)',
+                  }}
+                >
+                  Write
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setShowNarrowPreview(true)}
+                  style={{
+                    flex: 1, padding: '8px 16px', fontSize: 13, fontWeight: 500,
+                    background: showNarrowPreview ? 'var(--bg-card)' : 'var(--bg-secondary)',
+                    color: showNarrowPreview ? 'var(--text-primary)' : 'var(--text-muted)',
+                    borderBottom: showNarrowPreview ? '2px solid var(--primary-500)' : '2px solid transparent',
+                    transition: 'var(--transition-fast)',
+                  }}
+                >
+                  Preview
+                </button>
+              </div>
+              {showNarrowPreview ? (
+                <div style={{
+                  padding: '16px', minHeight: 320, borderRadius: '0 0 var(--radius-md) var(--radius-md)',
+                  border: '1px solid var(--border-light)', borderTop: 'none',
+                  background: 'var(--bg-card)', color: 'var(--text-primary)',
+                  overflow: 'auto', lineHeight: 1.8, fontSize: 15,
+                }}>
+                  {content.trim() ? (
+                    <MarkdownRenderer content={content} />
+                  ) : (
+                    <p style={{ color: 'var(--text-muted)', fontStyle: 'italic' }}>Nothing to preview</p>
+                  )}
+                </div>
+              ) : (
+                <textarea
+                  value={content}
+                  onChange={(e) => setContent(e.target.value)}
+                  placeholder="Write your post content here... You can use Markdown syntax."
+                  rows={16}
+                  style={{
+                    width: '100%', padding: '16px', borderRadius: '0 0 var(--radius-md) var(--radius-md)',
+                    border: '1px solid var(--border-light)', borderTop: 'none',
+                    background: 'var(--bg-card)', color: 'var(--text-primary)', fontSize: 14,
+                    outline: 'none', fontFamily: 'var(--font-mono)', lineHeight: 1.6,
+                    resize: 'vertical',
+                  }}
+                />
+              )}
+            </>
           )}
         </div>
 
