@@ -47,6 +47,8 @@ export default function PostDetailPage() {
   const [newComment, setNewComment] = useState('');
   const [replyTo, setReplyTo] = useState<string | null>(null);
   const [replyContent, setReplyContent] = useState('');
+  const [editingCommentId, setEditingCommentId] = useState<string | null>(null);
+  const [editContent, setEditContent] = useState('');
   const [submitting, setSubmitting] = useState(false);
 
   const fetchPost = useCallback(async () => {
@@ -120,6 +122,32 @@ export default function PostDetailPage() {
     if (!confirm('Delete this comment?')) return;
     await api.delete(`/comments/${commentId}`);
     fetchComments();
+  };
+
+  const handleEditComment = async (commentId: string) => {
+    if (!editContent.trim() || !user) return;
+    setSubmitting(true);
+    try {
+      await api.put(`/posts/comments/${commentId}`, { content: editContent });
+      setEditingCommentId(null);
+      setEditContent('');
+      fetchComments();
+    } catch (err: any) {
+      console.error('Failed to update comment', err);
+      alert(err.response?.data?.message || 'Failed to update comment');
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const handleStartEdit = (comment: Comment) => {
+    setEditingCommentId(comment.id);
+    setEditContent(comment.content);
+  };
+
+  const handleCancelEdit = () => {
+    setEditingCommentId(null);
+    setEditContent('');
   };
 
   if (loading) return <div className="container" style={{ padding: 60, textAlign: 'center', color: 'var(--text-muted)' }}>Loading...</div>;
@@ -269,6 +297,12 @@ export default function PostDetailPage() {
                   handleReply={handleReply}
                   handleVote={handleCommentVote}
                   handleDelete={handleDeleteComment}
+                  handleEdit={handleEditComment}
+                  handleStartEdit={handleStartEdit}
+                  handleCancelEdit={handleCancelEdit}
+                  editingCommentId={editingCommentId}
+                  editContent={editContent}
+                  setEditContent={setEditContent}
                   submitting={submitting}
                 />
               ))}
@@ -288,6 +322,8 @@ export default function PostDetailPage() {
 function CommentItem({
   comment, depth, user, replyTo, setReplyTo, replyContent, setReplyContent,
   handleReply, handleVote, handleDelete, submitting,
+  handleEdit, handleStartEdit, handleCancelEdit,
+  editingCommentId, editContent, setEditContent,
 }: {
   comment: Comment; depth: number; user: any;
   replyTo: string | null; setReplyTo: (id: string | null) => void;
@@ -296,6 +332,12 @@ function CommentItem({
   handleVote: (commentId: string, value: number) => Promise<void>;
   handleDelete: (commentId: string) => Promise<void>;
   submitting: boolean;
+  handleEdit: (commentId: string) => Promise<void>;
+  handleStartEdit: (comment: Comment) => void;
+  handleCancelEdit: () => void;
+  editingCommentId: string | null;
+  editContent: string;
+  setEditContent: (s: string) => void;
 }) {
   const [showReplies, setShowReplies] = useState(true);
   const maxDepth = 3;
@@ -330,8 +372,33 @@ function CommentItem({
           </span>
         </div>
 
-        {/* Comment body */}
-        {comment.isDeleted ? (
+        {/* Comment body - edit mode */}
+        {editingCommentId === comment.id ? (
+          <div style={{ marginBottom: 8 }}>
+            <textarea
+              value={editContent}
+              onChange={(e) => setEditContent(e.target.value)}
+              autoFocus
+              rows={4}
+              style={{
+                width: '100%', padding: '10px 12px', borderRadius: 'var(--radius-md)',
+                border: '1px solid var(--primary-400)', background: 'var(--bg-card)',
+                color: 'var(--text-primary)', fontSize: 13, outline: 'none',
+                fontFamily: 'inherit', resize: 'vertical', lineHeight: 1.5,
+              }}
+            />
+            {/* 评论编辑的 Markdown 实时预览 */}
+            {editContent.trim() && (
+              <div style={{
+                marginTop: 6, padding: '8px 12px', borderRadius: 'var(--radius-md)',
+                background: 'var(--bg-secondary)', border: '1px solid var(--border-light)',
+                maxHeight: 200, overflow: 'auto', fontSize: 13, lineHeight: 1.6,
+              }}>
+                <MarkdownRenderer content={editContent} />
+              </div>
+            )}
+          </div>
+        ) : comment.isDeleted ? (
           <p style={{ fontSize: 14, color: 'var(--text-muted)', fontStyle: 'italic', padding: '4px 0' }}>
             [This comment has been deleted]
           </p>
@@ -344,28 +411,58 @@ function CommentItem({
         {/* Comment actions */}
         {!comment.isDeleted && (
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            <VoteButton
-              upvotes={comment.upvotes} downvotes={comment.downvotes}
-              userVote={comment.userVote} onVote={(v) => handleVote(comment.id, v)}
-              vertical={false}
-            />
-            {user && (
-              <button onClick={() => setReplyTo(replyTo === comment.id ? null : comment.id)} style={{
-                display: 'flex', alignItems: 'center', gap: 4, padding: '4px 8px',
-                borderRadius: 'var(--radius-sm)', fontSize: 12, color: 'var(--text-muted)',
-              }}>
-                <Reply size={12} />
-                Reply
-              </button>
-            )}
-            {user && user.id === comment.user.id && (
-              <button onClick={() => handleDelete(comment.id)} style={{
-                display: 'flex', alignItems: 'center', gap: 4, padding: '4px 8px',
-                borderRadius: 'var(--radius-sm)', fontSize: 12, color: 'var(--danger-500)',
-              }}>
-                <Trash2 size={12} />
-                Delete
-              </button>
+            {editingCommentId === comment.id ? (
+              <>
+                <button onClick={() => handleEdit(comment.id)} disabled={submitting || !editContent.trim()} style={{
+                  display: 'flex', alignItems: 'center', gap: 4, padding: '4px 12px',
+                  borderRadius: 'var(--radius-sm)', fontSize: 12, fontWeight: 500,
+                  background: 'var(--primary-600)', color: 'white',
+                  opacity: submitting || !editContent.trim() ? 0.6 : 1,
+                }}>
+                  {submitting ? 'Saving...' : 'Save'}
+                </button>
+                <button onClick={handleCancelEdit} style={{
+                  padding: '4px 12px', borderRadius: 'var(--radius-sm)', fontSize: 12,
+                  color: 'var(--text-secondary)', border: '1px solid var(--border-light)',
+                }}>
+                  Cancel
+                </button>
+              </>
+            ) : (
+              <>
+                <VoteButton
+                  upvotes={comment.upvotes} downvotes={comment.downvotes}
+                  userVote={comment.userVote} onVote={(v) => handleVote(comment.id, v)}
+                  vertical={false}
+                />
+                {user && (
+                  <button onClick={() => setReplyTo(replyTo === comment.id ? null : comment.id)} style={{
+                    display: 'flex', alignItems: 'center', gap: 4, padding: '4px 8px',
+                    borderRadius: 'var(--radius-sm)', fontSize: 12, color: 'var(--text-muted)',
+                  }}>
+                    <Reply size={12} />
+                    Reply
+                  </button>
+                )}
+                {user && user.id === comment.user.id && (
+                  <button onClick={() => handleStartEdit(comment)} style={{
+                    display: 'flex', alignItems: 'center', gap: 4, padding: '4px 8px',
+                    borderRadius: 'var(--radius-sm)', fontSize: 12, color: 'var(--text-muted)',
+                  }}>
+                    <Edit size={12} />
+                    Edit
+                  </button>
+                )}
+                {user && user.id === comment.user.id && (
+                  <button onClick={() => handleDelete(comment.id)} style={{
+                    display: 'flex', alignItems: 'center', gap: 4, padding: '4px 8px',
+                    borderRadius: 'var(--radius-sm)', fontSize: 12, color: 'var(--danger-500)',
+                  }}>
+                    <Trash2 size={12} />
+                    Delete
+                  </button>
+                )}
+              </>
             )}
           </div>
         )}
@@ -426,6 +523,10 @@ function CommentItem({
                   replyContent={replyContent} setReplyContent={setReplyContent}
                   handleReply={handleReply} handleVote={handleVote}
                   handleDelete={handleDelete} submitting={submitting}
+                  handleEdit={handleEdit} handleStartEdit={handleStartEdit}
+                  handleCancelEdit={handleCancelEdit}
+                  editingCommentId={editingCommentId} editContent={editContent}
+                  setEditContent={setEditContent}
                 />
               ))}
             </div>
