@@ -65,6 +65,7 @@ export const router = createBrowserRouter([
       { path: 'community', element: <LazyPage><CommunityPage /></LazyPage> },
       { path: 'community/new', element: <LazyPage><CreatePostPage /></LazyPage> },
       { path: 'posts/:id', element: <LazyPage><PostDetailPage /></LazyPage> },
+      { path: 'posts/:id/edit', element: <ProtectedRoute><LazyPage><CreatePostPage /></LazyPage></ProtectedRoute> },
       { path: 'users/:id', element: <LazyPage><UserProfilePage /></LazyPage> },
       { path: 'messages', element: <LazyPage><MessagesPage /></LazyPage> },
       { path: 'notifications', element: <LazyPage><NotificationsPage /></LazyPage> },
