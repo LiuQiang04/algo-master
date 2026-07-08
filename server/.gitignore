@@ -34,8 +34,5 @@ coverage/
 .DS_Store
 Thumbs.db
 
-# Prisma
-prisma/migrations/
-
 # Redis
 dump.rdb
