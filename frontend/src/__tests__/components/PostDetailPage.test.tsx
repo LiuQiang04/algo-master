@@ -181,5 +181,48 @@ describe("PostDetailPage - Comment Editing", () => {
       });
       expect(screen.getByText("Edit")).toBeInTheDocument();
     });
+
+    it("disables Save button when edit content is empty", async () => {
+      renderWithRouter(<PostDetailPage />);
+      await waitFor(() => {
+        expect(screen.getByText("Edit")).toBeInTheDocument();
+      });
+
+      fireEvent.click(screen.getByText("Edit"));
+
+      const textarea = screen.getByDisplayValue("My comment that I can edit");
+      fireEvent.change(textarea, { target: { value: "" } });
+
+      const saveBtn = screen.getByText("Save");
+      expect(saveBtn.closest("button")).toBeDisabled();
+    });
+
+    it("disables Cancel button when submitting", async () => {
+      const api = require("../../api/client");
+      // Make put hang so submitting stays true
+      (api.put as jest.Mock).mockImplementationOnce(() => new Promise(() => {}));
+
+      renderWithRouter(<PostDetailPage />);
+      await waitFor(() => {
+        expect(screen.getByText("Edit")).toBeInTheDocument();
+      });
+
+      fireEvent.click(screen.getByText("Edit"));
+      fireEvent.click(screen.getByText("Save"));
+
+      const cancelBtn = screen.getByText("Cancel");
+      expect(cancelBtn.closest("button")).toBeDisabled();
+    });
+  });
+
+  describe("Edge cases", () => {
+    it("does NOT show Edit button when user is not logged in", async () => {
+      mockUseAuthStore.mockReturnValue({ user: null });
+      renderWithRouter(<PostDetailPage />);
+      await waitFor(() => {
+        expect(screen.getByText("My comment that I can edit")).toBeInTheDocument();
+      });
+      expect(screen.queryByText("Edit")).not.toBeInTheDocument();
+    });
   });
 });

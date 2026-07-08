@@ -421,9 +421,10 @@ function CommentItem({
                 }}>
                   {submitting ? 'Saving...' : 'Save'}
                 </button>
-                <button onClick={handleCancelEdit} style={{
+                <button onClick={handleCancelEdit} disabled={submitting} style={{
                   padding: '4px 12px', borderRadius: 'var(--radius-sm)', fontSize: 12,
                   color: 'var(--text-secondary)', border: '1px solid var(--border-light)',
+                  opacity: submitting ? 0.6 : 1,
                 }}>
                   Cancel
                 </button>
