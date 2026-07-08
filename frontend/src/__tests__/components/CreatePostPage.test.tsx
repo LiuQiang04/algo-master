@@ -7,6 +7,12 @@ import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import CreatePostPage from "../../pages/CreatePostPage";
 
+// Mock MarkdownRenderer (uses ESM-only packages: react-markdown, react-syntax-highlighter)
+jest.mock("../../components/common/MarkdownRenderer", () => ({
+  __esModule: true,
+  default: ({ content }: { content: string }) => <div data-testid="markdown">{content}</div>,
+}));
+
 // Mock the API client
 jest.mock("../../api/client", () => ({
   get: jest.fn(),
