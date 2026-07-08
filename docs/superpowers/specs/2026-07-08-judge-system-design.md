@@ -28,9 +28,10 @@ Judge Worker (独立进程)
     │  2. 写代码到 /tmp/judge/{uuid}/
     │  3. Docker run 编译（C++/Java）
     │  4. 逐个测试用例: Docker run 执行 → 比对输出
-    │  5. 更新 DB (status, executionTime, memoryUsed, score)
-    │  6. 清理临时文件
-    │  7. 如 AC → 触发积分/成就
+    │  5. 写入 SubmissionTestCase 记录（每个用例一条）
+    │  6. 更新 Submission (status, executionTime, memoryUsed, score)
+    │  7. 清理临时文件
+    │  8. 如 AC → 触发积分/成就
     ▼
 前端轮询 GET /submissions/:id/status → 显示结果
 ```
@@ -86,7 +87,35 @@ wrong_answer   → 输出与预期不一致
 accepted       → 所有测试用例通过
 ```
 
-### 1.7 新增依赖
+### 1.7 标准代码（std）与评测数据
+
+每个题目需存储一份标准解答（std），用于生成测试用例的预期输出：
+
+- **std 字段**：在 `Problem` 表新增 `stdCode`（标准代码）和 `stdLanguage`（标准代码语言）
+- **预期输出生成**：管理员创建/编辑测试用例时，后端用 std 代码执行输入 → 生成 expectedOutput
+- **评测数据**：`TestCase` 表已有 `input`、`expectedOutput`、`isSample`、`score` 字段，无需改动
+- **评测流程**：用户提交 → 编译 → 逐个 testCase 执行（input → 比对 expectedOutput）→ 汇总结果
+
+**完整评测生命周期**：
+
+```
+管理员创建题目
+  ├── 设置题目描述（Markdown）
+  ├── 编写标准代码（std）
+  ├── 添加测试用例（输入 + 预期输出由 std 自动生成）
+  └── 发布题目
+
+用户提交代码
+  ├── 编译（C++/Java）
+  ├── 执行测试用例 1 → 比对 → 通过/失败
+  ├── 执行测试用例 2 → 比对 → ...
+  ├── ...
+  └── 汇总结果 → 更新 Submission → 返回前端
+```
+
+> ⚠️ **注意**：题目管理后台（创建/编辑题目、设置 std、管理测试用例的 UI）本次不实现，记入 PROJECT.md 待办。
+
+### 1.8 新增依赖
 
 ```json
 // server/package.json
@@ -94,7 +123,64 @@ accepted       → 所有测试用例通过
 "ioredis": "^5.0.0"
 ```
 
-### 1.8 新增文件
+### 1.9 数据库改动
+
+**Problem 表新增字段**：
+
+```prisma
+model Problem {
+  // ... 现有字段
+  stdCode     String?  @map("std_code")     // 标准解答代码
+  stdLanguage String?  @map("std_language") // 标准解答语言 (cpp/python/java/javascript)
+}
+```
+
+**新增 SubmissionTestCase 表**（评测结果细化，详见题目详情页增强 spec）：
+
+```prisma
+model SubmissionTestCase {
+  id             String  @id @default(uuid()) @db.Uuid
+  submissionId   String  @map("submission_id") @db.Uuid
+  testCaseId     String  @map("test_case_id") @db.Uuid
+  input          String
+  expectedOutput String  @map("expected_output")
+  actualOutput   String? @map("actual_output")
+  passed         Boolean
+  runtime        Int?
+  memory         Int?
+  errorMessage   String? @map("error_message")
+
+  submission Submission @relation(fields: [submissionId], references: [id])
+  testCase   TestCase   @relation(fields: [testCaseId], references: [id])
+
+  @@map("submission_test_cases")
+}
+```
+
+### 1.10 新增 API
+
+| 方法 | 路径 | 说明 |
+|---|---|---|
+| `POST` | `/api/submissions/run-sample` | 运行样例用例（不创建提交记录） |
+| `GET` | `/api/submissions/:id/status` | 轮询评测状态（已有） |
+
+**POST /api/submissions/run-sample** 请求/响应：
+
+```json
+// Request
+{ "problemId": "uuid", "language": "cpp", "code": "..." }
+
+// Response
+{
+  "compileError": null,
+  "results": [
+    { "input": "1 2", "expectedOutput": "3", "actualOutput": "3", "passed": true, "runtime": 12 },
+    { "input": "5 3", "expectedOutput": "8", "actualOutput": "10", "passed": false, "runtime": 15 }
+  ]
+}
+```
+
+### 1.11 新增文件
 
 | 文件 | 职责 |
 |---|---|
@@ -104,17 +190,18 @@ accepted       → 所有测试用例通过
 | `server/src/services/judge/dockerJudge.ts` | 核心评测逻辑：编译→执行→比对 |
 | `server/src/workers/judgeWorker.ts` | Worker 进程入口（独立 tsx 启动） |
 
-### 1.9 修改文件
+### 1.12 修改文件
 
 | 文件 | 改动 |
 |---|---|
-| `server/src/services/submissionService.ts` | `simulateJudge()` → `addJudgeTask()` |
+| `server/src/services/submissionService.ts` | `simulateJudge()` → `addJudgeTask()`；新增 `runSample()` |
 | `server/package.json` | 加 `bullmq`、`ioredis`，加 `workers:judge` 脚本 |
+| `server/prisma/schema.prisma` | Problem 加 stdCode/stdLanguage；新增 SubmissionTestCase |
 | `docker-compose.dev.yml` | 加 `judge-worker` 服务 |
-| `frontend/src/pages/Problems/ProblemDetail.tsx` | 提交后轮询 `GET /submissions/:id/status` |
-| `frontend/src/services/submissions.ts` | 新增 `getSubmissionStatus()` |
+| `frontend/src/pages/Problems/ProblemDetail.tsx` | 提交后轮询；新增运行样例按钮 |
+| `frontend/src/services/submissions.ts` | 新增 `getSubmissionStatus()`、`runSample()` |
 
-### 1.10 前端轮询逻辑
+### 1.13 前端轮询逻辑
 
 ```typescript
 // 提交后
@@ -203,11 +290,13 @@ setTimeout(() => clearInterval(interval), 30000);
 ## 四、实施顺序
 
 ```
-1. 评测镜像 (Dockerfile.judge) + 构建
-2. 语言配置 + 核心评测逻辑
-3. BullMQ 队列 + Worker
-4. 修改 submissionService 对接真实评测
-5. 前端轮询改造
-6. 题目详情页布局优化
-7. 测试 + 验证
+1. 数据库迁移（Problem.stdCode/stdLanguage + SubmissionTestCase 表）
+2. 评测镜像 (Dockerfile.judge) + 构建
+3. 语言配置 + 核心评测逻辑
+4. BullMQ 队列 + Worker
+5. 修改 submissionService 对接真实评测
+6. 新增 run-sample API
+7. 前端轮询改造 + 运行样例按钮
+8. 题目详情页布局优化
+9. 测试 + 验证
 ```
