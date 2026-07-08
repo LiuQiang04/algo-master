@@ -112,6 +112,8 @@ model Problem {
   isPublic     Boolean  @default(true) @map("is_public")
   solveCount   Int      @default(0) @map("solve_count")
   submitCount  Int      @default(0) @map("submit_count")
+  stdCode      String?  @map("std_code") @db.Text
+  stdLanguage  String?  @map("std_language") @db.VarChar(20)
   createdAt    DateTime @default(now()) @map("created_at")
 
   submissions     Submission[]
@@ -156,6 +158,7 @@ model TestCase {
   score          Int     @default(1)
 
   problem Problem @relation(fields: [problemId], references: [id])
+  submissionTestCases SubmissionTestCase[]
 
   @@map("test_cases")
 }
@@ -176,9 +179,28 @@ model Submission {
 
   user    User    @relation(fields: [userId], references: [id])
   problem Problem @relation(fields: [problemId], references: [id])
+  testCaseResults SubmissionTestCase[]
 
   @@index([userId, submittedAt])
   @@map("submissions")
+}
+
+model SubmissionTestCase {
+  id             String   @id @default(uuid()) @db.Uuid
+  submissionId   String   @map("submission_id") @db.Uuid
+  testCaseId     String   @map("test_case_id") @db.Uuid
+  input          String
+  expectedOutput String   @map("expected_output")
+  actualOutput   String?  @map("actual_output")
+  passed         Boolean
+  runtime        Int?
+  memory         Int?
+  errorMessage   String?  @map("error_message")
+
+  submission Submission @relation(fields: [submissionId], references: [id])
+  testCase   TestCase   @relation(fields: [testCaseId], references: [id])
+
+  @@map("submission_test_cases")
 }
 
 // ==================== 竞赛系统 ====================
