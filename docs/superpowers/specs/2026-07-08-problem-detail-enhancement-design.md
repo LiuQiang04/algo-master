@@ -207,19 +207,66 @@ function useCodeDraft(problemId: number, language: string): {
 
 ---
 
-## 三、文件改动汇总
+## 三、布局约束（与评测系统 spec 联动）
+
+### 3.1 核心原则
+
+**提交按钮必须始终在首屏可见**，无论结果面板是否展开。
+
+评测系统 spec 的布局优化（压缩间距节省约 54px）是本 spec 的**前置条件**，两者协同生效。
+
+### 3.2 右面板空间分配
+
+```
+┌──────────────────────────────┐
+│ 语言选择 + 操作按钮 (~40px)   │  ← 固定
+├──────────────────────────────┤
+│                              │
+│ Monaco Editor (flex: 1)      │  ← 弹性伸缩
+│                              │
+├──────────────────────────────┤
+│ 结果面板 (max-height: 40%)   │  ← 限制最大高度，内部滚动
+│ · 运行样例结果 / 评测结果     │
+├──────────────────────────────┤
+│ [运行样例] [提交代码] (~48px) │  ← 固定，始终可见
+└──────────────────────────────┘
+```
+
+### 3.3 结果面板约束
+
+- **最大高度**：`max-height: 40%`（相对右面板高度），超出部分 `overflow-y: auto`
+- **默认折叠**：评测结果首次加载时只显示摘要（"通过 X/Y 个用例"），点击展开
+- **运行样例结果**：运行后自动显示，但不会超过 max-height，超出滚动
+- **关闭按钮**：右上角 × 按钮关闭结果面板，释放空间
+
+### 3.4 多尺寸适配
+
+| 尺寸 | 布局 | 编辑器高度 |
+|---|---|---|
+| 1920px（宽屏） | 左右并排 flex: 1 | 约 60-70% 视口 |
+| 1024px（中屏） | 左右并排 flex: 1 | 约 50-60% 视口 |
+| 768px（窄屏） | 上下堆叠 | 固定 300px |
+| 375px（手机） | 上下堆叠 | 固定 250px |
+
+### 3.5 验证标准
+
+提交按钮在所有尺寸下、结果面板展开/折叠状态下，均位于视口内可见。
+
+---
+
+## 四、文件改动汇总
 
 | 文件 | 改动类型 | 涉及模块 |
 |---|---|---|
 | `frontend/src/pages/Problems/ProblemDetail.tsx` | 修改 | ①~⑥ 全部 |
-| `frontend/src/pages/Problems/ProblemDetail.css` | 修改 | ① ② ④ ⑤ |
+| `frontend/src/pages/Problems/ProblemDetail.css` | 修改 | ① ② ④ ⑤ + 结果面板 max-height/overflow |
 | `frontend/src/hooks/useCodeDraft.ts` | **新增** | ③ |
 | `frontend/src/services/submissions.ts` | 修改 | ④ `runSample()` |
-| `frontend/src/types/index.ts` | 修改 | ⑤ `TestCaseResult` |
+| `frontend/src/types/index.ts` | 修改 | ⑤ `TestCaseResult`, ⑥ 统计字段 |
 | `server/src/routes/submissions.ts` | 修改 | ④ `run-sample` 路由 |
-| `server/src/services/problemService.ts` | 修改 | ⑥ 统计字段<br>（如不存在则修改 controller） |
+| `server/src/services/problemService.ts` | 修改 | ⑥ 统计字段 |
 
-## 四、测试计划
+## 五、测试计划
 
 | 测试类型 | 覆盖内容 |
 |---|---|
