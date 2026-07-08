@@ -1,11 +1,13 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import api from '../api/client';
 import { useAuthStore } from '../store/authStore';
 import { ArrowLeft, Send, Tag as TagIcon, X } from 'lucide-react';
 
 export default function CreatePostPage() {
   const navigate = useNavigate();
+  const { id } = useParams<{ id: string }>();
+  const isEditMode = Boolean(id);
   const { user } = useAuthStore();
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
@@ -14,10 +16,39 @@ export default function CreatePostPage() {
   const [tagNames, setTagNames] = useState<string[]>([]);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
+  const [loadingPost, setLoadingPost] = useState(false);
+
+  useEffect(() => {
+    if (!isEditMode || !id) return;
+    setLoadingPost(true);
+    api.get(`/posts/${id}`)
+      .then(({ data }) => {
+        const post = data.data || data;
+        setTitle(post.title || '');
+        setContent(post.content || '');
+        setPostType(post.postType || 'discussion');
+        if (post.tags) {
+          setTagNames(post.tags.map((t: any) => t.tag?.name || t.name).filter(Boolean));
+        }
+      })
+      .catch(() => {
+        setError('Failed to load post');
+        navigate('/community');
+      })
+      .finally(() => setLoadingPost(false));
+  }, [id, isEditMode, navigate]);
 
   if (!user) {
     navigate('/login');
     return null;
+  }
+
+  if (loadingPost) {
+    return (
+      <div className="container" style={{ padding: '24px 24px', maxWidth: 800 }}>
+        <div style={{ textAlign: 'center', padding: 60, color: 'var(--text-muted)' }}>Loading post...</div>
+      </div>
+    );
   }
 
   const addTag = () => {
@@ -41,10 +72,15 @@ export default function CreatePostPage() {
     setSubmitting(true);
     setError('');
     try {
-      const { data } = await api.post('/posts', { title, content, postType, tagNames });
-      navigate(`/posts/${data.data.id}`);
+      if (isEditMode && id) {
+        await api.put(`/posts/${id}`, { title, content });
+        navigate(`/posts/${id}`);
+      } else {
+        const { data } = await api.post('/posts', { title, content, postType, tagNames });
+        navigate(`/posts/${data.data.id}`);
+      }
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Failed to create post');
+      setError(err.response?.data?.message || 'Failed to save post');
     } finally {
       setSubmitting(false);
     }
@@ -60,7 +96,7 @@ export default function CreatePostPage() {
         Back
       </button>
 
-      <h1 style={{ fontSize: 24, fontWeight: 700, marginBottom: 24 }}>Create New Post</h1>
+      <h1 style={{ fontSize: 24, fontWeight: 700, marginBottom: 24 }}>{isEditMode ? 'Edit Post' : 'Create New Post'}</h1>
 
       {error && (
         <div style={{
@@ -76,30 +112,41 @@ export default function CreatePostPage() {
           <label style={{ display: 'block', fontSize: 14, fontWeight: 600, color: 'var(--text-secondary)', marginBottom: 8 }}>
             Post Type
           </label>
-          <div style={{ display: 'flex', gap: 8 }}>
-            {[
-              { value: 'discussion', label: 'Discussion', desc: 'General topic' },
-              { value: 'solution', label: 'Solution', desc: 'Share your solution' },
-              { value: 'question', label: 'Question', desc: 'Ask for help' },
-            ].map((t) => (
-              <button
-                key={t.value}
-                type="button"
-                onClick={() => setPostType(t.value)}
-                style={{
-                  flex: 1, padding: '12px 16px', borderRadius: 'var(--radius-md)',
-                  border: `2px solid ${postType === t.value ? 'var(--primary-500)' : 'var(--border-light)'}`,
-                  background: postType === t.value ? 'var(--primary-50)' : 'var(--bg-card)',
-                  textAlign: 'left', transition: 'var(--transition-fast)',
-                }}
-              >
-                <div style={{ fontSize: 14, fontWeight: 600, color: postType === t.value ? 'var(--primary-700)' : 'var(--text-primary)' }}>
-                  {t.label}
-                </div>
-                <div style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 2 }}>{t.desc}</div>
-              </button>
-            ))}
-          </div>
+          {isEditMode ? (
+            <div style={{
+              padding: '12px 16px', borderRadius: 'var(--radius-md)',
+              background: 'var(--bg-secondary)', fontSize: 14,
+              color: 'var(--text-secondary)',
+            }}>
+              Post Type: <strong style={{ color: 'var(--text-primary)' }}>{postType}</strong>
+              {' '}(cannot be changed after creation)
+            </div>
+          ) : (
+            <div style={{ display: 'flex', gap: 8 }}>
+              {[
+                { value: 'discussion', label: 'Discussion', desc: 'General topic' },
+                { value: 'solution', label: 'Solution', desc: 'Share your solution' },
+                { value: 'question', label: 'Question', desc: 'Ask for help' },
+              ].map((t) => (
+                <button
+                  key={t.value}
+                  type="button"
+                  onClick={() => setPostType(t.value)}
+                  style={{
+                    flex: 1, padding: '12px 16px', borderRadius: 'var(--radius-md)',
+                    border: `2px solid ${postType === t.value ? 'var(--primary-500)' : 'var(--border-light)'}`,
+                    background: postType === t.value ? 'var(--primary-50)' : 'var(--bg-card)',
+                    textAlign: 'left', transition: 'var(--transition-fast)',
+                  }}
+                >
+                  <div style={{ fontSize: 14, fontWeight: 600, color: postType === t.value ? 'var(--primary-700)' : 'var(--text-primary)' }}>
+                    {t.label}
+                  </div>
+                  <div style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 2 }}>{t.desc}</div>
+                </button>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Title */}
@@ -192,7 +239,7 @@ export default function CreatePostPage() {
             color: 'white', fontSize: 14, fontWeight: 600, opacity: submitting ? 0.7 : 1,
           }}>
             <Send size={16} />
-            {submitting ? 'Posting...' : 'Publish'}
+            {submitting ? 'Saving...' : (isEditMode ? 'Save Changes' : 'Publish')}
           </button>
         </div>
       </form>
