@@ -7,7 +7,12 @@
 - **接到任务 → 先调用 `/brainstorming`**（新功能）或 `/systematic-debugging`（bug）
 - **复杂任务（3+步骤）→ 调用 `/planning-with-files`** 创建持久化计划
 - 图片识别一律用 Zai MCP，不要直接分析
-- **跑 `seed` 前必须经用户确认** — 禁用 `npx prisma db seed` 或直接调用 seed 脚本，必须先问用户"确认要清空数据库？"
+- **数据库安全（以下操作必须用户明确确认）**：
+  - `seed` / `prisma db seed` — 清空数据库，必须先问
+  - `prisma migrate reset` — 清库+重建，绝对禁止自动执行
+  - `prisma migrate dev` — 可能触发 reset，必须用户确认后再执行
+  - 任何直接 `TRUNCATE` / `DROP` / `DELETE FROM` 操作 — 必须用户确认
+  - 规则：AI **绝不自动执行**任何有删库风险的命令，一律先停手问用户
 
 ### 2. 开发中（每完成一个子任务）
 
