@@ -2,14 +2,24 @@ import request from '@/utils/request';
 import type { ApiResponse, PaginatedData, PaginationParams, Submission, SubmissionResult, SubmissionStatus, RunSampleResponse } from '@/types';
 
 export async function submitCode(
-  problemId: number,
+  problemId: number | string,
   data: { language: string; code: string }
 ): Promise<SubmissionResult> {
   const res = await request.post<ApiResponse<SubmissionResult>>(
     '/submissions',
     { ...data, problemId }
   );
-  return res.data.data;
+  const raw = res.data.data as any;
+  // API returns the raw submission with `id`, map to `submissionId` for frontend
+  return {
+    submissionId: raw.id || raw.submissionId,
+    status: raw.status,
+    executionTime: raw.executionTime,
+    memoryUsed: raw.memoryUsed,
+    testCasesPassed: raw.testCasesPassed || 0,
+    totalTestCases: raw.totalTestCases || 0,
+    errorMessage: raw.errorMessage,
+  };
 }
 
 export async function getSubmissions(

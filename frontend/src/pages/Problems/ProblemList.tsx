@@ -286,14 +286,14 @@ export default function ProblemList() {
                     </td>
                     <td className="pl-td-tags">
                       <div className="pl-tags-list">
-                        {problem.tags.slice(0, 3).map((tag) => (
-                          <span key={tag} className="pl-tag">{tag}</span>
+                        {problem.tags.slice(0, 3).map((tag: any) => (
+                          <span key={tag.id || tag} className="pl-tag">{tag.name || tag}</span>
                         ))}
                       </div>
                     </td>
                     <td className="pl-td-difficulty">
-                      <span className={`difficulty-badge difficulty-badge--${problem.difficulty}`}>
-                        {difficultyLabels[problem.difficulty]}
+                      <span className={`difficulty-badge difficulty-badge--${['easy','easy','medium','hard','hard'][(problem.difficulty as any) - 1] || 'medium'}`}>
+                        {({ 1: '简单', 2: '简单', 3: '中等', 4: '困难', 5: '困难' } as any)[problem.difficulty] || '中等'}
                       </span>
                     </td>
                     <td className="pl-td-acceptance">{problem.acceptanceRate}%</td>

@@ -51,7 +51,7 @@ const statusMessages: Record<SubmissionStatus, string> = {
 
 export default function ProblemDetail() {
   const { id } = useParams<{ id: string }>();
-  const problemId = Number(id);
+  const problemId = id || '';
 
   const [problem, setProblem] = useState<Problem | null>(null);
   const [loading, setLoading] = useState(true);
@@ -195,7 +195,10 @@ export default function ProblemDetail() {
     );
   }
 
-  const difficultyText = problem.difficulty === 'easy' ? '简单' : problem.difficulty === 'medium' ? '中等' : '困难';
+  const difficultyMap: Record<number, string> = { 1: 'easy', 2: 'easy', 3: 'medium', 4: 'hard', 5: 'hard' };
+  const difficultyNum = typeof problem.difficulty === 'number' ? problem.difficulty : 3;
+  const diffKey = difficultyMap[difficultyNum] || 'medium';
+  const difficultyText = diffKey === 'easy' ? '简单' : diffKey === 'medium' ? '中等' : '困难';
 
   // Parse samples from problem data
   const samples = problem.sampleInput && problem.sampleOutput
@@ -218,7 +221,7 @@ export default function ProblemDetail() {
           <div className="pd-header">
             <h1 className="pd-title">{problem.title}</h1>
             <div className="pd-meta">
-              <span className={`difficulty-badge difficulty-badge--${problem.difficulty}`}>
+              <span className={`difficulty-badge difficulty-badge--${diffKey}`}>
                 {difficultyText}
               </span>
               <div className="pd-meta-item">
@@ -231,10 +234,10 @@ export default function ProblemDetail() {
               </div>
             </div>
             <div className="pd-tags">
-              {problem.tags.map((tag) => (
-                <span key={tag} className="pd-tag">
+              {problem.tags.map((tag: any) => (
+                <span key={tag.id || tag} className="pd-tag">
                   <Tag size={12} />
-                  {tag}
+                  {tag.name || tag}
                 </span>
               ))}
             </div>
