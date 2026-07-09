@@ -115,6 +115,7 @@ export default function ProblemDetail() {
           const status = await getSubmissionStatus(submissionId);
           if (status.status !== 'pending' && status.status !== 'judging') {
             clearInterval(interval);
+            setSubmitting(false);
             setResult({
               status: status.status,
               runtime: status.executionTime,
@@ -125,15 +126,18 @@ export default function ProblemDetail() {
           }
         } catch {
           clearInterval(interval);
+          setSubmitting(false);
           setResult({ status: 'runtime_error', errorMessage: '获取评测结果失败' });
         }
       }, 1000);
-      // 30s timeout
-      setTimeout(() => clearInterval(interval), 30000);
+      // 30s timeout — also releases submitting
+      setTimeout(() => {
+        clearInterval(interval);
+        setSubmitting(false);
+      }, 30000);
     } catch {
-      setResult({ status: 'runtime_error', errorMessage: '提交失败，请重试' });
-    } finally {
       setSubmitting(false);
+      setResult({ status: 'runtime_error', errorMessage: '提交失败，请重试' });
     }
   };
 

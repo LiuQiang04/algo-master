@@ -1,5 +1,5 @@
 import request from '@/utils/request';
-import type { ApiResponse, PaginatedData, PaginationParams, Submission, SubmissionResult, RunSampleResponse } from '@/types';
+import type { ApiResponse, PaginatedData, PaginationParams, Submission, SubmissionResult, SubmissionStatus, RunSampleResponse } from '@/types';
 
 export async function submitCode(
   problemId: number,
