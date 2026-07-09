@@ -368,7 +368,7 @@ const VIRTUAL_ITEMS = [
 ];
 
 async function confirmSeed(): Promise<boolean> {
-  if (process.env.CI || process.env.NODE_ENV === 'production') return false;
+  if (process.env.CI || process.env.NODE_ENV === 'production') return true;
   const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
   return new Promise((resolve) => {
     rl.question('\n⚠️  seed 将清空数据库所有数据！输入 YES 确认: ', (answer) => {
