@@ -393,7 +393,7 @@ async function checkRequirement(userId: string, requirement: any): Promise<boole
     }
 
     case 'reach_level': {
-      return user.level >= requirement.value;
+      return (user?.level ?? 0) >= requirement.value;
     }
 
     case 'post_count': {

@@ -95,9 +95,6 @@ export async function getProblemById(problemId: string, userId?: string) {
           isSample: true,
         },
       },
-      author: {
-        select: { id: true, username: true },
-      },
     },
   });
 
