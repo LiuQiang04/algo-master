@@ -1,3 +1,4 @@
+import { URL } from 'url';
 import { createClient, RedisClientType } from 'redis';
 import { config } from '../config';
 import { logger } from './logger';
@@ -59,6 +60,19 @@ export async function checkRedisHealth(): Promise<boolean> {
   } catch {
     return false;
   }
+}
+
+/**
+ * Parse the Redis URL into { host, port } for BullMQ / ioredis compatibility.
+ * BullMQ uses ioredis internally, which needs host and port separately
+ * rather than a URL string.
+ */
+export function getRedisConfig(): { host: string; port: number } {
+  const parsed = new URL(config.redis.url);
+  return {
+    host: parsed.hostname || 'localhost',
+    port: parseInt(parsed.port || '6379', 10),
+  };
 }
 
 // 缓存工具函数

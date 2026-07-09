@@ -20,5 +20,14 @@ services:
     ports:
       - "6379:6379"
 
+  judge-worker:
+    image: algo-arena-judge
+    container_name: algo-arena-judge-worker
+    command: ["tail", "-f", "/dev/null"]  # 占位，实际通过 npm 脚本启动
+    volumes:
+      - ./server/src:/app/src:ro
+    depends_on:
+      - redis
+
 volumes:
   postgres_data:
