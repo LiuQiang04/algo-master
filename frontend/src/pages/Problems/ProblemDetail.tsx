@@ -14,10 +14,11 @@ import {
   BookOpen,
   MessageSquare,
   ChevronDown,
+  Play,
 } from 'lucide-react';
 import { getProblemById } from '@/services/problems';
-import { submitCode, getSubmissions } from '@/services/submissions';
-import type { Problem, Submission, SubmissionStatus } from '@/types';
+import { submitCode, getSubmissions, runSample, getSubmissionStatus } from '@/services/submissions';
+import type { Problem, Submission, SubmissionStatus, TestCaseResult, RunSampleResponse } from '@/types';
 import CodeEditor from '../../components/UI/CodeEditor';
 import './ProblemDetail.css';
 
@@ -68,6 +69,10 @@ export default function ProblemDetail() {
   const [submissions, setSubmissions] = useState<Submission[]>([]);
   const [submissionsLoading, setSubmissionsLoading] = useState(false);
 
+  // Run Sample
+  const [runSampleResult, setRunSampleResult] = useState<RunSampleResponse | null>(null);
+  const [runSampleLoading, setRunSampleLoading] = useState(false);
+
   // Fetch problem details
   useEffect(() => {
     if (!problemId) return;
@@ -103,18 +108,49 @@ export default function ProblemDetail() {
         language: selectedLang.id as any,
         code,
       });
-      setResult({
-        status: res.status,
-        runtime: res.executionTime,
-        memory: res.memoryUsed,
-        testCasesPassed: res.testCasesPassed,
-        totalTestCases: res.totalTestCases,
-        errorMessage: res.errorMessage,
-      });
+      // Start polling
+      const submissionId = res.submissionId;
+      const interval = setInterval(async () => {
+        try {
+          const status = await getSubmissionStatus(submissionId);
+          if (status.status !== 'pending' && status.status !== 'judging') {
+            clearInterval(interval);
+            setResult({
+              status: status.status,
+              runtime: status.executionTime,
+              memory: status.memoryUsed,
+              testCasesPassed: status.score ? Math.round(status.score / 100 * 10) : 0,
+              totalTestCases: 10,
+            });
+          }
+        } catch {
+          clearInterval(interval);
+          setResult({ status: 'runtime_error', errorMessage: '获取评测结果失败' });
+        }
+      }, 1000);
+      // 30s timeout
+      setTimeout(() => clearInterval(interval), 30000);
     } catch {
       setResult({ status: 'runtime_error', errorMessage: '提交失败，请重试' });
     } finally {
       setSubmitting(false);
+    }
+  };
+
+  const handleRunSample = async () => {
+    if (!problemId || runSampleLoading) return;
+    setRunSampleLoading(true);
+    setRunSampleResult(null);
+    try {
+      const res = await runSample(problemId, {
+        language: selectedLang.id,
+        code,
+      });
+      setRunSampleResult(res);
+    } catch {
+      setRunSampleResult({ compileError: '运行失败，请重试', results: [] });
+    } finally {
+      setRunSampleLoading(false);
     }
   };
 
@@ -421,7 +457,43 @@ export default function ProblemDetail() {
             </div>
           )}
 
+          {/* Run Sample Result Panel */}
+          {runSampleResult && (
+            <div className="pd-run-sample-result">
+              <div className="pd-run-sample-result-header">
+                <h3>运行样例结果</h3>
+                <button onClick={() => setRunSampleResult(null)}>×</button>
+              </div>
+              {runSampleResult.compileError ? (
+                <pre className="pd-result-error">{runSampleResult.compileError}</pre>
+              ) : (
+                runSampleResult.results.map((r, i) => (
+                  <div key={i} className={`pd-sample-card ${r.passed ? 'pd-sample-card--pass' : 'pd-sample-card--fail'}`}>
+                    <div className="pd-sample-card-header">
+                      <span>样例 {i + 1}</span>
+                      {r.passed ? <CheckCircle2 size={16} /> : <XCircle size={16} />}
+                      <span>{r.passed ? '通过' : '未通过'} {r.runtime != null && `(${r.runtime}ms)`}</span>
+                    </div>
+                    <div className="pd-sample-card-io">
+                      <div><span>输入</span><pre>{r.input}</pre></div>
+                      <div><span>预期输出</span><pre>{r.expectedOutput}</pre></div>
+                      <div><span>实际输出</span><pre>{r.actualOutput || '-'}</pre></div>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+          )}
+
           <div className="pd-submit-bar">
+            <button
+              className="pd-run-sample-btn"
+              onClick={handleRunSample}
+              disabled={runSampleLoading || submitting}
+            >
+              <Play size={16} />
+              {runSampleLoading ? '运行中...' : '运行样例'}
+            </button>
             <button className="pd-submit-btn" onClick={handleSubmit} disabled={submitting}>
               <Send size={16} />
               {submitting ? '提交中...' : '提交代码'}

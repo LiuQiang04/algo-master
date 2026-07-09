@@ -97,6 +97,20 @@ export interface SubmissionResult {
   errorMessage?: string;
 }
 
+export interface TestCaseResult {
+  input: string;
+  expectedOutput: string;
+  actualOutput: string | null;
+  passed: boolean;
+  runtime: number | null;
+  errorMessage: string | null;
+}
+
+export interface RunSampleResponse {
+  compileError: string | null;
+  results: TestCaseResult[];
+}
+
 // Contest Types
 export type ContestStatus = 'upcoming' | 'running' | 'ended';
 export type ContestType = 'rated' | 'unrated';

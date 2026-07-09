@@ -522,6 +522,116 @@
   box-shadow: 0 4px 15px rgba(34, 197, 94, 0.4);
 }
 
+/* Run Sample Button */
+.pd-run-sample-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px;
+  background: transparent;
+  color: var(--text-secondary);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  font-size: 14px;
+  font-weight: 500;
+  transition: all var(--transition-base);
+  margin-bottom: 8px;
+}
+
+.pd-run-sample-btn:hover {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+}
+
+/* Run Sample Result Panel */
+.pd-run-sample-result {
+  max-height: 40%;
+  overflow-y: auto;
+  padding: 16px;
+  border-top: 1px solid var(--border-light);
+  background: var(--bg-card);
+}
+
+.pd-run-sample-result-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.pd-run-sample-result-header h3 {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.pd-run-sample-result-header button {
+  font-size: 18px;
+  color: var(--text-muted);
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
+}
+
+.pd-run-sample-result-header button:hover {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+}
+
+/* Sample Result Card */
+.pd-sample-card {
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  padding: 12px;
+  margin-bottom: 8px;
+}
+
+.pd-sample-card--pass { border-color: var(--success-200); }
+.pd-sample-card--fail { border-color: var(--danger-200); }
+
+.pd-sample-card-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.pd-sample-card--pass .pd-sample-card-header { color: var(--success-600); }
+.pd-sample-card--fail .pd-sample-card-header { color: var(--danger-600); }
+
+.pd-sample-card-io {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.pd-sample-card-io > div {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.pd-sample-card-io > div > span {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+
+.pd-sample-card-io pre {
+  background: var(--bg-tertiary);
+  padding: 8px 10px;
+  border-radius: var(--radius-md);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--text-primary);
+  overflow-x: auto;
+  margin: 0;
+}
+
 /* ============================================
    Responsive
    ============================================ */
