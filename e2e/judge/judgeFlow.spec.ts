@@ -158,29 +158,17 @@ test.describe("Judge System — Docker sandbox", () => {
     expect(status.status).toBe("accepted");
     expect(status.score).toBe(100);
 
-    // Verify frontend polling picks it up
-    // Reload the page and check the submissions tab
-    await page.goto(`/problems/${problemId}`);
-    await page.waitForLoadState("networkidle");
-
-    // Switch to submissions tab
+    // Now check submissions tab on the SAME page (no page reload)
+    // Click the submissions tab and wait for the table
     await page.locator(".pd-tab").filter({ hasText: "提交记录" }).click();
-    await page.waitForLoadState("networkidle");
 
-    // Wait for table to appear and settle (avoid race with worker)
-    await page.waitForTimeout(3000);
-
+    // Wait for the submissions table to load (calls GET /api/submissions)
     const table = page.locator(".pd-submissions-table");
     await expect(table).toBeVisible({ timeout: 15000 });
 
-    // The first row should show a terminal status
+    // The first row should be our accepted submission
     const firstStatus = page.locator(".pd-submissions-table tbody tr:first-child .sub-status");
-    const statusText = (await firstStatus.textContent()) || "";
-    console.log("First submission status:", statusText);
-    // Accept any terminal status (not "等待评测" or "评测中...")
-    expect(statusText).not.toBe("等待评测");
-    expect(statusText).not.toBe("评测中...");
-    expect(["通过", "答案错误", "超出时间限制", "超出内存限制", "运行时错误", "编译错误"].includes(statusText)).toBeTruthy();
+    await expect(firstStatus).toContainText("通过", { timeout: 30000 });
   });
 
   test("submit wrong C++ code and get wrong_answer", async ({ page }) => {
