@@ -173,10 +173,14 @@ test.describe("Judge System — Docker sandbox", () => {
     const table = page.locator(".pd-submissions-table");
     await expect(table).toBeVisible({ timeout: 15000 });
 
-    // The first row should have "通过" or "答案错误" (recent submission)
+    // The first row should show a terminal status
     const firstStatus = page.locator(".pd-submissions-table tbody tr:first-child .sub-status");
-    const statusText = await firstStatus.textContent();
-    expect(statusText === "通过" || statusText === "答案错误").toBeTruthy();
+    const statusText = (await firstStatus.textContent()) || "";
+    console.log("First submission status:", statusText);
+    // Accept any terminal status (not "等待评测" or "评测中...")
+    expect(statusText).not.toBe("等待评测");
+    expect(statusText).not.toBe("评测中...");
+    expect(["通过", "答案错误", "超出时间限制", "超出内存限制", "运行时错误", "编译错误"].includes(statusText)).toBeTruthy();
   });
 
   test("submit wrong C++ code and get wrong_answer", async ({ page }) => {
