@@ -25,7 +25,9 @@ function getQueue(): Queue {
  */
 export const judgeQueue: Queue = new Proxy({} as Queue, {
   get(_target, prop: keyof Queue) {
-    return (getQueue() as any)[prop];
+    const q = getQueue();
+    const val = q[prop];
+    return typeof val === 'function' ? val.bind(q) : val;
   },
 });
 

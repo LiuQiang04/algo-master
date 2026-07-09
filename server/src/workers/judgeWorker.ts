@@ -2,6 +2,8 @@ import { Worker } from 'bullmq';
 import { getRedisConfig } from '../utils/redis';
 import { judge } from '../services/judge/dockerJudge';
 import { prisma } from '../utils/prisma';
+import { addPoints, POINT_RULES } from '../services/gamification/points';
+import { checkAchievements } from '../services/gamification/achievements';
 
 const redisConfig = getRedisConfig();
 
@@ -68,10 +70,6 @@ const worker = new Worker(
       finalStatus = allPassed ? 'accepted' : 'wrong_answer';
     }
 
-    const totalRuntime = result.results.reduce(
-      (sum, r) => sum + (r.runtime || 0),
-      0,
-    );
     const maxRuntime = result.results.reduce(
       (max, r) => Math.max(max, r.runtime || 0),
       0,
@@ -97,9 +95,6 @@ const worker = new Worker(
         data: { solveCount: { increment: 1 } },
       });
 
-      const { addPoints, POINT_RULES } = await import(
-        '../services/gamification/points'
-      );
       const basePoints = POINT_RULES.SOLVE_PROBLEM.base;
       const difficultyMultiplier =
         POINT_RULES.SOLVE_PROBLEM.difficultyMultiplier[
@@ -115,9 +110,6 @@ const worker = new Worker(
         submission.problemId,
       );
 
-      const { checkAchievements } = await import(
-        '../services/gamification/achievements'
-      );
       await checkAchievements(submission.userId);
     }
   },
