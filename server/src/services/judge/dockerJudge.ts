@@ -30,6 +30,14 @@ export interface JudgeResult {
   summary: { passed: number; total: number };
 }
 
+export interface JudgeOptions {
+  language: string;
+  code: string;
+  testCases: TestCase[];
+  timeLimit: number;
+  memoryLimit: number;
+}
+
 // ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
@@ -136,6 +144,7 @@ export async function judge(options: {
           [
             'run',
             '--rm',
+            '-i', // pipe stdin so cin / input() / process.stdin works
             '--network=none',
             `--memory=${memoryLimit}m`,
             '--cpus=0.5',
@@ -165,7 +174,7 @@ export async function judge(options: {
         results.push({
           input: tc.input,
           expectedOutput: tc.expectedOutput,
-          actualOutput,
+          actualOutput: actual,
           passed,
           runtime,
           memory: null, // Docker memory stats omitted (complex to extract)

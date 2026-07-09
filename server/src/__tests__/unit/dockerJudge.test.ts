@@ -1,16 +1,20 @@
 import { judge } from '../../services/judge/dockerJudge';
 
-// Skip all tests if Docker is not available
-const hasDocker = (() => {
+// Skip all tests if Docker is not available or the judge image is missing
+const hasDockerAndImage = (() => {
   try {
     require('child_process').execSync('docker info', { stdio: 'ignore' });
+    require('child_process').execSync(
+      'docker image inspect algo-arena-judge',
+      { stdio: 'ignore' },
+    );
     return true;
   } catch {
     return false;
   }
 })();
 
-const describeIf = hasDocker ? describe : describe.skip;
+const describeIf = hasDockerAndImage ? describe : describe.skip;
 
 describeIf('dockerJudge', () => {
   it('should compile and run C++ code successfully', async () => {
