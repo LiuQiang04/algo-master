@@ -1,5 +1,6 @@
 import { prisma } from '../utils/prisma';
 import { NotFoundError, BadRequestError } from '../utils/errors';
+import { judge, TestCaseResult } from './judge/dockerJudge';
 
 // 提交代码
 export async function createSubmission(data: {
@@ -45,11 +46,14 @@ export async function createSubmission(data: {
     data: { submitCount: { increment: 1 } },
   });
 
-  // TODO: 将评测任务加入队列
-  // await judgeQueue.add({ submissionId: submission.id });
+  // 将评测任务加入队列（非模拟模式）
+  if (process.env.JUDGE_MODE !== 'simulate') {
+    const { addJudgeTask } = await import('../queues/judgeQueue');
+    await addJudgeTask(submission.id);
+  }
 
-  // 模拟评测（开发环境）
-  if (process.env.NODE_ENV === 'development') {
+  // 模拟评测（JUDGE_MODE=simulate 时使用）
+  if (process.env.JUDGE_MODE === 'simulate') {
     simulateJudge(submission.id, problem);
   }
 
@@ -119,6 +123,45 @@ async function simulateJudge(submissionId: string, problem: any) {
       await checkAchievements(submission.userId);
     }
   }
+}
+
+export async function runSample(data: {
+  problemId: string;
+  language: string;
+  sourceCode: string;
+}) {
+  const problem = await prisma.problem.findUnique({
+    where: { id: data.problemId },
+    include: {
+      testCases: {
+        where: { isSample: true },
+      },
+    },
+  });
+
+  if (!problem) {
+    throw new NotFoundError('题目不存在');
+  }
+
+  if (problem.testCases.length === 0) {
+    return { compileError: null, results: [] as TestCaseResult[] };
+  }
+
+  const result = await judge({
+    language: data.language,
+    code: data.sourceCode,
+    testCases: problem.testCases.map(tc => ({
+      input: tc.input,
+      expectedOutput: tc.expectedOutput,
+    })),
+    timeLimit: problem.timeLimit,
+    memoryLimit: problem.memoryLimit,
+  });
+
+  return {
+    compileError: result.compileError,
+    results: result.results,
+  };
 }
 
 // 获取提交记录
