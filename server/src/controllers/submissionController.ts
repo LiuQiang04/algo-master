@@ -61,3 +61,19 @@ export async function getSubmissionStatus(req: Request, res: Response) {
     data: status,
   });
 }
+
+// 运行示例测试
+export async function runSample(req: AuthRequest, res: Response) {
+  const { problemId, language, sourceCode } = req.body;
+
+  const result = await submissionService.runSample({
+    problemId,
+    language,
+    sourceCode,
+  });
+
+  res.json({
+    success: true,
+    data: result,
+  });
+}

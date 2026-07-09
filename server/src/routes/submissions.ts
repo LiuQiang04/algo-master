@@ -15,6 +15,12 @@ const createSubmissionSchema = Joi.object({
   contestId: Joi.string().uuid().optional(),
 });
 
+const runSampleSchema = Joi.object({
+  problemId: Joi.string().uuid().required(),
+  language: Joi.string().valid('cpp', 'java', 'python', 'javascript').required(),
+  sourceCode: Joi.string().min(1).max(50000).required(),
+});
+
 // 路由
 router.post(
   '/',
@@ -25,6 +31,14 @@ router.post(
 );
 
 router.get('/', authenticate, submissionController.getSubmissions);
+
+router.post(
+  '/run-sample',
+  authenticate,
+  validate(runSampleSchema),
+  submissionController.runSample
+);
+
 router.get('/:id', authenticate, submissionController.getSubmissionById);
 router.get('/:id/status', optionalAuth, submissionController.getSubmissionStatus);
 
