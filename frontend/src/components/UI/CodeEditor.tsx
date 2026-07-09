@@ -52,6 +52,11 @@ export default function CodeEditor({
 
       // Focus editor on mount
       editorInstance.focus();
+
+      // Expose for E2E testing
+      if (typeof window !== 'undefined') {
+        (window as any).__monacoSetValue = (val: string) => editorInstance.setValue(val);
+      }
     },
     [onSubmit],
   );

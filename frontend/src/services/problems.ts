@@ -55,8 +55,26 @@ export async function getProblems(
       totalPages: Math.ceil(filtered.length / pageSize),
     };
   }
-  const res = await request.get<ApiResponse<PaginatedData<ProblemListItem>>>('/problems', { params });
-  return res.data.data;
+  const res = await request.get<ApiResponse<any>>('/problems', {
+    params: {
+      ...params,
+      limit: params?.pageSize,
+    },
+  });
+  const apiData = res.data.data;
+  const problems = (apiData.problems || []).map((p: any) => ({
+    ...p,
+    solvedCount: p.solveCount ?? 0,
+    submissionCount: p.submitCount ?? 0,
+    tags: (p.tags || []).map((t: any) => t.name || t),
+  }));
+  return {
+    items: problems,
+    total: apiData.total || 0,
+    page: apiData.page || 1,
+    pageSize: apiData.pageSize || params?.pageSize || apiData.limit || 20,
+    totalPages: apiData.totalPages || 0,
+  };
 }
 
 export async function getProblemById(id: number): Promise<Problem> {
@@ -77,8 +95,14 @@ export async function getProblemById(id: number): Promise<Problem> {
     }
     throw new Error('Problem not found');
   }
-  const res = await request.get<ApiResponse<Problem>>(`/problems/${id}`);
-  return res.data.data;
+  const res = await request.get<ApiResponse<any>>(`/problems/${id}`);
+  const raw = res.data.data;
+  return {
+    ...raw,
+    tags: (raw.tags || []).map((t: any) => t.name || t),
+    solvedCount: raw.solveCount ?? 0,
+    submissionCount: raw.submitCount ?? 0,
+  };
 }
 
 export async function getProblemTags(): Promise<string[]> {
