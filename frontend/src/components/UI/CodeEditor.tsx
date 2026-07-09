@@ -58,16 +58,8 @@ export default function CodeEditor({
         (window as any).__monacoSetValue = (val: string) => {
           const model = editorInstance.getModel();
           if (model) {
-            // Push an undo stop first, then apply edit, which triggers onChange
-            model.pushUndoStop();
-            editorInstance.executeEdits('test', [
-              {
-                range: model.getFullModelRange(),
-                text: val,
-                forceMoveMarkers: true,
-              },
-            ]);
-            model.pushUndoStop();
+            // setValue triggers onDidChangeContent → React onChange
+            editorInstance.setValue(val);
           }
         };
       }
