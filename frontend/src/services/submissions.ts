@@ -25,8 +25,16 @@ export async function submitCode(
 export async function getSubmissions(
   params?: PaginationParams & { problemId?: number; status?: string }
 ): Promise<PaginatedData<Submission>> {
-  const res = await request.get<ApiResponse<PaginatedData<Submission>>>('/submissions', { params });
-  return res.data.data;
+  const res = await request.get<ApiResponse<any>>('/submissions', { params });
+  const data = res.data.data;
+  // API returns { submissions, total, page, totalPages } — map to { items, total, page, pageSize, totalPages }
+  return {
+    items: data.submissions || data.items || [],
+    total: data.total || 0,
+    page: data.page || 1,
+    pageSize: data.pageSize || data.limit || params?.pageSize || 20,
+    totalPages: data.totalPages || 0,
+  };
 }
 
 export async function getSubmissionDetail(id: number): Promise<Submission> {
