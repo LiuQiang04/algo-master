@@ -53,9 +53,23 @@ export default function CodeEditor({
       // Focus editor on mount
       editorInstance.focus();
 
-      // Expose for E2E testing
+      // Expose for testing: set value AND trigger React onChange
       if (typeof window !== 'undefined') {
-        (window as any).__monacoSetValue = (val: string) => editorInstance.setValue(val);
+        (window as any).__monacoSetValue = (val: string) => {
+          const model = editorInstance.getModel();
+          if (model) {
+            // Push an undo stop first, then apply edit, which triggers onChange
+            model.pushUndoStop();
+            editorInstance.executeEdits('test', [
+              {
+                range: model.getFullModelRange(),
+                text: val,
+                forceMoveMarkers: true,
+              },
+            ]);
+            model.pushUndoStop();
+          }
+        };
       }
     },
     [onSubmit],
