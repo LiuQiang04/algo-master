@@ -116,4 +116,24 @@ describe('DailyChallengePage', () => {
     renderPage();
     expect(screen.getByTestId('daily-task-list')).toBeInTheDocument();
   });
+
+  it('renders fallback text when challenge is null', () => {
+    mockUseDailyChallenge.mockReturnValue({ challenge: null, isCompleted: false, loading: false, error: null });
+    mockUseDailyTasks.mockReturnValue({ tasksData: null, loading: false });
+    mockUseLoginStreak.mockReturnValue({ streakInfo: null, loading: false });
+    mockUseLoginCalendar.mockReturnValue({ calendar: [], loading: false });
+
+    renderPage();
+    expect(screen.getByText('今日暂无挑战')).toBeInTheDocument();
+  });
+
+  it('does not render task section when tasksData is null', () => {
+    mockUseDailyChallenge.mockReturnValue({ challenge: mockChallenge, isCompleted: false, loading: false, error: null });
+    mockUseDailyTasks.mockReturnValue({ tasksData: null, loading: false });
+    mockUseLoginStreak.mockReturnValue({ streakInfo: null, loading: false });
+    mockUseLoginCalendar.mockReturnValue({ calendar: [], loading: false });
+
+    renderPage();
+    expect(screen.queryByTestId('daily-task-list')).not.toBeInTheDocument();
+  });
 });

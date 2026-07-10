@@ -1,4 +1,4 @@
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import VirtualItemsPage from '../../pages/Gamification/VirtualItemsPage';
 
@@ -126,5 +126,42 @@ describe('VirtualItemsPage', () => {
 
     renderPage();
     expect(screen.getByText('暂无可兑换的物品')).toBeInTheDocument();
+  });
+
+  it('calls purchaseItem with correct item id on buy click', async () => {
+    const mockPurchase = jest.fn().mockResolvedValue(undefined);
+    mockUseVirtualItems.mockReturnValue({ items: mockBadgeItems, loading: false });
+    mockUseUserVirtualItems.mockReturnValue({
+      userItems: [], loading: false,
+      purchaseItem: mockPurchase,
+      equipItem: jest.fn(),
+    });
+    mockUseLevelInfo.mockReturnValue({ levelInfo: { level: 10, currentExp: 500, nextLevelExp: 1000, progress: 50, totalExp: 5000 } });
+
+    renderPage();
+    fireEvent.click(screen.getByTestId('buy-b1'));
+    await waitFor(() => {
+      expect(mockPurchase).toHaveBeenCalledWith('b1');
+    });
+  });
+
+  it('shows error when purchase fails', async () => {
+    const mockPurchase = jest.fn().mockRejectedValue(new Error('Insufficient points'));
+    mockUseVirtualItems.mockReturnValue({ items: mockBadgeItems, loading: false });
+    mockUseUserVirtualItems.mockReturnValue({
+      userItems: [], loading: false,
+      purchaseItem: mockPurchase,
+      equipItem: jest.fn(),
+    });
+    mockUseLevelInfo.mockReturnValue({ levelInfo: { level: 10, currentExp: 500, nextLevelExp: 1000, progress: 50, totalExp: 5000 } });
+
+    // Mock window.alert
+    const alertMock = jest.spyOn(window, 'alert').mockImplementation(() => {});
+    renderPage();
+    fireEvent.click(screen.getByTestId('buy-b1'));
+    await waitFor(() => {
+      expect(alertMock).toHaveBeenCalledWith('Insufficient points');
+    });
+    alertMock.mockRestore();
   });
 });

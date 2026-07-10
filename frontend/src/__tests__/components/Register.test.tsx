@@ -3,7 +3,7 @@
  * Tests form rendering, input handling, and password confirmation.
  */
 
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { BrowserRouter } from "react-router-dom";
 import Register from "../../pages/RegisterPage";
@@ -170,6 +170,69 @@ describe("Register Page", () => {
       await screen.findByText("Create Account");
 
       expect(mockRegister).toHaveBeenCalledWith("newuser", "new@example.com", "password123");
+    });
+  });
+
+  describe("Error handling", () => {
+    it("should show error message on registration failure", async () => {
+      mockRegister.mockRejectedValue({
+        response: { data: { message: "Email already registered" } },
+      });
+      renderWithRouter(<Register />);
+
+      fireEvent.change(screen.getByPlaceholderText("Choose a username"), { target: { value: "taken" } });
+      fireEvent.change(screen.getByPlaceholderText("Enter your email"), { target: { value: "a@b.com" } });
+      fireEvent.change(screen.getByPlaceholderText("At least 6 characters"), { target: { value: "pass123" } });
+      fireEvent.change(screen.getByPlaceholderText("Re-enter your password"), { target: { value: "pass123" } });
+      fireEvent.click(screen.getByRole("button", { name: "Create Account" }));
+
+      await waitFor(() => {
+        expect(screen.getByText("Email already registered")).toBeInTheDocument();
+      });
+    });
+
+    it("should show fallback error message when no response data", async () => {
+      mockRegister.mockRejectedValue(new Error("Network error"));
+      renderWithRouter(<Register />);
+
+      fireEvent.change(screen.getByPlaceholderText("Choose a username"), { target: { value: "user" } });
+      fireEvent.change(screen.getByPlaceholderText("Enter your email"), { target: { value: "a@b.com" } });
+      fireEvent.change(screen.getByPlaceholderText("At least 6 characters"), { target: { value: "pass123" } });
+      fireEvent.change(screen.getByPlaceholderText("Re-enter your password"), { target: { value: "pass123" } });
+      fireEvent.click(screen.getByRole("button", { name: "Create Account" }));
+
+      await waitFor(() => {
+        expect(screen.getByText("Registration failed")).toBeInTheDocument();
+      });
+    });
+  });
+
+  describe("Loading state", () => {
+    it("should disable submit button while loading", () => {
+      mockRegister.mockImplementation(() => new Promise(() => {}));
+      renderWithRouter(<Register />);
+
+      fireEvent.change(screen.getByPlaceholderText("Choose a username"), { target: { value: "user" } });
+      fireEvent.change(screen.getByPlaceholderText("Enter your email"), { target: { value: "a@b.com" } });
+      fireEvent.change(screen.getByPlaceholderText("At least 6 characters"), { target: { value: "pass123" } });
+      fireEvent.change(screen.getByPlaceholderText("Re-enter your password"), { target: { value: "pass123" } });
+      fireEvent.click(screen.getByRole("button", { name: "Create Account" }));
+
+      const submitBtn = screen.getByRole("button", { name: "Creating account..." });
+      expect(submitBtn).toBeDisabled();
+    });
+
+    it("should show creating account text when loading", () => {
+      mockRegister.mockImplementation(() => new Promise(() => {}));
+      renderWithRouter(<Register />);
+
+      fireEvent.change(screen.getByPlaceholderText("Choose a username"), { target: { value: "user" } });
+      fireEvent.change(screen.getByPlaceholderText("Enter your email"), { target: { value: "a@b.com" } });
+      fireEvent.change(screen.getByPlaceholderText("At least 6 characters"), { target: { value: "pass123" } });
+      fireEvent.change(screen.getByPlaceholderText("Re-enter your password"), { target: { value: "pass123" } });
+      fireEvent.click(screen.getByRole("button", { name: "Create Account" }));
+
+      expect(screen.getByText("Creating account...")).toBeInTheDocument();
     });
   });
 });

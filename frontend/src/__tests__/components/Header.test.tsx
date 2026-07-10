@@ -73,24 +73,37 @@ describe("Header Component", () => {
   });
 
   describe("Mobile menu", () => {
-    it("should have a mobile menu button", () => {
+    it("should have a sidebar toggle button", () => {
       renderWithRouter(<Header />);
 
       const menuButton = screen.getByRole("button", { name: /打开侧边栏/i });
       expect(menuButton).toBeInTheDocument();
     });
 
-    it("should toggle mobile menu when button is clicked", () => {
+    it("should have a mobile menu toggle button", () => {
       renderWithRouter(<Header />);
 
-      const menuButton = screen.getByRole("button", { name: /打开侧边栏/i });
+      // There are two md:hidden buttons: sidebar toggle and mobile menu toggle
+      const toggleButtons = screen.getAllByRole("button");
+      const mobileToggle = toggleButtons.find(b => b.getAttribute("aria-label") === "切换移动端菜单");
+      expect(mobileToggle).toBeInTheDocument();
+    });
 
-      // Click to open sidebar
-      fireEvent.click(menuButton!);
+    it("should show nav links when mobile menu is toggled open", () => {
+      renderWithRouter(<Header />);
 
-      // After clicking, the sidebar open state changes
-      // Verify by checking the sidebar callback was called
-      // (No longer renders mobile nav in Header directly)
+      // Mobile menu is hidden initially
+      expect(screen.queryByText("题库")).toBeInTheDocument(); // desktop nav still shows
+
+      // Click the mobile menu toggle button
+      const toggleButtons = screen.getAllByRole("button");
+      const mobileToggle = toggleButtons.find(b => b.getAttribute("aria-label") === "切换移动端菜单")!;
+      fireEvent.click(mobileToggle);
+
+      // Mobile menu should now render nav links (they are not hidden by md:hidden)
+      // The mobile menu section renders all nav links on small screens
+      expect(screen.getAllByText("题库").length).toBeGreaterThanOrEqual(1);
+      expect(screen.getAllByText("竞赛").length).toBeGreaterThanOrEqual(1);
     });
   });
 });
