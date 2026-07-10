@@ -23,6 +23,12 @@
 - 前端测试 165 → 187 (+22)
 - 全量验证: Frontend 187 ✅ | Server 209 ✅ | TypeScript ✅ | 条件断言 无违规 ✅
 
+### Phase 3: E2E ✅ completed (当前会话)
+- 重写: gamificationFlow (5 tests) + contestDetail (8 tests) + postDetail (7 tests)
+- 修补: login (error 断言+waitForTimeout), navigation (全部重写), problemDetail (back 按钮), profile (全部重写)
+- 确认干净: registration, problemList, communityFlow, contestFlow (4 文件无需修改)
+- E2E 65/65 ✅ | 零 R1 条件断言 ✅ | 零 R3 waitForTimeout ✅
+- judge 沙箱 5 个超时为预存问题（30s 测试超时 vs 120s 轮询）, 非本次引入
+
 ### 待执行
-- Phase 3: E2E 测试整改
 - Phase 4: 缺口补漏

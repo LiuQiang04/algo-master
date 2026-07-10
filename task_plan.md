@@ -56,9 +56,17 @@
 
 **范围**: e2e 12 个测试文件
 - 重写 gamificationFlow, contestDetail, postDetail
-- 审计+修补剩余 8 个文件（消除全部 R1/R3 违规）
+- 修补 login, navigation, problemDetail, profile
+- 确认干净: registration, problemList, communityFlow, contestFlow
 
-**Status:** pending
+**Status:** ✅ completed (2026-07-10)
+
+**结果:**
+- 重写: gamificationFlow (5 tests) + contestDetail (8 tests) + postDetail (7 tests)
+- 修补: login (waitForTimeout+error), navigation (全部重写), problemDetail (back), profile (全部重写)
+- 零 R1 (条件断言) 违规 ✅ | 零 R3 (waitForTimeout) 违规 ✅
+- E2E 65/65 通过 ✅ (不含 judge 沙箱 5 个超时预存问题)
+- 全量验证: Frontend 187/187 ✅ | Server 209/209 ✅ | TypeScript ✅
 
 ### Phase 4: 缺口补漏
 
