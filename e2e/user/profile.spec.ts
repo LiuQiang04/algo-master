@@ -40,27 +40,24 @@ test.describe("User Profile", () => {
   });
 
   test("should open edit profile form when clicking edit button", async ({ page }) => {
-    const editButton = page.locator(".profile-edit-btn");
-    await editButton.click();
+    await page.locator(".profile-edit-btn").click();
 
-    // Edit form should be visible after clicking
-    const editForm = page.locator(".profile-edit-modal, .modal").first();
-    await expect(editForm).toBeVisible({ timeout: 5000 });
+    // Wait for modal overlay to appear
+    const modalOverlay = page.locator(".modal-overlay");
+    await expect(modalOverlay).toBeVisible({ timeout: 5000 });
   });
 
   test("should cancel profile editing", async ({ page }) => {
-    const editButton = page.locator(".profile-edit-btn");
-    await editButton.click();
+    await page.locator(".profile-edit-btn").click();
 
     // Wait for modal to appear
-    const editForm = page.locator(".profile-edit-modal, .modal").first();
-    await expect(editForm).toBeVisible({ timeout: 5000 });
+    const modalOverlay = page.locator(".modal-overlay");
+    await expect(modalOverlay).toBeVisible({ timeout: 5000 });
 
-    // Click cancel
-    const cancelButton = page.getByRole("button", { name: /cancel|取消/ });
-    await cancelButton.click();
+    // Click cancel button inside modal
+    await page.locator(".btn-cancel").click();
 
     // Modal should close
-    await expect(editForm).not.toBeVisible({ timeout: 5000 });
+    await expect(modalOverlay).not.toBeVisible({ timeout: 5000 });
   });
 });
