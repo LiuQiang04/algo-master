@@ -29,6 +29,7 @@ router.get('/:id', optionalAuth, contestController.getContestById);
 router.post('/', authenticate, validate(createContestSchema), contestController.createContest);
 router.post('/:id/join', authenticate, contestController.joinContest);
 router.get('/:id/ranking', contestController.getContestRanking);
+router.get('/:id/standings', contestController.getContestRanking);
 router.get('/:id/problems', authenticate, contestController.getContestProblems);
 
 export default router;
