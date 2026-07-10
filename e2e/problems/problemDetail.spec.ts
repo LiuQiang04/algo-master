@@ -64,11 +64,8 @@ test.describe("Problem Detail", () => {
   });
 
   test("should navigate back to problem list", async ({ page }) => {
-    // Find back button or link (使用实际的CSS类名 .pd-back)
     const backButton = page.locator(".pd-back");
-    if (await backButton.isVisible()) {
-      await backButton.click();
-      await expect(page).toHaveURL(/\/problems/);
-    }
+    await backButton.click();
+    await expect(page).toHaveURL(/\/problems/);
   });
 });
