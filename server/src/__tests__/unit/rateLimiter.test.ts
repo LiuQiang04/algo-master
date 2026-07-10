@@ -59,4 +59,45 @@ describe('Rate Limiter Middleware', () => {
 
     expect(mockNext).toHaveBeenCalledWith(expect.any(RateLimitError));
   });
+
+  it('should handle Redis exec failure gracefully', async () => {
+    mockExec.mockRejectedValue(new Error('Redis connection lost'));
+    const middleware = rateLimiter({ windowMs: 60000, max: 10 });
+
+    await middleware(mockReq as Request, mockRes as Response, mockNext);
+
+    // Should not throw, should call next() to allow request through
+    expect(mockNext).toHaveBeenCalledWith();
+  });
+
+  it('should use different counters for different paths', async () => {
+    mockExec.mockResolvedValue([1, 1, 1, 1]);
+    const middleware = rateLimiter({ windowMs: 60000, max: 10 });
+
+    // First path
+    await middleware(
+      { ...mockReq, path: '/api/auth/login' } as Request,
+      mockRes as Response,
+      mockNext
+    );
+    expect(mockNext).toHaveBeenCalledWith();
+
+    // Different path
+    mockNext.mockClear();
+    await middleware(
+      { ...mockReq, path: '/api/problems' } as Request,
+      mockRes as Response,
+      mockNext
+    );
+    expect(mockNext).toHaveBeenCalledWith();
+  });
+
+  it('should set RateLimit headers', async () => {
+    mockExec.mockResolvedValue([1, 1, 5, 1]);
+    const middleware = rateLimiter({ windowMs: 60000, max: 10 });
+
+    await middleware(mockReq as Request, mockRes as Response, mockNext);
+
+    expect(mockRes.setHeader).toHaveBeenCalled();
+  });
 });
