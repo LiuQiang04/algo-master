@@ -44,7 +44,13 @@
 - 修补: AchievementsPage, Register, DailyChallengePage, VirtualItemsPage, Header, Footer
 - 保留: authStore, PostDetailPage, ProblemList, CommunityPage, CreatePostPage, LeaderboardPage, PointsPage
 
-**Status:** pending
+**Status:** ✅ completed (2026-07-10)
+
+**结果:**
+- 重写: App (3 tests) + Home (14 tests) + Login (18 tests)
+- 修补: Register (+4), DailyChallengePage (+3), VirtualItemsPage (+2), Header (mobile menu 真实断言), AchievementsPage/Footer 维持
+- 前端测试数: 165 → 187 (+22)
+- 全量验证: Frontend 187/187 ✅ | Server 209/209 ✅ | TypeScript ✅ | 条件断言 无违规 ✅
 
 ### Phase 3: E2E 整改
 
