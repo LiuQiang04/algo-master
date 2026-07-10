@@ -262,6 +262,7 @@ describe("contestService", () => {
       };
       mockPrisma.contest.findUnique.mockResolvedValue(contestWithProblems);
       mockPrisma.contestParticipant.findUnique.mockResolvedValue({
+        id: "uuid-string",
         userId: "user-2",
         contestId: "contest-1",
         joinedAt: new Date("2026-07-12T00:00:00Z"),
@@ -284,6 +285,7 @@ describe("contestService", () => {
       };
       mockPrisma.contest.findUnique.mockResolvedValue(contestWithProblems);
       mockPrisma.contestParticipant.findUnique.mockResolvedValue({
+        id: "uuid-string",
         userId: "user-2",
         contestId: "contest-1",
         joinedAt: new Date("2026-07-12T00:00:00Z"),
@@ -313,6 +315,7 @@ describe("contestService", () => {
       mockPrisma.contest.findUnique.mockResolvedValue(contestWithParticipants);
       mockPrisma.contestParticipant.findUnique.mockResolvedValue(null);
       mockPrisma.contestParticipant.create.mockResolvedValue({
+        id: "uuid-string",
         userId: "user-2",
         contestId: "contest-1",
         joinedAt: NOW,
@@ -342,6 +345,7 @@ describe("contestService", () => {
       };
       mockPrisma.contest.findUnique.mockResolvedValue(contestWithParticipants);
       mockPrisma.contestParticipant.findUnique.mockResolvedValue({
+        id: "uuid-string",
         userId: "user-2",
         contestId: "contest-1",
         joinedAt: NOW,
@@ -378,6 +382,7 @@ describe("contestService", () => {
       mockPrisma.contest.findUnique.mockResolvedValue(unlimitedContest);
       mockPrisma.contestParticipant.findUnique.mockResolvedValue(null);
       mockPrisma.contestParticipant.create.mockResolvedValue({
+        id: "uuid-string",
         userId: "user-2",
         contestId: "contest-1",
         joinedAt: NOW,
@@ -418,6 +423,7 @@ describe("contestService", () => {
     const contestWithProblems = {
       id: "contest-1",
       title: "Weekly Contest 1",
+      description: "A test contest",
       startTime: new Date("2026-07-10T00:00:00Z"),
       endTime: new Date("2026-07-20T00:00:00Z"),
       isPublic: true,
@@ -445,6 +451,7 @@ describe("contestService", () => {
     it("should compute rankings with submissions and results", async () => {
       const participants = [
         {
+          id: "uuid-string",
           userId: "user-1",
           contestId: "contest-1",
           totalScore: 0,
@@ -458,6 +465,7 @@ describe("contestService", () => {
           },
         },
         {
+          id: "uuid-string",
           userId: "user-2",
           contestId: "contest-1",
           totalScore: 0,
@@ -479,6 +487,10 @@ describe("contestService", () => {
           userId: "user-1",
           problemId: "prob-1",
           contestId: "contest-1",
+          language: "python",
+          sourceCode: "print('ok')",
+          executionTime: null,
+          memoryUsed: null,
           status: "accepted",
           score: 100,
           submittedAt: new Date("2026-07-10T10:30:00Z"),
@@ -488,6 +500,10 @@ describe("contestService", () => {
           userId: "user-1",
           problemId: "prob-2",
           contestId: "contest-1",
+          language: "python",
+          sourceCode: "print('ok')",
+          executionTime: null,
+          memoryUsed: null,
           status: "wrong",
           score: 0,
           submittedAt: new Date("2026-07-10T10:45:00Z"),
@@ -497,6 +513,10 @@ describe("contestService", () => {
           userId: "user-1",
           problemId: "prob-2",
           contestId: "contest-1",
+          language: "python",
+          sourceCode: "print('ok')",
+          executionTime: null,
+          memoryUsed: null,
           status: "accepted",
           score: 200,
           submittedAt: new Date("2026-07-10T11:00:00Z"),
@@ -510,6 +530,10 @@ describe("contestService", () => {
           userId: "user-2",
           problemId: "prob-1",
           contestId: "contest-1",
+          language: "python",
+          sourceCode: "print('ok')",
+          executionTime: null,
+          memoryUsed: null,
           status: "wrong",
           score: 0,
           submittedAt: new Date("2026-07-10T10:20:00Z"),
@@ -519,6 +543,10 @@ describe("contestService", () => {
           userId: "user-2",
           problemId: "prob-1",
           contestId: "contest-1",
+          language: "python",
+          sourceCode: "print('ok')",
+          executionTime: null,
+          memoryUsed: null,
           status: "accepted",
           score: 100,
           submittedAt: new Date("2026-07-10T11:30:00Z"),
@@ -528,6 +556,10 @@ describe("contestService", () => {
           userId: "user-2",
           problemId: "prob-2",
           contestId: "contest-1",
+          language: "python",
+          sourceCode: "print('ok')",
+          executionTime: null,
+          memoryUsed: null,
           status: "wrong",
           score: 0,
           submittedAt: new Date("2026-07-10T11:45:00Z"),
@@ -588,6 +620,7 @@ describe("contestService", () => {
     it("should handle participants with no submissions", async () => {
       const singleParticipant = [
         {
+          id: "uuid-string",
           userId: "user-1",
           contestId: "contest-1",
           totalScore: 0,
@@ -638,6 +671,9 @@ describe("contestService", () => {
       mockPrisma.contest.findUnique.mockResolvedValue(contestStarted);
       mockPrisma.contestProblem.findMany.mockResolvedValue([
         {
+          id: "cp-1",
+          contestId: "contest-1",
+          problemId: "prob-1",
           problemOrder: "A",
           score: 100,
           problem: {
@@ -664,6 +700,8 @@ describe("contestService", () => {
       mockPrisma.contest.findUnique.mockResolvedValue(contestStarted);
       mockPrisma.contestProblem.findMany.mockResolvedValue([
         {
+          id: "cp-2",
+          contestId: "contest-1",
           problemOrder: "A",
           score: 100,
           problemId: "prob-1",
@@ -679,6 +717,10 @@ describe("contestService", () => {
       mockPrisma.submission.findMany.mockResolvedValue([
         {
           problemId: "prob-1",
+          language: "python",
+          sourceCode: "print('ok')",
+          executionTime: null,
+          memoryUsed: null,
           status: "accepted",
           score: 100,
           submittedAt: new Date("2026-07-10T10:30:00Z"),
