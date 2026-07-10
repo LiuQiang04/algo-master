@@ -99,6 +99,7 @@ export default function Home() {
   const [contestsLoading, setContestsLoading] = useState(true);
   const [problemsError, setProblemsError] = useState<string | null>(null);
   const [contestsError, setContestsError] = useState<string | null>(null);
+  const difficultyMap: Record<number, string> = { 1: 'easy', 2: 'easy', 3: 'medium', 4: 'hard', 5: 'hard' };
 
   useEffect(() => {
     getPopularProblems(4)
@@ -213,9 +214,16 @@ export default function Home() {
                         <span key={tag} className="tag">{tag}</span>
                       ))}
                     </div>
-                    <span className={`difficulty difficulty--${problem.difficulty}`}>
-                      {problem.difficulty === 'easy' ? '简单' : problem.difficulty === 'medium' ? '中等' : '困难'}
-                    </span>
+                    {(() => {
+                      const diffKey = typeof problem.difficulty === 'number'
+                        ? difficultyMap[problem.difficulty] || 'medium'
+                        : problem.difficulty;
+                      return (
+                        <span className={`difficulty difficulty--${diffKey}`}>
+                          {diffKey === 'easy' ? '简单' : diffKey === 'medium' ? '中等' : '困难'}
+                        </span>
+                      );
+                    })()}
                     <span className="problem-row__solves">
                       <CheckCircle2 size={14} />
                       {formatNumber(problem.solvedCount)}
