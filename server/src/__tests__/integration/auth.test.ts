@@ -1,8 +1,13 @@
 /**
- * Integration tests for authentication API endpoints.
+ * Integration tests for authentication middleware composition.
  *
- * These tests verify the auth middleware works correctly in an Express context.
- * They use mocked Prisma and JWT utilities to avoid database dependencies.
+ * These tests verify that auth middleware + errorHandler work together
+ * to produce correct HTTP responses. They use mocked Prisma and JWT
+ * utilities to avoid database dependencies.
+ *
+ * Unit tests in unit/auth.test.ts cover the middleware logic in isolation
+ * (asserting on next() calls). These tests focus on the HTTP response
+ * format and middleware composition in a real Express pipeline.
  */
 
 import request from "supertest";
@@ -36,81 +41,70 @@ jest.mock("../../utils/logger", () => ({
 }));
 
 import { authenticate, optionalAuth, AuthRequest } from "../../middleware/auth";
+import { errorHandler } from "../../middleware/errorHandler";
 import { prisma } from "../../utils/prisma";
 import { verifyToken } from "../../utils/jwt";
-import jwt from "jsonwebtoken";
 
 const mockPrisma = prisma as jest.Mocked<typeof prisma>;
 const mockVerifyToken = verifyToken as jest.MockedFunction<typeof verifyToken>;
 
-// Create test app with auth middleware
-function createAuthTestApp() {
-  const app = express();
-  app.use(express.json());
+const testUser = {
+  id: "integration-test-user",
+  username: "inttestuser",
+  email: "inttest@example.com",
+  role: "user",
+};
 
-  // Protected route
-  app.get("/api/protected", async (req, res, next) => {
-    try {
-      await authenticate(req as AuthRequest, res, (err?: any) => {
-        if (err) {
-          return res.status(err.statusCode || 401).json({ error: err.message });
-        }
-        res.json({ message: "Access granted", user: (req as AuthRequest).user });
-      });
-    } catch (error: any) {
-      res.status(error.statusCode || 401).json({ error: error.message });
-    }
-  });
-
-  // Optional auth route
-  app.get("/api/optional", async (req, res, next) => {
-    await optionalAuth(req as AuthRequest, res, () => {
-      res.json({ message: "OK", user: (req as AuthRequest).user || null });
-    });
-  });
-
-  return app;
-}
-
-describe("Auth API Integration", () => {
+describe("Auth Response Format Integration", () => {
   let app: express.Application;
-
-  const testUser = {
-    id: "integration-test-user",
-    username: "inttestuser",
-    email: "inttest@example.com",
-    role: "user",
-  };
-
-  beforeAll(() => {
-    app = createAuthTestApp();
-  });
 
   beforeEach(() => {
     jest.clearAllMocks();
-  });
+    app = express();
+    app.use(express.json());
 
-  describe("Protected routes", () => {
-    it("should reject requests without authorization header", async () => {
-      const response = await request(app).get("/api/protected");
-
-      expect(response.status).toBe(401);
-      expect(response.body.error).toBeDefined();
+    // Set up routes with real middleware composition
+    // authenticate + errorHandler work together through Express's error pipeline
+    app.get("/api/protected", authenticate, (req, res) => {
+      res.json({ success: true, user: (req as AuthRequest).user });
+    });
+    app.get("/api/optional", optionalAuth, (req, res) => {
+      const user = (req as AuthRequest).user || null;
+      res.json({ success: true, user });
     });
 
-    it("should reject requests with invalid token", async () => {
+    // Error handler must be registered last to catch errors from authenticate
+    app.use(errorHandler);
+  });
+
+  describe("authenticate + errorHandler composition", () => {
+    it("should return consistent error shape on 401 without token", async () => {
+      const res = await request(app).get("/api/protected");
+
+      expect(res.status).toBe(401);
+      expect(res.body).toEqual({
+        success: false,
+        error: { code: "UNAUTHORIZED", message: expect.any(String) },
+      });
+    });
+
+    it("should return consistent error shape on 401 with invalid token", async () => {
       mockVerifyToken.mockImplementation(() => {
         throw new Error("Invalid token");
       });
 
-      const response = await request(app)
+      const res = await request(app)
         .get("/api/protected")
         .set("Authorization", "Bearer invalid.token.here");
 
-      expect(response.status).toBe(401);
+      expect(res.status).toBe(401);
+      expect(res.body).toEqual({
+        success: false,
+        error: { code: "UNAUTHORIZED", message: expect.any(String) },
+      });
     });
 
-    it("should reject when user not found in database", async () => {
+    it("should return consistent error shape when user not found", async () => {
       mockVerifyToken.mockReturnValue({
         id: "nonexistent",
         username: "ghost",
@@ -119,14 +113,18 @@ describe("Auth API Integration", () => {
       });
       (mockPrisma.user.findUnique as jest.Mock).mockResolvedValue(null);
 
-      const response = await request(app)
+      const res = await request(app)
         .get("/api/protected")
         .set("Authorization", "Bearer validtoken");
 
-      expect(response.status).toBe(401);
+      expect(res.status).toBe(401);
+      expect(res.body).toEqual({
+        success: false,
+        error: { code: "UNAUTHORIZED", message: expect.any(String) },
+      });
     });
 
-    it("should grant access with valid token and existing user", async () => {
+    it("should return 200 with user data on valid token", async () => {
       mockVerifyToken.mockReturnValue({
         id: testUser.id,
         username: testUser.username,
@@ -135,33 +133,26 @@ describe("Auth API Integration", () => {
       });
       (mockPrisma.user.findUnique as jest.Mock).mockResolvedValue(testUser);
 
-      const response = await request(app)
+      const res = await request(app)
         .get("/api/protected")
         .set("Authorization", "Bearer validtoken");
 
-      expect(response.status).toBe(200);
-      expect(response.body.message).toBe("Access granted");
-      expect(response.body.user).toEqual(testUser);
-    });
-
-    it("should not accept token without Bearer prefix", async () => {
-      const response = await request(app)
-        .get("/api/protected")
-        .set("Authorization", "validtoken");
-
-      expect(response.status).toBe(401);
+      expect(res.status).toBe(200);
+      expect(res.body.success).toBe(true);
+      expect(res.body.user).toEqual(testUser);
     });
   });
 
-  describe("Optional auth routes", () => {
-    it("should allow access without token", async () => {
-      const response = await request(app).get("/api/optional");
+  describe("optionalAuth composition", () => {
+    it("should return 200 with null user when no token is provided", async () => {
+      const res = await request(app).get("/api/optional");
 
-      expect(response.status).toBe(200);
-      expect(response.body.user).toBeNull();
+      expect(res.status).toBe(200);
+      expect(res.body.success).toBe(true);
+      expect(res.body.user).toBeNull();
     });
 
-    it("should set user when valid token is provided", async () => {
+    it("should return 200 with user data when valid token is provided", async () => {
       mockVerifyToken.mockReturnValue({
         id: testUser.id,
         username: testUser.username,
@@ -170,25 +161,27 @@ describe("Auth API Integration", () => {
       });
       (mockPrisma.user.findUnique as jest.Mock).mockResolvedValue(testUser);
 
-      const response = await request(app)
+      const res = await request(app)
         .get("/api/optional")
         .set("Authorization", "Bearer validtoken");
 
-      expect(response.status).toBe(200);
-      expect(response.body.user).toEqual(testUser);
+      expect(res.status).toBe(200);
+      expect(res.body.success).toBe(true);
+      expect(res.body.user).toEqual(testUser);
     });
 
-    it("should not set user when token is invalid", async () => {
+    it("should return 200 with null user when invalid token is provided", async () => {
       mockVerifyToken.mockImplementation(() => {
         throw new Error("Invalid token");
       });
 
-      const response = await request(app)
+      const res = await request(app)
         .get("/api/optional")
         .set("Authorization", "Bearer invalid.token");
 
-      expect(response.status).toBe(200);
-      expect(response.body.user).toBeNull();
+      expect(res.status).toBe(200);
+      expect(res.body.success).toBe(true);
+      expect(res.body.user).toBeNull();
     });
   });
 });
