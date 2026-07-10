@@ -504,9 +504,11 @@ async function main() {
   // 创建竞赛
   console.log('Creating contests...');
   const now = new Date();
-  const contest1 = await prisma.contest.create({
+
+  // 未来竞赛：周赛 #2（未开始）
+  const contest2 = await prisma.contest.create({
     data: {
-      title: '周赛 #1',
+      title: '周赛 #2',
       description: '每周算法竞赛，挑战你的编程能力！',
       startTime: new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000), // 一周后
       endTime: new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000 + 2 * 60 * 60 * 1000), // 持续2小时
@@ -520,6 +522,136 @@ async function main() {
           { problemId: problemRecords[2].id, problemOrder: 'C', score: 300 },
         ],
       },
+    },
+  });
+
+  // 已结束竞赛：周赛 #1（含参赛记录和提交）
+  const contest1 = await prisma.contest.create({
+    data: {
+      title: '周赛 #1',
+      description: '首次周赛，测试参赛流程',
+      startTime: new Date(now.getTime() - 2 * 24 * 60 * 60 * 1000), // 2天前
+      endTime: new Date(now.getTime() - 1 * 24 * 60 * 60 * 1000), // 1天前（已结束）
+      creatorId: admin.id,
+      maxParticipants: 100,
+      type: 'rated',
+      problems: {
+        create: [
+          { problemId: problemRecords[0].id, problemOrder: 'A', score: 100 },
+          { problemId: problemRecords[1].id, problemOrder: 'B', score: 200 },
+          { problemId: problemRecords[2].id, problemOrder: 'C', score: 300 },
+        ],
+      },
+    },
+  });
+
+  // 为已结束的周赛 #1 添加参赛记录和提交
+  console.log('Creating contest participants and submissions...');
+  const contestStart = new Date(now.getTime() - 2 * 24 * 60 * 60 * 1000);
+
+  // alice — solved A (1 attempt), solved B (2 attempts), solved C (3 attempts)
+  const aliceUser = testUsers[0];
+  await prisma.contestParticipant.create({
+    data: { contestId: contest1.id, userId: aliceUser.id, totalScore: 600, rank: 1 },
+  });
+  // Alice: problem A - 1 attempt, accepted
+  await prisma.submission.create({
+    data: {
+      userId: aliceUser.id, problemId: problemRecords[0].id, contestId: contest1.id,
+      language: 'cpp', sourceCode: '// Alice A', status: 'accepted', score: 100,
+      submittedAt: new Date(contestStart.getTime() + 10 * 60 * 1000), // 10 min
+    },
+  });
+  // Alice: problem B - 2 attempts, first WA then AC
+  await prisma.submission.create({
+    data: {
+      userId: aliceUser.id, problemId: problemRecords[1].id, contestId: contest1.id,
+      language: 'cpp', sourceCode: '// Alice B WA', status: 'wrong_answer', score: 0,
+      submittedAt: new Date(contestStart.getTime() + 20 * 60 * 1000), // 20 min
+    },
+  });
+  await prisma.submission.create({
+    data: {
+      userId: aliceUser.id, problemId: problemRecords[1].id, contestId: contest1.id,
+      language: 'cpp', sourceCode: '// Alice B AC', status: 'accepted', score: 100,
+      submittedAt: new Date(contestStart.getTime() + 25 * 60 * 1000), // 25 min
+    },
+  });
+  // Alice: problem C - 3 attempts
+  await prisma.submission.create({
+    data: {
+      userId: aliceUser.id, problemId: problemRecords[2].id, contestId: contest1.id,
+      language: 'python', sourceCode: '// Alice C WA', status: 'wrong_answer', score: 0,
+      submittedAt: new Date(contestStart.getTime() + 35 * 60 * 1000),
+    },
+  });
+  await prisma.submission.create({
+    data: {
+      userId: aliceUser.id, problemId: problemRecords[2].id, contestId: contest1.id,
+      language: 'python', sourceCode: '// Alice C TLE', status: 'time_limit_exceeded', score: 0,
+      submittedAt: new Date(contestStart.getTime() + 40 * 60 * 1000),
+    },
+  });
+  await prisma.submission.create({
+    data: {
+      userId: aliceUser.id, problemId: problemRecords[2].id, contestId: contest1.id,
+      language: 'python', sourceCode: '// Alice C AC', status: 'accepted', score: 100,
+      submittedAt: new Date(contestStart.getTime() + 50 * 60 * 1000), // 50 min
+    },
+  });
+
+  // bob — solved A (1), solved B (1), C attempted (not solved)
+  const bobUser = testUsers[1];
+  await prisma.contestParticipant.create({
+    data: { contestId: contest1.id, userId: bobUser.id, totalScore: 300, rank: 2 },
+  });
+  await prisma.submission.create({
+    data: {
+      userId: bobUser.id, problemId: problemRecords[0].id, contestId: contest1.id,
+      language: 'java', sourceCode: '// Bob A', status: 'accepted', score: 100,
+      submittedAt: new Date(contestStart.getTime() + 15 * 60 * 1000), // 15 min
+    },
+  });
+  await prisma.submission.create({
+    data: {
+      userId: bobUser.id, problemId: problemRecords[1].id, contestId: contest1.id,
+      language: 'java', sourceCode: '// Bob B', status: 'accepted', score: 100,
+      submittedAt: new Date(contestStart.getTime() + 30 * 60 * 1000), // 30 min
+    },
+  });
+  // Bob: problem C - attempted but not solved
+  await prisma.submission.create({
+    data: {
+      userId: bobUser.id, problemId: problemRecords[2].id, contestId: contest1.id,
+      language: 'java', sourceCode: '// Bob C WA', status: 'wrong_answer', score: 0,
+      submittedAt: new Date(contestStart.getTime() + 45 * 60 * 1000),
+    },
+  });
+  await prisma.submission.create({
+    data: {
+      userId: bobUser.id, problemId: problemRecords[2].id, contestId: contest1.id,
+      language: 'java', sourceCode: '// Bob C RE', status: 'runtime_error', score: 0,
+      submittedAt: new Date(contestStart.getTime() + 50 * 60 * 1000),
+    },
+  });
+
+  // charlie — solved A (2 attempts), B and C not attempted
+  const charlieUser = testUsers[2];
+  await prisma.contestParticipant.create({
+    data: { contestId: contest1.id, userId: charlieUser.id, totalScore: 100, rank: 3 },
+  });
+  await prisma.submission.create({
+    data: {
+      userId: charlieUser.id, problemId: problemRecords[0].id, contestId: contest1.id,
+      language: 'python', sourceCode: '// Charlie A WA', status: 'wrong_answer', score: 0,
+      submittedAt: new Date(contestStart.getTime() + 5 * 60 * 1000),
+    },
+  });
+  await prisma.submission.create({
+    data: {
+      userId: charlieUser.id, problemId: problemRecords[0].id, contestId: contest1.id,
+      language: 'python', sourceCode: '// Charlie A AC', status: 'accepted', score: 100,
+      submittedAt: new Date(contestStart.getTime() + 12 * 60 * 1000), // 12 min
     },
   });
 

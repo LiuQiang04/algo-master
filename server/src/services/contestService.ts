@@ -218,11 +218,23 @@ export async function joinContest(contestId: string, userId: string) {
 export async function getContestRanking(contestId: string) {
   const contest = await prisma.contest.findUnique({
     where: { id: contestId },
+    include: {
+      problems: {
+        orderBy: { problemOrder: 'asc' },
+        include: {
+          problem: {
+            select: { id: true },
+          },
+        },
+      },
+    },
   });
 
   if (!contest) {
     throw new NotFoundError('竞赛不存在');
   }
+
+  const contestProblemIds = contest.problems.map((cp) => cp.problem.id);
 
   const participants = await prisma.contestParticipant.findMany({
     where: { contestId },
@@ -242,16 +254,79 @@ export async function getContestRanking(contestId: string) {
     ],
   });
 
-  // 更新排名
-  const ranking = participants.map((p, index) => ({
-    rank: index + 1,
-    userId: p.user.id,
-    username: p.user.username,
-    avatarUrl: p.user.avatarUrl,
-    level: p.user.level,
-    totalScore: p.totalScore,
-    joinedAt: p.joinedAt,
-  }));
+  // 为每个参赛者计算各题状态和罚时
+  const ranking = await Promise.all(
+    participants.map(async (p, index) => {
+      // 获取该参赛者在竞赛时间内的提交
+      const submissions = await prisma.submission.findMany({
+        where: {
+          userId: p.user.id,
+          problemId: { in: contestProblemIds },
+          submittedAt: { gte: contest.startTime, lte: contest.endTime },
+        },
+        orderBy: { submittedAt: 'asc' },
+      });
+
+      // 按题目分组
+      const submissionsByProblem: Record<string, typeof submissions> = {};
+      for (const sub of submissions) {
+        if (!submissionsByProblem[sub.problemId]) {
+          submissionsByProblem[sub.problemId] = [];
+        }
+        submissionsByProblem[sub.problemId].push(sub);
+      }
+
+      let totalScore = 0;
+      let penalty = 0;
+      const problems = contest.problems.map((cp) => {
+        const problemId = cp.problem.id;
+        const subs = submissionsByProblem[problemId] || [];
+
+        if (subs.length === 0) {
+          return { label: cp.problemOrder, status: 'none', attempts: 0 };
+        }
+
+        const acceptedSub = subs.find((s) => s.status === 'accepted');
+        if (acceptedSub) {
+          const attempts = subs.length;
+          const solveTimeMinutes = Math.floor(
+            (acceptedSub.submittedAt.getTime() - contest.startTime.getTime()) / 60000
+          );
+          totalScore += cp.score;
+          penalty += solveTimeMinutes + 20 * (attempts - 1);
+          return {
+            label: cp.problemOrder,
+            status: 'solved' as const,
+            attempts,
+            time: solveTimeMinutes,
+          };
+        }
+
+        return { label: cp.problemOrder, status: 'attempted', attempts: subs.length };
+      });
+
+      return {
+        rank: index + 1,
+        userId: p.user.id,
+        username: p.user.username,
+        avatarUrl: p.user.avatarUrl,
+        level: p.user.level,
+        totalScore,
+        penalty,
+        problems,
+        joinedAt: p.joinedAt,
+      };
+    })
+  );
+
+  // 按总分降序、罚时升序排序
+  ranking.sort((a, b) => {
+    if (b.totalScore !== a.totalScore) return b.totalScore - a.totalScore;
+    return a.penalty - b.penalty;
+  });
+
+  // 重新分配排名
+  ranking.forEach((r, i) => { r.rank = i + 1; });
 
   // 批量更新排名
   await Promise.all(
@@ -260,7 +335,7 @@ export async function getContestRanking(contestId: string) {
         where: {
           contestId_userId: { contestId, userId: r.userId },
         },
-        data: { rank: r.rank },
+        data: { rank: r.rank, totalScore: r.totalScore },
       })
     )
   );

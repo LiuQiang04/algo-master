@@ -58,7 +58,7 @@ export async function getContestStandings(id: number | string): Promise<ContestS
     userId: entry.userId,
     username: entry.username,
     score: entry.totalScore || 0,
-    penalty: 0,
-    problems: [],
+    penalty: entry.penalty || 0,
+    problems: entry.problems || [],
   }));
 }

@@ -169,6 +169,7 @@ model Submission {
   id            String   @id @default(uuid()) @db.Uuid
   userId        String   @map("user_id") @db.Uuid
   problemId     String   @map("problem_id") @db.Uuid
+  contestId     String?  @map("contest_id") @db.Uuid
   language      String   @db.VarChar(20)
   sourceCode    String   @map("source_code")
   status        String   @default("pending") @db.VarChar(20)
@@ -179,6 +180,7 @@ model Submission {
 
   user    User    @relation(fields: [userId], references: [id])
   problem Problem @relation(fields: [problemId], references: [id])
+  contest Contest? @relation(fields: [contestId], references: [id])
   testCaseResults SubmissionTestCase[]
 
   @@index([userId, submittedAt])
@@ -220,6 +222,7 @@ model Contest {
   creator      User                 @relation("ContestCreator", fields: [creatorId], references: [id])
   problems     ContestProblem[]
   participants ContestParticipant[]
+  submissions  Submission[]
 
   @@map("contests")
 }
