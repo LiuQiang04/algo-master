@@ -36,6 +36,9 @@ describe('judgeQueue', () => {
     it('should add a judge job with submissionId', async () => {
       const job = await addJudgeTask('sub-1');
 
+      const { Queue } = require('bullmq');
+      const instance = Queue.mock.results[0].value;
+      expect(instance.add).toHaveBeenCalledWith('judge', { submissionId: 'sub-1' });
       expect(job.data.submissionId).toBe('sub-1');
     });
 
