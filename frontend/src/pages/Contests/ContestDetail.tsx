@@ -25,7 +25,7 @@ import './ContestDetail.css';
 
 export default function ContestDetail() {
   const { id } = useParams<{ id: string }>();
-  const contestId = Number(id);
+  const contestId = id ?? '';
 
   const [contest, setContest] = useState<Contest | null>(null);
   const [standings, setStandings] = useState<ContestStanding[]>([]);
