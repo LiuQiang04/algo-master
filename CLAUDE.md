@@ -110,7 +110,38 @@ systematic-debugging → test-driven-development → 修复 → verification-bef
 | React 组件      | `vercel-react-best-practices`    |
 | 代码审查        | `requesting-code-review`         |
 
-### 前端设计重构
+### 测试开发规则
+
+**写任何测试前必须先加载 `test-driven-development` skill（含 `testing-anti-patterns.md`），严格遵循以下规则：**
+
+#### 禁止的反模式
+
+1. **禁止测试 mock 行为** — 不断言 mock 的存在，只断言真实组件行为。`jest.mock()` 的返回值不是为了让你断言它，而是为了隔离外部依赖。
+2. **mock 必须覆盖完整字段** — 不能用 `{ title: "x" }` 这种部分 mock，必须包含真实 API 返回的全部字段。部分 mock 会隐藏结构假设，下游代码依赖了你没 mock 的字段时测试仍然通过但线上崩溃。
+3. **禁止 `waitForTimeout(N)`** — 用 `waitForSelector` / `waitForResponse` / `toBeVisible` 替代。硬编码等待是不稳定测试的根源。
+4. **禁止条件断言** — 不允许 `if (await el.isVisible()) { await expect(el).toBeVisible() }`。这种模式在元素不存在时静默跳过断言，测试等于没跑。
+5. **禁止把 bug 断言为正确行为** — 比如 API 报错时显示"空列表"被断言为正确。错误状态应该断言错误信息出现。
+
+#### 前端测试
+
+- 允许 mock service 层来隔离外部依赖，但必须验证 service 被用正确的参数调用（`toHaveBeenCalledWith`）
+- 禁止 mock response 只包含测试知道的字段 — 必须包含真实 API 的全部字段和结构
+- 测试必须覆盖：加载态、数据态、空态、错误态
+
+#### Server 测试
+
+- 允许 mock Prisma，但真实业务逻辑（计算、映射、条件分支）必须用真实数据验证
+- 优先使用真实数据库写集成测试（`prisma` 直调），覆盖核心查询
+
+#### E2E 测试
+
+- 禁止 `page.waitForTimeout(N)` — 用 `waitForLoadState` / `waitForSelector` / `waitForResponse`
+- 禁止条件断言 — 每个 `it()` 必须有必然执行的断言
+- 必须走真实用户流程：点击 → 等待 → 断言数据变化
+
+#### 违反处理
+
+任何违反上述规则的测试，review 时直接打回重写。
 
 **核心三件套**: `ui-ux-pro-max`（设计指导）+ `vercel-react-best-practices`（代码质量）+ `webapp-testing`（视觉验证）
 
