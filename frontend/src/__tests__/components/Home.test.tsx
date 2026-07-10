@@ -1,124 +1,184 @@
-/**
- * Unit tests for the Home page component.
- * Tests hero section, features, stats, and CTA rendering.
- */
+import { render, screen, waitFor } from '@testing-library/react';
+import { BrowserRouter } from 'react-router-dom';
+import Home from '../../pages/Home/Home';
 
-import { render, screen } from "@testing-library/react";
-import { BrowserRouter } from "react-router-dom";
-import Home from "../../pages/Home/Home";
+const mockGetPopularProblems = jest.fn();
+const mockGetUpcomingContests = jest.fn();
 
-// Mock the services module to avoid import.meta issues
-jest.mock("@/services/home", () => ({
-  getPopularProblems: jest.fn().mockResolvedValue([]),
-  getUpcomingContests: jest.fn().mockResolvedValue([]),
+jest.mock('@/services/home', () => ({
+  getPopularProblems: (...args: any[]) => mockGetPopularProblems(...args),
+  getUpcomingContests: (...args: any[]) => mockGetUpcomingContests(...args),
 }));
 
-function renderWithRouter(ui: React.ReactElement) {
-  return render(<BrowserRouter>{ui}</BrowserRouter>);
+function renderPage() {
+  return render(<BrowserRouter><Home /></BrowserRouter>);
 }
 
-describe("Home Page", () => {
-  describe("Hero Section", () => {
-    it("should render the main heading", () => {
-      renderWithRouter(<Home />);
+const mockProblem = {
+  id: 1,
+  title: 'Two Sum',
+  slug: 'two-sum',
+  difficulty: 'easy' as const,
+  tags: ['Array', 'Hash Table'],
+  solvedCount: 15000,
+  submissionCount: 30000,
+  acceptanceRate: 0.5,
+};
 
-      expect(screen.getByText("算法竞赛学习平台")).toBeInTheDocument();
+const mockContest = {
+  id: 1,
+  title: 'Weekly Contest #42',
+  description: 'Test',
+  startTime: new Date(Date.now() + 86400000).toISOString(),
+  endTime: new Date(Date.now() + 86400000 + 7200000).toISOString(),
+  status: 'upcoming' as const,
+  type: 'weekly' as const,
+  problemCount: 5,
+  participantCount: 1200,
+};
+
+describe('Home Page', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  describe('Static content', () => {
+    it('should render hero heading', () => {
+      mockGetPopularProblems.mockResolvedValue([]);
+      mockGetUpcomingContests.mockResolvedValue([]);
+      renderPage();
+
+      expect(screen.getByText('掌握算法')).toBeInTheDocument();
+      expect(screen.getByText('成就竞赛梦想')).toBeInTheDocument();
     });
 
-    it("should render the subtitle", () => {
-      renderWithRouter(<Home />);
+    it('should render CTA buttons with correct links', () => {
+      mockGetPopularProblems.mockResolvedValue([]);
+      mockGetUpcomingContests.mockResolvedValue([]);
+      renderPage();
 
-      expect(
-        screen.getByText(/从基础数据结构到高级算法/)
-      ).toBeInTheDocument();
+      const startBtn = screen.getByText('开始练习').closest('a');
+      expect(startBtn).toHaveAttribute('href', '/problems');
+
+      const pathBtn = screen.getByRole('link', { name: /学习路径/ });
+      expect(pathBtn).toHaveAttribute('href', '/paths');
     });
 
-    it("should render CTA buttons in hero section", () => {
-      renderWithRouter(<Home />);
+    it('should render stats', () => {
+      mockGetPopularProblems.mockResolvedValue([]);
+      mockGetUpcomingContests.mockResolvedValue([]);
+      renderPage();
 
-      expect(screen.getByText("开始练习")).toBeInTheDocument();
-      // 使用 getAllByText 因为 "学习路径" 在导航栏和按钮中都出现
-      const learnPathElements = screen.getAllByText("学习路径");
-      expect(learnPathElements.length).toBeGreaterThanOrEqual(1);
+      expect(screen.getByText('1,200+')).toBeInTheDocument();
+      expect(screen.getByText('50,000+')).toBeInTheDocument();
     });
 
-    it("should have correct links for CTA buttons", () => {
-      renderWithRouter(<Home />);
+    it('should render features section heading', () => {
+      mockGetPopularProblems.mockResolvedValue([]);
+      mockGetUpcomingContests.mockResolvedValue([]);
+      renderPage();
 
-      const startButton = screen.getByText("开始练习").closest("a");
-      expect(startButton).toHaveAttribute("href", "/problems");
+      expect(screen.getByText('为什么选择 Algorithm Arena')).toBeInTheDocument();
+    });
 
-      // 找到 hero section 中的学习路径按钮
-      const learnPathButton = screen.getByText("开始练习").closest("a")?.parentElement?.querySelector('a[href="/paths"]');
-      expect(learnPathButton).toBeInTheDocument();
-      expect(learnPathButton).toHaveAttribute("href", "/paths");
+    it('should render feature cards', () => {
+      mockGetPopularProblems.mockResolvedValue([]);
+      mockGetUpcomingContests.mockResolvedValue([]);
+      renderPage();
+
+      expect(screen.getByText('丰富的题库')).toBeInTheDocument();
+      expect(screen.getByText('即时评测')).toBeInTheDocument();
+      expect(screen.getByText('竞赛系统')).toBeInTheDocument();
+    });
+
+    it('should render CTA section', () => {
+      mockGetPopularProblems.mockResolvedValue([]);
+      mockGetUpcomingContests.mockResolvedValue([]);
+      renderPage();
+
+      expect(screen.getByText('准备好开始了吗？')).toBeInTheDocument();
+      const regLink = screen.getByText('免费注册').closest('a');
+      expect(regLink).toHaveAttribute('href', '/register');
     });
   });
 
-  describe("Stats Section", () => {
-    it("should render all statistics", () => {
-      renderWithRouter(<Home />);
+  describe('Popular Problems', () => {
+    it('should render problem list when data loads', async () => {
+      mockGetPopularProblems.mockResolvedValue([mockProblem]);
+      mockGetUpcomingContests.mockResolvedValue([]);
+      renderPage();
 
-      expect(screen.getByText("1,200+")).toBeInTheDocument();
-      expect(screen.getByText("50,000+")).toBeInTheDocument();
-      expect(screen.getByText("2,000,000+")).toBeInTheDocument();
-      expect(screen.getByText("300+")).toBeInTheDocument();
+      await waitFor(() => {
+        expect(screen.getByText('Two Sum')).toBeInTheDocument();
+      });
+      expect(screen.getByText('简单')).toBeInTheDocument();
     });
 
-    it("should render stat labels", () => {
-      renderWithRouter(<Home />);
+    it('should show loading state initially', () => {
+      mockGetPopularProblems.mockImplementation(() => new Promise(() => {}));
+      mockGetUpcomingContests.mockImplementation(() => new Promise(() => {}));
+      renderPage();
 
-      expect(screen.getByText("精选题目")).toBeInTheDocument();
-      expect(screen.getByText("活跃用户")).toBeInTheDocument();
-      expect(screen.getByText("代码提交")).toBeInTheDocument();
-      expect(screen.getByText("竞赛举办")).toBeInTheDocument();
-    });
-  });
-
-  describe("Features Section", () => {
-    it("should render the features heading", () => {
-      renderWithRouter(<Home />);
-
-      expect(screen.getByText("为什么选择 Algorithm Arena")).toBeInTheDocument();
+      expect(screen.getAllByText('加载中...').length).toBeGreaterThanOrEqual(1);
     });
 
-    it("should render all feature cards", () => {
-      renderWithRouter(<Home />);
+    it('should show error when problem API fails', async () => {
+      mockGetPopularProblems.mockRejectedValue(new Error('Network error'));
+      mockGetUpcomingContests.mockResolvedValue([]);
+      renderPage();
 
-      expect(screen.getByText("丰富的题库")).toBeInTheDocument();
-      expect(screen.getByText("即时评测")).toBeInTheDocument();
-      expect(screen.getByText("竞赛系统")).toBeInTheDocument();
-      // 使用 getAllByText 因为 "学习路径" 在多处出现
-      const learnPathElements = screen.getAllByText("学习路径");
-      expect(learnPathElements.length).toBeGreaterThanOrEqual(2); // 导航栏 + 特性卡片
-      expect(screen.getByText("进度追踪")).toBeInTheDocument();
-      expect(screen.getByText("社区交流")).toBeInTheDocument();
-    });
-
-    it("should render feature descriptions", () => {
-      renderWithRouter(<Home />);
-
-      expect(
-        screen.getByText(/涵盖数据结构、算法、数学等多个领域/)
-      ).toBeInTheDocument();
-      expect(
-        screen.getByText(/支持 C\+\+、Java、Python 等多语言在线评测/)
-      ).toBeInTheDocument();
+      await waitFor(() => {
+        expect(screen.getByText('加载题目失败')).toBeInTheDocument();
+      });
     });
   });
 
-  describe("CTA Section", () => {
-    it("should render the final CTA heading", () => {
-      renderWithRouter(<Home />);
+  describe('Upcoming Contests', () => {
+    it('should render contest cards when data loads', async () => {
+      mockGetPopularProblems.mockResolvedValue([]);
+      mockGetUpcomingContests.mockResolvedValue([mockContest]);
+      renderPage();
 
-      expect(screen.getByText("准备好开始了吗？")).toBeInTheDocument();
+      await waitFor(() => {
+        expect(screen.getByText('Weekly Contest #42')).toBeInTheDocument();
+      });
     });
 
-    it("should render the final CTA button", () => {
-      renderWithRouter(<Home />);
+    it('should show loading state for contests', () => {
+      mockGetPopularProblems.mockResolvedValue([]);
+      mockGetUpcomingContests.mockImplementation(() => new Promise(() => {}));
+      renderPage();
 
-      const registerLink = screen.getByText("免费注册").closest("a");
-      expect(registerLink).toHaveAttribute("href", "/register");
+      const loadingEls = screen.getAllByText('加载中...');
+      expect(loadingEls.length).toBeGreaterThanOrEqual(1);
+    });
+
+    it('should show error when contest API fails', async () => {
+      mockGetPopularProblems.mockResolvedValue([]);
+      mockGetUpcomingContests.mockRejectedValue(new Error('Server error'));
+      renderPage();
+
+      await waitFor(() => {
+        expect(screen.getByText('加载竞赛失败')).toBeInTheDocument();
+      });
+    });
+  });
+
+  describe('API call arguments', () => {
+    it('should call getPopularProblems with limit 4', () => {
+      mockGetPopularProblems.mockResolvedValue([]);
+      mockGetUpcomingContests.mockResolvedValue([]);
+      renderPage();
+
+      expect(mockGetPopularProblems).toHaveBeenCalledWith(4);
+    });
+
+    it('should call getUpcomingContests with limit 2', () => {
+      mockGetPopularProblems.mockResolvedValue([]);
+      mockGetUpcomingContests.mockResolvedValue([]);
+      renderPage();
+
+      expect(mockGetUpcomingContests).toHaveBeenCalledWith(2);
     });
   });
 });
