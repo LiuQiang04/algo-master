@@ -214,6 +214,7 @@ model Contest {
   creatorId       String   @map("creator_id") @db.Uuid
   isPublic        Boolean  @default(true) @map("is_public")
   maxParticipants Int?     @map("max_participants")
+  type            String   @default("rated") @db.VarChar(20)
   createdAt       DateTime @default(now()) @map("created_at")
 
   creator      User                 @relation("ContestCreator", fields: [creatorId], references: [id])

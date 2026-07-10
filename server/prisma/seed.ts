@@ -512,6 +512,7 @@ async function main() {
       endTime: new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000 + 2 * 60 * 60 * 1000), // 持续2小时
       creatorId: admin.id,
       maxParticipants: 100,
+      type: 'rated',
       problems: {
         create: [
           { problemId: problemRecords[0].id, problemOrder: 'A', score: 100 },

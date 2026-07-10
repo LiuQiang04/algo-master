@@ -34,6 +34,7 @@ export async function getContests(params: {
         endTime: true,
         isPublic: true,
         maxParticipants: true,
+        type: true,
         creator: {
           select: { id: true, username: true },
         },

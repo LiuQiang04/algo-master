@@ -16,7 +16,7 @@ export async function getContests(
   const items = (apiData.contests || []).map((c: any) => ({
     ...c,
     status: c.status === 'ongoing' ? 'running' : c.status,
-    type: c.type || 'rated',
+    type: c.type,
   }));
   return {
     items,
