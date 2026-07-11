@@ -30,7 +30,7 @@ export async function getUserProfile(id: string): Promise<UserProfileData> {
 }
 
 export async function updateProfile(data: UpdateProfileData): Promise<UserProfileData> {
-  const res = await request.put<ApiResponse<UserProfileData>>('/users/me/profile', data);
+  const res = await request.put<ApiResponse<UserProfileData>>('/users/me', data);
   return res.data.data;
 }
 

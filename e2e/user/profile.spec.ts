@@ -60,4 +60,25 @@ test.describe("User Profile", () => {
     // Modal should close
     await expect(modalOverlay).not.toBeVisible({ timeout: 5000 });
   });
+
+  test("should update profile bio", async ({ page }) => {
+    const testBio = `E2E test bio ${Date.now()}`;
+
+    // Open edit modal
+    await page.locator(".profile-edit-btn").click();
+    await expect(page.locator(".modal-overlay")).toBeVisible({ timeout: 5000 });
+
+    // Clear and fill bio textarea
+    const bioInput = page.locator(".form-textarea");
+    await bioInput.fill(testBio);
+
+    // Click save
+    await page.locator(".btn-save").click();
+
+    // Wait for modal to close (save succeeded)
+    await expect(page.locator(".modal-overlay")).not.toBeVisible({ timeout: 10000 });
+
+    // Verify the bio appears on the profile page
+    await expect(page.locator(".profile-bio")).toHaveText(testBio, { timeout: 5000 });
+  });
 });
