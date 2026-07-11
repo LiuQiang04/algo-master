@@ -22,6 +22,9 @@ import virtualItemRoutes from './routes/virtualItems';
 import gamificationRoutes from './routes/gamification';
 import learningPathsRoutes from './routes/learningPaths';
 
+// 评测队列 Worker（Docker 沙箱）
+import './workers/judgeWorker';
+
 // 创建Express应用
 const app = express();
 

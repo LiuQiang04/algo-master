@@ -14,6 +14,8 @@
 import { test, expect } from "@playwright/test";
 import { URLS } from "../fixtures/test-data";
 
+test.describe.configure({ timeout: 180_000 });
+
 test.use({ storageState: ".auth/user.json" });
 
 const CPP_CORRECT = `#include <iostream>
